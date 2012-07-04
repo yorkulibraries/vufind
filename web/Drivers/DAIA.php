@@ -411,6 +411,7 @@ class DAIA implements DriverInterface
         $storage = "Unknown";
         $holding = array();
         for ($c = 0; $itemlist->item($c) !== null; $c++) {
+        	$earliest_href = '';
             $storageElements
                 = $itemlist->item($c)->getElementsByTagName('storage');
             if ($storageElements->item(0)->nodeValue) {
