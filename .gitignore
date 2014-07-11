@@ -1,0 +1,66 @@
+# Specific locations within VuFind #
+####################################
+.settings/
+solr/*/index/
+solr/*/spellchecker/
+solr/*/spellShingle/
+solr/jetty/logs/*
+openurl_cache/*
+log/*
+web/interface/cache/*
+web/interface/compile/*
+web/images/covers/large/*
+web/images/covers/medium/*
+web/images/covers/original/*
+web/images/covers/small/*
+web/images/covers/local/large/*
+web/images/covers/local/medium/*
+web/images/covers/local/original/*
+web/images/covers/local/small/*
+
+# Compiled source #                                                                                   
+###################
+*.com
+*.class
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.log.1
+*.log.2
+*.log.3
+*.log.4
+*.log.5
+*.sqlite
+
+# IDE Files #
+#################
+.buildpath
+.project
+.classpath
+org.eclipse.*.prefs
+*.iml
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+nohup.out
+
+import/translation_maps/callnumber_shelving_key_map.properties
