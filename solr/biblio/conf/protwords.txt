@@ -1,0 +1,12 @@
+.net
+.NET
+c++
+C++
+c#
+C#
+j2ee
+J2EE
+j++
+J++
+b2b
+B2B

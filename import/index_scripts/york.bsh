@@ -1,0 +1,794 @@
+import org.marc4j.*;
+import org.marc4j.marc.*;
+
+import org.solrmarc.tools.CallNumUtils;
+import org.solrmarc.tools.Utils;
+
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.io.*;
+import java.sql.*;
+
+// get a logger
+import org.apache.log4j.Logger;
+final Logger logger = Logger.getLogger(org.solrmarc.index.VuFindIndexer.class.getName());
+
+// get the VUFIND_HOME environment variable
+final String vufindHome = System.getenv("VUFIND_HOME");
+
+// load config.ini
+import org.ini4j.Ini;
+final Ini configIni = new Ini();
+configIni.load(new File(vufindHome + "/web/conf/config.ini"));
+
+// Connect to VuFind database
+Connection vufindDatabase = null;
+
+Set sfxISSNs = null;
+Set mulerISSNs = null;
+Set sirsiISSNs = null;
+Map shelvingKeysMap = null;
+
+/**
+ * Log an error message and throw a fatal exception.
+ * @param msg
+ */
+private void dieWithError(String msg)
+{
+    logger.error(msg);
+    throw new SolrMarcIndexerException(SolrMarcIndexerException.EXIT, msg);
+}
+
+/**
+ * Connect to the VuFind database if we do not already have a connection.
+ */
+private void connectToDatabase()
+{
+    // Already connected?  Do nothing further!
+    if (vufindDatabase != null) {
+        return;
+    }
+
+    String dsn = configIni.get("Database", "database");
+
+    try {
+        // Parse key settings from the PHP-style DSN:
+        String username = "";
+        String password = "";
+        String classname = "invalid";
+        String prefix = "invalid";
+        if (dsn.substring(0, 8).equals("mysql://")) {
+            classname = "com.mysql.jdbc.Driver";
+            prefix = "mysql";
+        } else if (dsn.substring(0, 8).equals("pgsql://")) {
+            classname = "org.postgresql.Driver";
+            prefix = "postgresql";
+        }
+
+        Class.forName(classname).newInstance();
+        String[] parts = dsn.split("://");
+        if (parts.length > 1) {
+            parts = parts[1].split("@");
+            if (parts.length > 1) {
+                dsn = prefix + "://" + parts[1];
+                parts = parts[0].split(":");
+                username = parts[0];
+                if (parts.length > 1) {
+                    password = parts[1];
+                }
+            }
+        }
+
+        // Connect to the database:
+        vufindDatabase = DriverManager.getConnection("jdbc:" + dsn, username, password);
+    } catch (Throwable e) {
+        dieWithError("Unable to connect to VuFind database");
+    }
+}
+
+public boolean loadISSNs() {
+    if (mulerISSNs == null && sfxISSNs == null && sirsiISSNs == null) {
+        connectToDatabase();
+        
+        // Statement to get ISSNs in DB
+        PreparedStatement stmt = vufindDatabase.prepareStatement(
+            "select distinct number from issns where source=?"
+        );
+        
+        // load muler ISSNs
+        mulerISSNs = new TreeSet();
+        stmt.setString(1, "muler");
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            mulerISSNs.add(rs.getString(1));    
+        }
+        rs.close();
+        logger.info("Loaded " + mulerISSNs.size() + " ISSNs from MULER");
+        
+        // load sfx ISSNs
+        sfxISSNs = new TreeSet();
+        stmt.setString(1, "sfx");
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            sfxISSNs.add(rs.getString(1));    
+        }
+        rs.close();
+        logger.info("Loaded " + sfxISSNs.size() + " ISSNs from SFX");
+        
+        // load sirsi ISSNs
+        sirsiISSNs = new TreeSet();
+        stmt.setString(1, "sirsi");
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            sirsiISSNs.add(rs.getString(1));    
+        }
+        rs.close();
+        logger.info("Loaded " + sirsiISSNs.size() + " ISSNs from SIRSI");
+        
+        stmt.close();
+    }
+    return true;
+}
+
+public void loadShelvingKeys() {
+    if (shelvingKeysMap == null) {
+        shelvingKeysMap = new HashMap();
+        try {
+            File tmpFile = new File("/tmp/callnums.txt");
+            if (tmpFile.exists() && tmpFile.length() > 0) {
+                BufferedReader reader = new BufferedReader(new FileReader(tmpFile));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split("\\|");
+                    if (parts.length > 0) {
+                        String key = parts[0].replaceAll("[^a-zA-Z0-9. ]", "").toUpperCase().trim();
+                        String value = key;
+                        if (parts.length > 1) {
+                            value = parts[1].trim();
+                        }
+                        shelvingKeysMap.put(key, value);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        logger.info("Loaded " + shelvingKeysMap.size() + " shelving keys from " + tmpFileName);
+    }
+}
+
+public String getRecordId(Record record, String source) {
+    String id = null;
+    if ("sirsi".equalsIgnoreCase(source)) {
+        id = indexer.getFirstFieldVal(record, "035a").substring(9);
+    } else if ("sfx".equalsIgnoreCase(source)) {
+        id = indexer.getFirstFieldVal(record, "090a");
+    } else if ("muler".equalsIgnoreCase(source)) {
+        id = indexer.getFirstFieldVal(record, "035a");
+    }
+    return id;
+}
+
+/**
+ * Get the call number that is sortable. 
+ */
+public String getCallNumberSortable(Record record) {
+    loadShelvingKeys();
+    
+    // get all LC call numbers and try to find first matching shelving key
+    Set callnums = getLCCallNumbersFrom999(record);
+    for (String callnum : callnums) {
+        String key = shelvingKeysMap.get(callnum);
+        if (key != null && !key.trim().equals("")) {
+            return key;
+        }
+    }
+    
+    // no matching shelving key, return the first LC call number 
+    if (!callnums.isEmpty()) {
+        return callnums.first();
+    }
+       
+    // return the first call number that is not a generic string
+    callnums = getCallNumbersFrom999(record);
+    for (String callnum : callnums) {
+        if ("ELECTRONIC".equals(callnum) 
+                || "DVD".equals(callnum)
+                || "VIDEO".equals(callnum)) {
+            continue;
+        }
+        return callnum;
+    }
+    
+    return null;
+}
+
+/**
+ * Get the first letter of the first LC call number.
+ */
+public String getCallNumberFirstLetter(Record record) {
+    String callnum = getFirstLCCallNumberFrom999(record);
+    return (callnum == null) ? null : callnum.substring(0, 1);
+}
+
+/**
+ * Extract the subject component of the first LC call number
+ * 
+ * Can return null
+ * 
+ * @param record
+ * @return subject portion
+ */
+public String getCallNumberSubject(Record record) {
+    String callnum = getFirstLCCallNumberFrom999(record);
+    if (callnum != null) {
+        String[] parts = callnum.split("\\s+");
+        if (parts.length > 0) {
+            return parts[0];
+        }
+    }
+    return null;
+}
+
+public Set getCallNumberFacet(Record record) {
+    Set results = new TreeSet();
+    Set callnums = getLCCallNumbersFrom999(record);
+    for (String callnum : callnums) {
+        String[] parts = callnum.split("\\s+");
+        if (parts.length > 0) {
+            String code = parts[0].trim().toUpperCase();
+            if (code.length() >= 1 && code.length() <= 3) {
+                results.add(code);
+            }
+        }
+    }
+    return results;
+}
+
+public Set getCallNumberSearchable(Record record) {
+    Set results = new HashSet();
+    Set callnums = getCallNumbersFrom999(record);
+    for (String callnum : callnums) {
+        results.add(callnum.replace(" ", ""));
+    }
+    return results;
+}
+
+/**
+ * Returns all the local call numbers as found in the 999 tags
+ * 
+ * @param record
+ * @return
+ */
+public Set getCallNumbersFrom999(Record record) {
+    Set callnums = new TreeSet();
+
+    // get all the 999 from the record
+    List fields = record.getVariableFields("999");
+    for (DataField field : fields) {
+        Subfield sf = field.getSubfield('a');
+        if (sf != null) {
+            String callnum = sf.getData();
+            callnum = callnum.replaceAll("[^a-zA-Z0-9. ]", "").trim().toUpperCase();
+            if (!callnum.equals("")) {
+                callnums.add(callnum);
+            }
+        }
+    }
+
+    return callnums;
+}
+
+public Set getLCCallNumbersFrom999(Record record) {
+    Set callnums = new TreeSet();
+    List fields = record.getVariableFields("999");
+    for (DataField field : fields) {
+        Subfield sf = field.getSubfield('a');
+        if (sf != null) {
+            String callnum = sf.getData();
+            callnum = callnum.replaceAll("[^a-zA-Z0-9. ]", "").trim().toUpperCase();
+            if ("ELECTRONIC".equals(callnum) 
+                    || callnum.startsWith("VIDEO") 
+                    || callnum.startsWith("DVD")
+                    || callnum.startsWith("XX")) {
+                continue;
+            }
+            String type = field.getSubfield('w').getData().trim();
+            if ("LC".equals(type) || "LCPER".equals(type)) {
+                if (callnum.matches("^[A-NP-Z].+")) {
+                    callnums.add(callnum);
+                }
+            }
+        }
+    }
+    return callnums;
+}
+
+public String getFirstLCCallNumberFrom999(Record record) {
+    Set callnums = getLCCallNumbersFrom999(record);
+    return callnums.isEmpty() ? null : callnums.first();
+}
+
+/**
+ * Returns the formats of the resource as described by a marc bib record.
+ * NOTE: Adapted from Stanford VuFind so it can be used in a beanshell 
+ * @param record
+ * @return Set of strings containing format values for the resource
+ */
+public Set getStanfordFormats(Record record)
+{
+    Set resultSet = new HashSet();
+    
+    // As of July 28, 2008, algorithms for formats are currently in email 
+    // message from Vitus Tang to Naomi Dushay, cc Phil Schreur, Margaret 
+    // Hughes, and Jennifer Vine dated July 23, 2008.
+    
+    // Note: MARC21 documentation refers to char numbers that are 0 based,
+    //  just like java string indexes, so char "06" is at index 6, and is
+    //  the seventh character of the field
+
+    // assign formats based on leader chars 06, 07 and chars in 008
+    String leaderStr = record.getLeader().toString();
+    char leaderChar07 = leaderStr.charAt(7);
+    VariableField f008 = record.getVariableField("008");
+    char leaderChar06 = leaderStr.charAt(6);
+    switch (leaderChar06) {
+        case 'a':
+            if (leaderChar07 == 'a' || leaderChar07 == 'm') 
+                resultSet.add("Book");
+            break;
+        case 'b':
+        case 'p':
+            resultSet.add("Manuscript/Archive");
+            break;
+        case 'c':
+        case 'd':
+            resultSet.add("Score");
+            break;
+        case 'e':
+        case 'f':
+            resultSet.add("Map");
+            break;
+        case 'g':
+            // look for m or v in 008 field, char 33 (count starts at 0)
+            if (f008 != null && f008.find("^.{33}[mv]")) 
+                resultSet.add("Video");
+            break;
+        case 'i':
+            resultSet.add("Sound Recording");
+            break;
+        case 'j':
+            resultSet.add("Music Recording");
+            break;
+        case 'k': 
+            // look for i, k, p, s or t in 008 field, char 33 (count starts at 0)
+            if (f008 != null && f008.find("^.{33}[ikpst]")) 
+                resultSet.add("Image");
+            break;
+        case 'm':
+            // look for a in 008 field, char 26 (count starts at 0)
+            if (f008 != null && f008.find("^.*{26}a")) 
+                resultSet.add("Computer File");
+            break;
+        case 'o':  // instructional kit
+            resultSet.add("Other");
+            break;
+        case 'r':  // object
+            resultSet.add("Other");
+            break;
+        case 't': 
+            if (leaderChar07 == 'a' || leaderChar07 == 'm') 
+                resultSet.add("Book");
+            break;
+    } // end switch
+
+    if ( resultSet.isEmpty() || resultSet.size() == 0 ) {
+        // look for serial publications - leader/07 s
+        if (leaderChar07 == 's') {
+            if (f008 != null) {
+                char c21 = ((ControlField) f008).getData().charAt(21);
+                switch (c21) {
+                    case 'd':   // updating database (ignore)
+                        break;
+                    case 'l':   // updating looseleaf (ignore)
+                        break;
+                    case 'm':   // monographic series
+                        resultSet.add("Book");
+                        break;
+                    case 'n':
+                        resultSet.add("Newspaper");
+                        break;
+                    case 'p':
+                        // b4 2008-12-02 was: resultSet.add(Format.JOURNAL.toString());
+                        resultSet.add("Journal/Periodical");
+                        break;
+                    case 'w':   // web site
+                        resultSet.add("Website");
+                        break;
+                }
+            }
+        }
+    }
+    
+    // look for serial publications 006/00 s
+    if ( resultSet.isEmpty() || resultSet.size() == 0 ) {
+        VariableField f006 = record.getVariableField("006");
+        if (f006 != null && f006.find("^[s]") ) {
+            char c04 = ((ControlField) f006).getData().charAt(4);
+            switch (c04) {
+                case 'd':   // updating database (ignore)
+                    break;
+                case 'l':   // updating looseleaf (ignore)
+                    break;
+                case 'm':   // monographic series
+                    resultSet.add("Book");
+                    break;
+                case 'n':
+                    resultSet.add("Newspaper");
+                    break;
+                case 'p':
+                    resultSet.add("Journal/Periodical");
+                    break;
+                case 'w':   // web site
+                    resultSet.add("Website");
+                    break;
+                case ' ':
+                    resultSet.add("Journal/Periodical");
+            }
+        }
+        // if still nothing, see if 007/00s serial publication by default
+        else if ( ( resultSet.isEmpty() || resultSet.size() == 0 ) && leaderChar07 == 's') {
+            if (f008 != null) {
+                char c21 = ((ControlField) f008).getData().charAt(21);
+                switch (c21) {
+                    case 'd':
+                    case 'l':
+                    case 'm':
+                    case 'n':
+                    case 'p':
+                    case 'w': 
+                        break;
+                    case ' ':
+                        // b4 2008-12-02 was: resultSet.add(Format.SERIAL_PUBLICATION.toString());
+                        resultSet.add("Journal/Periodical");
+                }
+            }
+        }
+    }
+    
+    // look for conference proceedings in 6xx
+    List dfList = record.getDataFields();
+    for (DataField df:dfList) {
+        if (df.getTag().startsWith("6")) {
+            List subList = Utils.getSubfieldStrings(df, 'x');
+            subList.addAll(Utils.getSubfieldStrings(df, 'v'));
+            for (String s : subList) {
+                if (s.toLowerCase().contains("congresses")) {
+                    resultSet.remove("Journal/Periodical");
+                    resultSet.add("Conference Proceedings");
+                }
+            }
+        }
+    }
+            
+    // thesis is determined by the presence of a 502 field.
+    Set dissNote = new LinkedHashSet();
+    dissNote.addAll(getSubfieldDataAsSet(record, "502", 'a'));
+    if (!dissNote.isEmpty() || dissNote.size() != 0)
+        resultSet.add("Thesis");
+    
+    // microfilm is determined by 245 subfield h containing "microform"
+    Set titleH = new LinkedHashSet();
+    titleH.addAll(getSubfieldDataAsSet(record, "245", 'h'));       
+    // check the h subfield of the 245 field
+    if (Utils.setItemContains(titleH, "microform"))
+        resultSet.add("Microform");  
+
+    // if we still don't have a format, it's an "other"
+    if ( resultSet.isEmpty() || resultSet.size() == 0 )
+        resultSet.add("Other");
+    
+    return resultSet;
+}
+
+/**
+ * Simple implementation of getSubfieldDataAsSet.
+ */
+public Set getSubfieldDataAsSet(Record record, String tag, char sub) {
+    Set set = new HashSet();
+    List fields = record.getVariableFields(tag);
+    for (DataField field : fields) {
+        Subfield sf = field.getSubfield(sub);
+        if (sf != null) {
+            set.add(sf.getData().trim());
+        }
+    }
+    return set;
+}
+
+/**
+ * Get a mix of item types and record formats.
+ */
+public Set getMixedFormats(Record record) {
+    Set formats = getStanfordFormats(record);
+    
+    List fields = record.getVariableFields("999");
+    
+    // map item types to formats
+    for (DataField field : fields) {
+        String type = field.getSubfield('t').getData();
+        switch(type) {
+            case "ACCESSORY":
+            case "SMIL-ACSRY":
+                formats.add("Accessory");
+                break;
+            case "AUDCD-14D":
+            case "AUDCD-CLOS":
+            case "AUDIO-CD":
+                formats.add("Audio Compact Disc");
+                break;
+            case "AUDIO-78":
+                formats.add("Audio 78 RPM");
+                break;
+            case "AUDIO-CASS":
+                formats.add("Audio Cassette");
+                break;
+            case "AUDIO-LP":
+                formats.add("Audio LP");
+                break;
+            case "AUDIO-REEL":
+                formats.add("Audio Reel");
+                break;
+            case "BOOK":
+            case "BRONF-BOOK":
+            case "E-ASIAN-BK":
+            case "FROST-BOOK":
+            case "LAW-BOOK":
+            case "LAW-FICTN":
+            case "NELLI-BOOK":
+            case "SCOTT-BOOK":
+            case "SMIL-BOOK":
+            case "STEAC-BOOK":
+                formats.add("Book");
+                break;
+            case "CD-ROM":
+            case "CDROM-CLOS":
+                formats.add("CD-ROM");
+                break;
+            case "DATAFILE":
+                formats.add("Data File");
+                break;
+            case "DVD-3DAY":
+            case "DVD-4HR":
+            case "DVD-7DAY":
+            case "DVD-CLOS":
+            case "DVD-ROM":
+            case "DVD":
+                formats.add("DVD");
+                break;
+            case "E-AUDIO":
+                formats.add("Streaming Audio");
+                break;
+            case "E-BOOK":
+                formats.add("eBook");
+                break;
+            case "E-GOV-DOC":
+            case "FR-GOV-DOC":
+            case "GOV-DOC":
+                formats.add("Government Document");
+                break;
+            case "E-INDEX":
+                formats.add("Index/Database");
+                break;
+            case "E-MAP":
+                formats.add("eMap");
+                break;
+            case "E-SCORE":
+                formats.add("Digitized Score");
+                break;
+            case "E-VIDEO":
+                formats.add("Streaming Video");
+                break;
+            case "EJOURNAL":
+                formats.add("eJournal");
+                break;
+            case "FILM":
+                formats.add("Film");
+                break;
+            case "FONDS":
+                formats.add("Archival Finding Aids");
+                break;            
+            case "LAPTOP":
+                formats.add("Laptop Computer");
+                break;
+            case "LASER-DISC":
+                formats.add("Laserdisc");
+                break;
+            case "LAW-DIGEST":
+                formats.add("Law Digest");
+                break;
+            case "LAW-REPORT":
+                formats.add("Law Report");
+                break;
+            case "LAW-STATCI":
+            case "LAW-STAT":
+                formats.add("Law Statute");
+                break;
+            case "LAW-THESIS":
+                formats.add("Thesis");
+                break;
+            case "MAP":
+                formats.add("Map");
+                break;
+            case "MICROCARD":
+            case "MICROFICHE":
+            case "MICROFILM":
+                formats.add("Microform");
+                break;
+            case "MODEL":
+                formats.add("Model");
+                break;
+            case "MULTIMEDIA":
+                formats.add("Multimedia");
+                break;
+            case "PAMPHLET":
+                formats.add("Pamphlet");
+                break;
+            case "PERIODICAL":
+            case "LAW-PER":
+                formats.add("Journal/Periodical");
+                break;
+            case "SCORE":
+                formats.add("Score");
+                break;
+            case "SLIDE":
+                formats.add("Slide");
+                break;
+            case "VIDEO-3DAY":
+            case "VIDEO-4HR":
+            case "VIDEO-7DAY":
+            case "VIDEO-CLOS":
+            case "VIDEO":
+                formats.add("Video");
+                break;
+            case "WEBSITE":
+                formats.add("Website");
+                break;
+            case "E-RESERVES":
+                formats.add("eReserve");
+                break;
+            case "SPEC-COLL":
+                break;
+        }
+    }
+
+    return formats;
+}
+
+public Set getISSNs(Record record) {
+    return indexer.getFieldList(record, "022a:022y:440x:490x:730x:776x:780x:785x");
+}
+
+public String getSuppressed(Record record, String source) {
+    if ("muler".equals(source)) {
+        Set issns = getISSNs(record);
+        if (loadISSNs()) {
+            for (String issn : issns) {
+                if (sfxISSNs.contains(issn)) {
+                    // suppress MULER records that exist in SFX 
+                    return "issn_exists_in_sfx";
+                }
+                if (sirsiISSNs.contains(issn)) {
+                    return "issn_exists_in_sirsi_but_not_in_sfx";
+                }
+            }
+        }
+    }
+    if ("sfx".equals(source)) {
+        Set issns = getISSNs(record);
+        if (issns.isEmpty()) {
+            // suppress SFX records with no ISSN
+            return "no_issn";
+        }
+        if (loadISSNs()) {
+            for (String issn : issns) {
+                if (sirsiISSNs.contains(issn)) {
+                    // suppress SFX records that exist in SIRSI 
+                    return "issn_exists_in_sirsi";
+                }
+            }
+        }
+    }
+    return "no";
+}
+
+/**
+ * Get locations from 999|l
+ */
+public Set getLocation(Record record) {
+    Set locations = new HashSet();
+    List fields = record.getVariableFields("999");
+    for (DataField field : fields) {
+        String location = "";
+        Subfield sfl = field.getSubfield('l');
+        if (sfl != null) { 
+            location = sfl.getData().trim();
+            locations.add(location);
+        }
+        Subfield sfa = field.getSubfield('a');
+        if (sfa != null) {
+            String callnum = sfa.getData().trim();
+            if ("INTERNET".equals(location)
+                    || "E-RESERVES".equals(location)
+                    || "ELECTRONIC".equals(callnum)) {
+                locations.add("INTERNET");
+            }
+        }
+    }
+    if (!locations.contains("INTERNET")) {
+        // check if issn in SFX or MULER
+        if (loadISSNs()) {
+            Set issns = getISSNs(record);
+            for (String issn : issns) {
+                if (sfxISSNs.contains(issn) || mulerISSNs.contains(issn)) {
+                    logger.info(issn + " is in MULER or SFX");
+                    locations.add("INTERNET");
+                    break;
+                }
+            }
+        }
+        Set urls = getFullTextUrls(record);
+        if (!urls.isEmpty()) {
+            locations.add("INTERNET");
+        }
+    }
+    return locations;
+}
+
+/**
+ * Get a set of full-text URLs.
+ */
+public Set getFullTextUrls(Record record) {
+    Set urls = new LinkedHashSet();
+    Set possUrls = indexer.getFullTextUrls(record);
+    // double check by looking for loc.gov, which is not accounted for
+    // in parent class suggest this be factored out to SolrIndexer
+    for (String url : possUrls) {
+        if (!url.toLowerCase().contains("loc.gov")
+            && !url.toLowerCase().contains("http://www.library.yorku.ca/images/erc/")
+        ) {
+            urls.add(url);
+        }
+    }
+    return urls;
+}
+
+public String getFullTitle(Record record) {
+    String title = "";
+    DataField field = (DataField) record.getVariableField("245");
+    if (field != null) {
+        List subfields = field.getSubfields();
+        for (Subfield subfield : subfields) {
+            char code = subfield.getCode();
+            String data = subfield.getData();
+            if (code != 'c') {
+                title += data + " ";
+            }
+        }
+    }
+    return title;
+}

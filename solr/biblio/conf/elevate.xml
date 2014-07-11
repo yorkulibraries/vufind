@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!-- If this file is found in the config directory, it will only be
+     loaded once at startup.  If it is found in Solr's data
+     directory, it will be re-loaded every commit.
+-->
+
+<elevate>
+<!-- 
+  <query text="ulrich's">
+    <doc id="muler22491" />
+    <doc id="24632" />
+  </query> 
+  <query text="ulrich">
+    <doc id="muler22491" />
+    <doc id="24632" />
+  </query>
+  <query text="Ulrich's">
+    <doc id="muler22491" />
+    <doc id="24632" />
+  </query> 
+  <query text="Ulrich">
+    <doc id="muler22491" />
+    <doc id="24632" />
+  </query>  
+-->
+  <query text="scholars portal">
+    <doc id="muler30631" />
+    <doc id="muler25609" />
+  </query>
+  <query text="Scholars Portal">
+    <doc id="muler30631" />
+    <doc id="muler25609" />
+  </query>
+  <query text="Scholars portal">
+    <doc id="muler30631" />
+    <doc id="muler25609" />
+  </query>
+  <query text="scholar's portal">
+    <doc id="muler30631" />
+    <doc id="muler25609" />
+  </query>
+  <query text="Scholar's Portal">
+    <doc id="muler30631" />
+    <doc id="muler25609" />
+  </query>
+  <query text="Scholar's portal">
+    <doc id="muler30631" />
+    <doc id="muler25609" />
+  </query> 
+  <query text="La Presse">
+    <doc id="90871" />
+  </query>
+  <query text="La Presse.">
+    <doc id="90871" />
+  </query>
+  <query text="la presse">
+    <doc id="90871" />
+  </query>
+  <query text="la presse.">
+    <doc id="90871" />
+  </query>   
+  <query text="presse.">
+    <doc id="90871" />
+  </query>
+  <query text="Presse.">
+    <doc id="90871" />
+  </query>
+  <query text="presse">
+    <doc id="90871" />
+  </query>
+  <query text="Presse">
+    <doc id="90871" />
+  </query>
+  <query text="Journal of Management">
+    <doc id="muler6822" />
+  </query>
+  <query text="journal of management">
+      <doc id="muler6822" />
+  </query>
+  <query text="JOURNAL OF MANAGEMENT">
+    <doc id="muler6822" />
+  </query>
+</elevate>

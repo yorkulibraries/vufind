@@ -1,0 +1,1 @@
+{include file="MyResearch/eresources-terms-of-use.en.tpl"}
