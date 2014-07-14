@@ -1,3 +1,52 @@
+Setup solr master/slave (which may reside on the same machine as the vufind web app)
+=====================================================================================
+- setup master on localhost:8080 and slave on localhost:8081, 
+- searches will be on the slave while indexing is on the master
+
+- setup OS user for master (vufind) and user for slave (vslave)
+
+- clone vufind to /usr/local/vufind for the master instance
+
+cd /usr/local
+git clone path-to-git-repo/vufind.git vufind
+chown -R vufind:vufind vufind
+
+- clone vufind to /home/vslave/vufind for the slave instance
+cd /home/vslave 
+git clone path-to-git-repo/vufind.git vufind
+chown -R vslave:vufind vufind
+
+- make necessary changes to both vufind/web/conf/config.ini
+
+- Add the following to /home/vufind/.bash_profile for the master OS user (vufind) 
+
+export VUFIND_HOME=/usr/local/vufind
+export PATH=$JAVA_HOME/bin:$PATH
+export SOLRMARC_MEM_ARGS='-Xmx2048m'
+export JETTY_CONSOLE=$VUFIND_HOME/solr/jetty/logs/console.log
+export JAVA_OPTIONS="-server -Dmaster.enable=true"
+export JETTY_PORT=8080
+export JETTY_PID=/tmp/$USER.pid
+export SOLRCORE=biblio
+
+- Add the following to the /home/vslave/.bash_profile for the slave OS user (vslave)
+
+export JETTY_CONSOLE=$VUFIND_HOME/solr/jetty/logs/console.log
+export JAVA_OPTIONS="-server -Xmx8192m -Dslave.enable=true -Dmaster.url=http://localhost:8080/solr"
+export JETTY_PORT=8081
+export JETTY_PID=/tmp/$USER.pid
+
+- login as vufind (master user) to build the index 
+/usr/local/vufind/vufind.sh start
+/usr/local/vufind/reindex.sh
+
+- after indexing is done, login as vslave (slave user) to start the slave instance
+~/vufind/vufind.sh start
+
+- the slave will begin replicating the index from the master instance
+
+
+
 Files to pay attention to when merging with upstream
 =======================================================
 ./httpd-vufind.conf
