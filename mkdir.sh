@@ -4,6 +4,11 @@ if [ "$VUFIND_HOME"="" ]; then
   VUFIND_HOME=/usr/local/vufind
 fi
 
+if [ ! -d mkdir $VUFIND_HOME/solr/jetty/logs ]; then
+  echo mkdir $VUFIND_HOME/solr/jetty/logs does not exist, creating it...
+  mkdir -p $VUFIND_HOME/solr/jetty/logs
+fi
+
 if [ ! -d $VUFIND_HOME/web/interface/compile ]; then
   echo $VUFIND_HOME/web/interface/compile does not exist, creating it...
   mkdir -p $VUFIND_HOME/web/interface/compile
