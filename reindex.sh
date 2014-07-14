@@ -18,7 +18,7 @@ cd $VUFIND_HOME || exit
 [ -f /tmp/muler-issns.txt ] && cat /tmp/muler-issns.txt | php util/load_isns.php issns muler
 
 # update ISSNs database with ISSNs from SFX dump
-[ -f /tmp/sfx.xml ] && cat /tmp/sfx.xml | php util/dump_isn_from_marc.php marcxml 090a > /tmp/sfx-issns.txt
+[ -f /tmp/sfx-journals.xml ] && cat /tmp/sfx-journals.xml | php util/dump_isn_from_marc.php marcxml 090a > /tmp/sfx-issns.txt
 [ -f /tmp/sfx-issns.txt ] && cat /tmp/sfx-issns.txt | php util/load_isns.php issns sfx
 
 # import marc files
