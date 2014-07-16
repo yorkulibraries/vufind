@@ -11,12 +11,9 @@
             {foreach from=$allItemRecords item=row name="summaryloop"}
               {if !empty($row.textual_holdings) && $row.location_code=='INTERNET'}
               <div class="well well-sm">
-                <p>{translate text='Location'}:
-                  {$row.location_code|escape} -- {$row.marc852|getvalue:'h'|escape} {$row.marc852|getvalue:'t'|escape}
-                  {if $row.marc852->getSubfield('z')}
-                    -- {translate text='Note'}: {$row.marc852|getvalue:'z'|escape}
-                  {/if}
-                </p>
+                {if $row.marc852->getSubfield('z')}
+                  <p>{translate text='Note'}: {$row.marc852|getvalue:'z'|escape}</p>
+                {/if}
                 {foreach from=$row.textual_holdings item=textual}
                 <p>{translate text='Holdings'}: {$textual|escape}</p>
                 {/foreach}
@@ -65,12 +62,9 @@
         {foreach from=$statusItems item=row name="summaryloop"}
         {if !empty($row.textual_holdings)}
         <div class="well well-sm">
-          <p>{translate text='Location'}:
-            {$row.location_code|escape} -- {$row.marc852|getvalue:'h'|escape} {$row.marc852|getvalue:'t'|escape} 
-            {if $row.marc852->getSubfield('z')}
-              -- {translate text='Note'}: {$row.marc852|getvalue:'z'|escape} 
-            {/if}
-          </p>
+          {if $row.marc852->getSubfield('z')}
+            <p>{translate text='Note'}: {$row.marc852|getvalue:'z'|escape}</p>
+          {/if}
           {foreach from=$row.textual_holdings item=textual}
           <p>{translate text='Holdings'}: {$textual|escape}</p>
           {/foreach}
