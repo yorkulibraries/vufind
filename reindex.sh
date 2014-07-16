@@ -24,3 +24,4 @@ cd $VUFIND_HOME || exit
 # import marc files
 [ -f /tmp/catalog.mrc ] && /usr/local/vufind/import-marc.sh /tmp/catalog.mrc &>/tmp/import-marc.log
 
+[ -f /tmp/sfx-journals.xml ] && /usr/local/vufind/import-sfx.sh /tmp/sfx-journals.xml &>/tmp/import-sfx.log
