@@ -37,10 +37,12 @@ $source = (isset($argv[2])) ? $argv[2] : null;
 
 if ($table) {
     ConnectionManager::connectToDatabase();
-    $sql = "delete from {$table} where source='{$source}'";
-    $result = mysql_query($sql);
-    if (!$result) {
-        die(mysql_error() . "\n" . $sql);
+    if ($source != 'sirsi') {
+      $sql = "delete from {$table} where source='{$source}'";
+      $result = mysql_query($sql);
+      if (!$result) {
+          die(mysql_error() . "\n" . $sql);
+      }
     }
     while($line = fgets(STDIN)) {
         list($id, $isn) = explode(',', $line);
