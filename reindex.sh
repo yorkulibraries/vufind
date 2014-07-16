@@ -21,7 +21,11 @@ cd $VUFIND_HOME || exit
 [ -f /tmp/sfx-journals.xml ] && cat /tmp/sfx-journals.xml | php util/dump_isn_from_marc.php marcxml 090a > /tmp/sfx-issns.txt
 [ -f /tmp/sfx-issns.txt ] && cat /tmp/sfx-issns.txt | php util/load_isns.php issns sfx
 
-# import marc files
-[ -f /tmp/catalog.mrc ] && /usr/local/vufind/import-marc.sh /tmp/catalog.mrc &>/tmp/import-marc.log
+# import catalog marc files
+[ -f /tmp/catalog.mrc ] && /usr/local/vufind/import-marc.sh /tmp/catalog.mrc &>/tmp/import-catalog.log
 
-[ -f /tmp/sfx-journals.xml ] && /usr/local/vufind/import-sfx.sh /tmp/sfx-journals.xml &>/tmp/import-sfx.log
+# import SFX journals marcxml
+[ -f /tmp/sfx-journals.xml ] && /usr/local/vufind/import-sfx.sh /tmp/sfx-journals.xml &>/tmp/import-sfx-journals.log
+
+# import MULER marc 
+[ -f /tmp/muler.mrc ] && /usr/local/vufind/import-muler.sh /tmp/muler.mrc &>/tmp/import-muler.log
