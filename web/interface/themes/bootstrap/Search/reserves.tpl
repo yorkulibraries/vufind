@@ -15,7 +15,8 @@
     {else}
       {include file="Search/result-summary.tpl"}
       
-      <table class="table table-condensed table-responsive table-hover">
+      <div class="table-responsive">
+      <table class="table table-condensed">
       <caption class="sr-only">{translate text='Courses and Instructors'}</caption>
       <tr>
         <th>{translate text='Course'}</th>
@@ -30,6 +31,6 @@
       </tr>
       {/foreach}
       </table>
-      
+      </div>
       {include file="Search/result-pager.tpl"}
     {/if}

@@ -161,12 +161,12 @@ class Reserves extends Action
                 // And we're done
                 exit();
             }
-
-            $interface->assign('recordSet', $searchObject->getResultRecordHTML());
+            
             $summary = $searchObject->getResultSummary();
             $interface->assign('recordCount', $summary['resultTotal']);
             $interface->assign('recordStart', $summary['startRecord']);
             $interface->assign('recordEnd',   $summary['endRecord']);
+            $interface->assign('recordSet', $searchObject->getResultRecordHTML());
 
             $link = $searchObject->renderLinkPageTemplate();
             $total = isset($result['response']['numFound']) ?
