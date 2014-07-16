@@ -683,9 +683,19 @@ public Set getISSNs(Record record) {
     return indexer.getFieldList(record, "022a:022y:440x:490x:730x:776x:780x:785x");
 }
 
+public Set getCleanedISSNs(Record record) {
+    Set result = new TreeSet();
+    Set issns = getISSNs(record);
+    for (String issn : issns) {
+        issn = issn.replaceAll("[^0-9Xx]", "").toUpperCase().substring(0,8);
+        result.add(issn);
+    }
+    return result;
+}
+
 public String getSuppressed(Record record, String source) {
     if ("muler".equals(source)) {
-        Set issns = getISSNs(record);
+        Set issns = getCleanedISSNs(record);
         if (loadISSNs()) {
             for (String issn : issns) {
                 if (sfxISSNs.contains(issn)) {
@@ -699,7 +709,7 @@ public String getSuppressed(Record record, String source) {
         }
     }
     if ("sfx".equals(source)) {
-        Set issns = getISSNs(record);
+        Set issns = getCleanedISSNs(record);
         if (issns.isEmpty()) {
             // suppress SFX records with no ISSN
             return "no_issn";
