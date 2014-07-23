@@ -138,13 +138,4 @@ $RUN_CMD
 
 popd
 
-# delete all records matching format:Delete
-if [ -z "$JETTY_PORT" ]; then
-    JETTY_PORT=8080
-fi
-
-/usr/bin/curl -s -S http://localhost:$JETTY_PORT/solr/$SOLRCORE/update/ -H "Content-Type: text/xml" --data-binary '<delete><query>format:Delete</query></delete>'
-/usr/bin/curl -s -S http://localhost:$JETTY_PORT/solr/$SOLRCORE/update/ -H "Content-Type: text/xml" --data-binary '<delete><query>title:"**REQUIRED FIELD**"</query></delete>'
-/usr/bin/curl -s -S http://localhost:$JETTY_PORT/solr/$SOLRCORE/update/ -H "Content-Type: text/xml" --data-binary '<commit/>'
-
 exit 0
