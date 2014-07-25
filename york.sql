@@ -42,5 +42,6 @@ CREATE TABLE IF NOT EXISTS `marc` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `record_id` varchar(32) NOT NULL,
   `marc` text,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `record_id_UNIQUE` (`record_id`)
 ) ENGINE=InnoDB;

@@ -57,7 +57,7 @@ private void dieWithError(String msg)
  * Connect to the VuFind database if we do not already have a connection.
  */
 private void connectToDatabase()
-{
+{   
     // Already connected?  Do nothing further!
     if (vufindDatabase != null) {
         return;
@@ -94,6 +94,7 @@ private void connectToDatabase()
         }
 
         // Connect to the database:
+        logger.info("Connecting to db...");
         vufindDatabase = DriverManager.getConnection("jdbc:" + dsn, username, password);
     } catch (Throwable e) {
         dieWithError("Unable to connect to VuFind database");
@@ -103,6 +104,8 @@ private void connectToDatabase()
 public boolean loadISSNs() {
     if (mulerISSNs == null && sfxISSNs == null && sirsiISSNs == null) {
         connectToDatabase();
+        
+        logger.info("Loading ISSNs from db...");
         
         // Statement to get ISSNs in DB
         PreparedStatement stmt = vufindDatabase.prepareStatement(
@@ -147,8 +150,8 @@ public boolean loadISSNs() {
 public void loadShelvingKeys() {
     if (shelvingKeysMap == null) {
         shelvingKeysMap = new HashMap();
+        File tmpFile = new File("/tmp/callnums.txt");
         try {
-            File tmpFile = new File("/tmp/callnums.txt");
             if (tmpFile.exists() && tmpFile.length() > 0) {
                 BufferedReader reader = new BufferedReader(new FileReader(tmpFile));
                 String line;
@@ -167,11 +170,11 @@ public void loadShelvingKeys() {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        logger.info("Loaded " + shelvingKeysMap.size() + " shelving keys from " + tmpFileName);
+        logger.info("Loaded " + shelvingKeysMap.size() + " shelving keys from " + tmpFile.getAbsolutePath());
     }
 }
 
-public String getRecordId(Record record, String source) {
+public String getRecordId(Record record, String source, String table) {
     String id = null;
     if ("sirsi".equalsIgnoreCase(source)) {
         id = indexer.getFirstFieldVal(record, "035a").substring(9);
@@ -180,7 +183,45 @@ public String getRecordId(Record record, String source) {
     } else if ("muler".equalsIgnoreCase(source)) {
         id = indexer.getFirstFieldVal(record, "035a");
     }
+    
+    if (table != null) {
+        logger.info("Saving MARC record " +  id + " to table " + table);
+        connectToDatabase();
+        String marc = writeRaw(record);
+        try {
+            PreparedStatement sql = vufindDatabase.prepareStatement(
+                "INSERT INTO " + table + "(record_id, marc) " +
+                "VALUES(?, ?) ON DUPLICATE KEY UPDATE marc=VALUES(marc)"
+            );
+            sql.setString(1, id);
+            sql.setString(2, marc);
+            sql.executeUpdate();
+            sql.close();
+        } catch (Exception e) {
+            logger.error(e.getCause());
+        }
+    }
     return id;
+}
+
+public String writeRaw(Record record)
+{
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    MarcWriter writer = new MarcStreamWriter(out, "UTF-8", true);
+    writer.write(record);
+    writer.close();
+
+    String result = null;
+    try
+    {
+        result = out.toString("UTF-8");
+    }
+    catch (UnsupportedEncodingException e)
+    {
+        // e.printStackTrace();
+        logger.error(e.getCause());
+    }
+    return result;
 }
 
 /**
