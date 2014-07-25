@@ -37,3 +37,10 @@ CREATE TABLE IF NOT EXISTS `issns` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `issn_record_id_UNIQUE` (`number`, `record_id`)
 ) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `marc` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `record_id` varchar(32) NOT NULL,
+  `marc` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
