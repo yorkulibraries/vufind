@@ -42,7 +42,7 @@
           <span class="icon-bar"></span>
         </button>
         <a title="{translate text='York University'}" href="http://www.yorku.ca/" class="navbar-brand"><img src="{$path}/interface/themes/bootstrap/images/yib11yorklogo.gif" alt="York University"/></a>
-        <a title="{translate text='Catalogue'}" href="/find/" class="navbar-brand">{translate text='Catalogue'}</a>
+        <a title="{translate text='Catalogue'}" href="{$path}" class="navbar-brand">{translate text='Catalogue'}</a>
       </div>
 
       <div class="collapse navbar-collapse">
