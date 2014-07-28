@@ -184,7 +184,7 @@ public String getRecordId(Record record, String source, String table) {
         id = indexer.getFirstFieldVal(record, "035a");
     }
     
-    if (table != null) {
+    if (table != null && !table.trim().equals("")) {
         logger.info("Saving MARC record " +  id + " to table " + table);
         connectToDatabase();
         String marc = writeRaw(record);
