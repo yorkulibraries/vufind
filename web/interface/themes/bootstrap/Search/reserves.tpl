@@ -19,14 +19,11 @@
           <li class="media result-container">
             <div class="media-body result-details">
               <h3 class="media-heading">
-                <a href="{$path}/Search/Reserves?inst={$record.instructor_id|escape:'url'}&amp;course={$record.course_id|escape:'url'}&amp;dept={$record.department_id|escape:'url'}">
+                <a href="{$path}/Search/Reserves?inst={$record.instructor_id|escape:'url'}&amp;course={$record.course_id|escape:'url'}&amp;lookfor={$lookfor|escape:'url'}">
                   {$record.course|escape}
                 </a>
               </h3>
-              <dl class="dl-horizontal">
-                <dt class="sr-only">{translate text='Instructor'}:</dt>
-                <dd class="author-info">{$record.instructor|escape}</dd>
-              </dl>
+              <p class="reserves-inst-info">{$record.bib_id|@count} {translate text='item(s) reserved by'} {$record.instructor|escape}</p>
             </div>
           </li>
         {/foreach}

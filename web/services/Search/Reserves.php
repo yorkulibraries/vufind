@@ -167,6 +167,7 @@ class Reserves extends Action
             $interface->assign('recordStart', $summary['startRecord']);
             $interface->assign('recordEnd',   $summary['endRecord']);
             $interface->assign('recordSet', $searchObject->getResultRecordHTML());
+            $interface->assign('lookfor', $searchObject->displayQuery());
 
             $link = $searchObject->renderLinkPageTemplate();
             $total = isset($result['response']['numFound']) ?
@@ -264,7 +265,7 @@ class Reserves extends Action
             'sideRecommendations',
             $searchObject->getRecommendationsTemplates('side')
         );
-        $interface->assign('reservesLookfor', $searchObject->displayQuery());
+        $interface->assign('lookfor', $searchObject->displayQuery());
         $interface->assign('searchType', $searchObject->getSearchType());
         $interface->assign('sortList',   $searchObject->getSortList());
 
