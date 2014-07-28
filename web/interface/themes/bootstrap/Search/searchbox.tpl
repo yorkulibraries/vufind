@@ -12,6 +12,10 @@
       {else}
         {assign var='currentSearchType' value=$searchIndex}
       {/if}
+      {if $pageTemplate=='reserves.tpl' or $pageTemplate=='reserves-list.tpl'}
+        {assign var='currentSearchType' value='Reserves'}
+        {assign var='searchIndex' value='Reserves'}
+      {/if}
       <input type="hidden" name="type" value="{$currentSearchType}" />
       <label class="sr-only" for="search_form_lookfor">{translate text='Search Terms'}</label>
       <div class="input-group">
