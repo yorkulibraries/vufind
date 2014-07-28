@@ -13,24 +13,25 @@
       </div>
       {/if}
     {else}
-      {include file="Search/result-summary.tpl"}
+      {include file="Search/reserves-summary.tpl"}
+      <ul class="media-list result-list">
+        {foreach from=$recordSet item=record name="recordLoop"}
+          <li class="media result-container">
+            <div class="media-body result-details">
+              <h3 class="media-heading">
+                <a href="{$path}/Search/Reserves?inst={$record.instructor_id|escape:'url'}&amp;course={$record.course_id|escape:'url'}&amp;dept={$record.department_id|escape:'url'}">
+                  {$record.course|escape}
+                </a>
+              </h3>
+              <dl class="dl-horizontal">
+                <dt class="sr-only">{translate text='Instructor'}:</dt>
+                <dd class="author-info">{$record.instructor|escape}</dd>
+              </dl>
+            </div>
+          </li>
+        {/foreach}
+      </ul>
       
-      <div class="table-responsive">
-      <table class="table table-condensed">
-      <caption class="sr-only">{translate text='Courses and Instructors'}</caption>
-      <tr>
-        <th>{translate text='Course'}</th>
-        <th>{translate text='Instructor'}</th>
-        <th>{translate text='Items'}</th>
-      </tr>
-      {foreach from=$recordSet item=record}
-      <tr>
-        <td><a href="{$url}/Search/Reserves?inst={$record.instructor_id|escape:'url'}&amp;course={$record.course_id|escape:'url'}&amp;dept={$record.department_id|escape:'url'}">{$record.course|escape}</a></td>
-        <td><a href="{$url}/Search/Reserves?inst={$record.instructor_id|escape:'url'}&amp;course={$record.course_id|escape:'url'}&amp;dept={$record.department_id|escape:'url'}">{$record.instructor|escape}</a></td>
-        <td>{$record.bib_id|@count}</td>
-      </tr>
-      {/foreach}
-      </table>
-      </div>
+      
       {include file="Search/result-pager.tpl"}
     {/if}
