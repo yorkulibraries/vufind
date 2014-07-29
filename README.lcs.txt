@@ -1,3 +1,8 @@
+VuFind needs to be mounted on /find/, if you mount it on a different prefix, then you need to make 
+appropriate changes in config.ini, httpd-vufind.conf and web/interface/themes/bootstrap/min/.htaccess
+
+*NOTE*: you must copy httpd-vufind.conf to apache config directory and restart apache.
+
 Setup solr master/slave (which may reside on the same machine as the vufind web app)
 =====================================================================================
 - setup master on localhost:8080 and slave on localhost:8081, 
