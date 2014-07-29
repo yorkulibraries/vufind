@@ -716,6 +716,11 @@ public Set getMixedFormats(Record record) {
                 break;
         }
     }
+    
+    // if there is more than one formats, then remove "Other"
+    if (formats.size() > 1) {
+        formats.remove("Other");
+    }
 
     return formats;
 }
