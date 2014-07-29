@@ -46,11 +46,14 @@ while ($record = $records->next()) {
     $id = $record->getField('035')->getSubfield('a')->getData();
     $fields = $record->getFields('856');
     foreach ($fields as $field) {
-        $url = $field->getSubField('u')->getData();
-        foreach ($prefixes as $prefix) {
-            if (stripos($url, $prefix) !== false) {
-                $rid = substr($url, strlen($prefix));
-                echo trim($id) . ',' . trim($rid) . "\n";
+        $subfield = $field->getSubField('u');
+        if ($subfield) {
+            $url = $subfield->getData();
+            foreach ($prefixes as $prefix) {
+                if (stripos($url, $prefix) !== false) {
+                    $rid = substr($url, strlen($prefix));
+                    echo trim($id) . ',' . trim($rid) . "\n";
+                }
             }
         }
     }
