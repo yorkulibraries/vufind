@@ -34,6 +34,7 @@ $configArray = readConfig();
 
 $table = (isset($argv[1])) ? $argv[1] : null;
 $source = (isset($argv[2])) ? $argv[2] : null;
+$length = (isset($argv[3])) ? $argv[3] : 8;
 
 if ($table) {
     ConnectionManager::connectToDatabase();
@@ -49,12 +50,13 @@ if ($table) {
         $id = trim($id);
         $isn = preg_replace('/[^0-9X]/', '', $isn);
         $source = trim($source);
-        if (strlen($isn) == 8) {
-            $sql = "insert into {$table} (record_id, number, source) values ('{$id}', '{$isn}', '{$source}') on duplicate key update id=id";
-            $result = mysql_query($sql);
-            if (!$result) {
-                die(mysql_error() . "\n" . $sql);
-            }
+        if ($length && strlen($isn) == $length) {
+            $isn = substr($isn, 0, $length);
+        }
+        $sql = "insert into {$table} (record_id, number, source) values ('{$id}', '{$isn}', '{$source}') on duplicate key update id=id";
+        $result = mysql_query($sql);
+        if (!$result) {
+            die(mysql_error() . "\n" . $sql);
         }
     }
 }
