@@ -41,6 +41,7 @@ Connection vufindDatabase = null;
 Set sfxISSNs = null;
 Set mulerISSNs = null;
 Set sirsiISSNs = null;
+Set resolverIDsInSirsi = null;
 Map shelvingKeysMap = null;
 
 /**
@@ -141,6 +142,32 @@ public boolean loadISSNs() {
         }
         rs.close();
         logger.info("Loaded " + sirsiISSNs.size() + " ISSNs from SIRSI");
+        
+        stmt.close();
+    }
+    return true;
+}
+
+public boolean loadResolverIDs() {
+    if (resolverIDsInSirsi == null) {
+        connectToDatabase();
+        
+        logger.info("Loading Resolver IDs from db...");
+        
+        // Statement to get IDs in DB
+        PreparedStatement stmt = vufindDatabase.prepareStatement(
+            "select distinct number from resolver_ids where source=?"
+        );
+        
+        // load 
+        resolverIDsInSirsi = new TreeSet();
+        stmt.setString(1, "sirsi");
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            resolverIDsInSirsi.add(rs.getString(1));    
+        }
+        rs.close();
+        logger.info("Loaded " + resolverIDsInSirsi.size() + " Resolver IDs from SIRSI");
         
         stmt.close();
     }
@@ -750,6 +777,23 @@ public String getSuppressed(Record record, String source) {
                 }
                 if (sirsiISSNs.contains(issn)) {
                     return "issn_exists_in_sirsi_but_not_in_sfx";
+                }
+            }
+        }
+        if (loadResolverIDs()) {
+            Set urls = indexer.getFullTextUrls(record);
+            for (String url : urls) {
+                String id = null;
+                if (url.indexOf("http://www.library.yorku.ca/eresolver/?id=") != -1) {
+                    id = url.substring("http://www.library.yorku.ca/eresolver/?id=".length());
+                    logger.info(url + " " + id);
+                }
+                if (url.indexOf("http://www.library.yorku.ca/e/resolver/id/") != -1) {
+                    id = url.substring("http://www.library.yorku.ca/e/resolver/id/".length());
+                    logger.info(url + " " + id);
+                }
+                if (resolverIDsInSirsi.contains(id)) {
+                    return "resolver_id_exists_in_sirsi";
                 }
             }
         }
