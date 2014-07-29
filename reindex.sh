@@ -9,6 +9,10 @@ fi
   
 cd $VUFIND_HOME || exit
 
+# update url resolver id database with IDs from catalog dump
+[ -f /tmp/catalog.mrc ] && cat /tmp/catalog.mrc | php util/dump_resolver_id_from_marc.php marc 035a > /tmp/catalog-resolver-ids.txt
+[ -f /tmp/catalog-resolver-ids.txt ] && cat /tmp/catalog-resolver-ids.txt | php util/load_isns.php resolver_ids sirsi
+
 # update ISSNs database with ISSNs from catalog dump
 [ -f /tmp/catalog.mrc ] && cat /tmp/catalog.mrc | php util/dump_isn_from_marc.php marc 035a > /tmp/catalog-issns.txt
 [ -f /tmp/catalog-issns.txt ] && cat /tmp/catalog-issns.txt | php util/load_isns.php issns sirsi
