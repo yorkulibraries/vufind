@@ -10,7 +10,7 @@ fi
 cd $VUFIND_HOME || exit
 
 # update ISSNs database with ISSNs from catalog dump
-[ -f /tmp/catalog.mrc ] && cat /tmp/catalog.mrc | php util/dump_isn_from_marc.php marc 035a /tmp/catalog-issns.mrc > /tmp/catalog-issns.txt
+[ -f /tmp/catalog.mrc ] && cat /tmp/catalog.mrc | php util/dump_isn_from_marc.php marc 035a > /tmp/catalog-issns.txt
 [ -f /tmp/catalog-issns.txt ] && cat /tmp/catalog-issns.txt | php util/load_isns.php issns sirsi
 
 # update ISSNs database with ISSNs from MULER dump
