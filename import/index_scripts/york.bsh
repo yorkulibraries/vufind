@@ -786,11 +786,11 @@ public String getSuppressed(Record record, String source) {
                 String id = null;
                 if (url.indexOf("http://www.library.yorku.ca/eresolver/?id=") != -1) {
                     id = url.substring("http://www.library.yorku.ca/eresolver/?id=".length());
-                    logger.info(url + " " + id);
+                    logger.debug(url + " " + id);
                 }
                 if (url.indexOf("http://www.library.yorku.ca/e/resolver/id/") != -1) {
                     id = url.substring("http://www.library.yorku.ca/e/resolver/id/".length());
-                    logger.info(url + " " + id);
+                    logger.debug(url + " " + id);
                 }
                 if (resolverIDsInSirsi.contains(id)) {
                     return "resolver_id_exists_in_sirsi";
