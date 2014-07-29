@@ -38,6 +38,16 @@ CREATE TABLE IF NOT EXISTS `issns` (
     UNIQUE KEY `issn_record_id_UNIQUE` (`number`, `record_id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS `resolver_ids` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `number` varchar(8) NOT NULL,
+    `record_id` varchar(32) NOT NULL,
+    `source` varchar(16) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `record_id_UNIQUE` (`number`, `record_id`)
+) ENGINE=InnoDB;
+
+
 CREATE TABLE IF NOT EXISTS `marc` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `record_id` varchar(32) NOT NULL,
