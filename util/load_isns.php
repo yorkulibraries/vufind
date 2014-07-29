@@ -50,7 +50,7 @@ if ($table) {
         $id = trim($id);
         $isn = preg_replace('/[^0-9X]/', '', $isn);
         $source = trim($source);
-        if ($length && strlen($isn) == $length) {
+        if ($length && strlen($isn) >= $length) {
             $isn = substr($isn, 0, $length);
         }
         $sql = "insert into {$table} (record_id, number, source) values ('{$id}', '{$isn}', '{$source}') on duplicate key update id=id";
