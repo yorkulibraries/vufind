@@ -21,6 +21,9 @@ h3 {
   background-image: none;
   background-color: #ffffff;
 }
+.yul-navbar .navbar-brand {
+  color: #333;
+}
 .yul-navbar .navbar-brand img {
   margin-top: -15px;
 }
@@ -28,6 +31,9 @@ h3 {
   .yul-navbar .navbar-brand img {
     margin-left: -90px;
   }
+}
+.yul-navbar .navbar-nav > li > a {
+  color: #333;
 }
 .feedback-button {
   position: fixed;
