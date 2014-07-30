@@ -735,6 +735,8 @@ public Set getMixedFormats(Record record) {
                 formats.add("Video");
                 break;
             case "WEBSITE":
+            case "E-JOURNAL COLLECTION":
+            case "E-BOOK COLLECTION":
                 formats.add("Website");
                 break;
             case "E-RESERVES":
