@@ -737,6 +737,7 @@ public Set getMixedFormats(Record record) {
             case "WEBSITE":
             case "E-JOURNAL COLLECTION":
             case "E-BOOK COLLECTION":
+            case "E-NEWSPAPER COLLECTION":
                 formats.add("Website");
                 break;
             case "E-RESERVES":
