@@ -660,6 +660,7 @@ public Set getMixedFormats(Record record) {
                 formats.add("Government Document");
                 break;
             case "E-INDEX":
+            case "INDEX/DATABASE":
                 formats.add("Index/Database");
                 break;
             case "E-MAP":
