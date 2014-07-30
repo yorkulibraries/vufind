@@ -27,7 +27,7 @@
         {/foreach}
         >
         <div class="input-group-btn">
-          <button type="submit" class="btn btn-default" tabindex="-1"><span class="fa fa-search"></span></button>
+          <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Find'}"><span class="fa fa-search"></span></button>
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1">
             <div class="visible-xs">
               <span class="fa fa-bars"></span>
