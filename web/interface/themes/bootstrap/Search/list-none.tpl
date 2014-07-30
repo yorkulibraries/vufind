@@ -52,7 +52,7 @@
       <h3 class="panel-title">University of Toronto</h3>
     </div>
     <div class="panel-body">
-      <form target="_blank" role="form" method="get" action="http://search.library.utoronto.ca/search">
+      <form target="_blank" role="form" method="get" action="//search.library.utoronto.ca/search">
         <input type="hidden" name="N" value="0"/>
         <input type="hidden" name="Ntx" value="mode matchallpartial"/>
         <input type="hidden" name="Nu" value="p_work_normalized"/>
@@ -73,7 +73,7 @@
       <h3 class="panel-title">Ryerson University</h3>
     </div>
     <div class="panel-body">
-      <form target="_blank" role="form" method="get" action="http://catalogue.library.ryerson.ca/search~S0/X">
+      <form target="_blank" role="form" method="get" action="//catalogue.library.ryerson.ca/search~S0/X">
         <label class="sr-only" for="search_ryerson_lookfor">{translate text='Search Terms'}</label>
         <div class="input-group">
           <input type="text" name="SEARCH" id="search_ryerson" value="{$lookfor}" class="form-control"/>
@@ -90,7 +90,7 @@
       <h3 class="panel-title">WorldCat</h3>
     </div>
     <div class="panel-body">
-      <form target="_blank" role="form" method="get" action="http://www.worldcat.org/search">
+      <form target="_blank" role="form" method="get" action="//www.worldcat.org/search">
         <label class="sr-only" for="search_worldcat_lookfor">{translate text='Search Terms'}</label>
         <div class="input-group">
           <input type="text" name="q" id="search_worldcat" value="{$lookfor}" class="form-control"/>
@@ -109,7 +109,7 @@
       <h3 class="panel-title">Google Scholar</h3>
     </div>
     <div class="panel-body">
-      <form target="_blank" role="form" method="get" action="http://scholar.google.ca/scholar">
+      <form target="_blank" role="form" method="get" action="//scholar.google.ca/scholar">
         <label class="sr-only" for="google_scholar_lookfor">{translate text='Search Terms'}</label>
         <div class="input-group">
           <input type="text" name="q" id="google_scholar" value="{$lookfor}" class="form-control"/>
@@ -125,7 +125,7 @@
       <h3 class="panel-title">Google Books</h3>
     </div>
     <div class="panel-body">
-      <form target="_blank" role="form" method="get" action="http://books.google.ca/books">
+      <form target="_blank" role="form" method="get" action="//books.google.ca/books">
         <label class="sr-only" for="google_books_lookfor">{translate text='Search Terms'}</label>
         <div class="input-group">
           <input type="text" name="q" id="google_books" value="{$lookfor}" class="form-control"/>
