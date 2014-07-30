@@ -1,3 +1,4 @@
+{if $pageTemplate != 'list-none.tpl'}
 <div class="panel panel-default" id="refineSearch" class="refine-search">
   <div class="panel-heading">
     <h4 class="panel-title">{translate text='Refine search'}</h4>
@@ -114,3 +115,4 @@
     {/if}
   {/foreach}
 </div>
+{/if}
