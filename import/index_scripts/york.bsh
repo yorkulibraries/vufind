@@ -769,8 +769,10 @@ public Set getCleanedISSNs(Record record) {
     Set result = new TreeSet();
     Set issns = getISSNs(record);
     for (String issn : issns) {
-        issn = issn.replaceAll("[^0-9Xx]", "").toUpperCase().substring(0,8);
-        result.add(issn);
+        issn = issn.replaceAll("[^0-9Xx]", "").toUpperCase();
+        if (issn.length() >= 8) {
+            result.add(issn.substring(0, 8));
+        }
     }
     return result;
 }
