@@ -85,4 +85,13 @@
   <query text="JOURNAL OF MANAGEMENT">
     <doc id="184497" />
   </query>
+  <query text="psychinfo">
+    <doc id="1442101" />
+  </query>
+  <query text="PsychInfo">
+    <doc id="1442101" />
+  </query>
+  <query text="PSYCHINFO">
+    <doc id="1442101" />
+  </query>
 </elevate>
