@@ -738,12 +738,17 @@ public Set getMixedFormats(Record record) {
             case "E-JOURNAL COLLECTION":
             case "E-BOOK COLLECTION":
             case "E-NEWSPAPER COLLECTION":
+                formats.clear();
                 formats.add("Website");
                 break;
             case "E-RESERVES":
                 formats.add("eReserve");
                 break;
             case "SPEC-COLL":
+                break;
+            case "ENCYCLOPEDIA/DICTIONARY":
+                formats.clear();
+                formats.add("Encyclopedia/Dictionary");
                 break;
         }
     }
@@ -752,7 +757,7 @@ public Set getMixedFormats(Record record) {
     if (formats.size() > 1) {
         formats.remove("Other");
     }
-
+    
     return formats;
 }
 
