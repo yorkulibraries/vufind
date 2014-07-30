@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# print date/time
+date
+
 . ~/.bash_profile
 
 if [ -z "$VUFIND_HOME" ]
@@ -40,3 +43,12 @@ cd $VUFIND_HOME || exit
 curl -s -S http://localhost:$JETTY_PORT/solr/$SOLRCORE/update/ -H "Content-Type: text/xml" --data-binary '<delete><query>format:Delete</query></delete>'
 curl -s -S http://localhost:$JETTY_PORT/solr/$SOLRCORE/update/ -H "Content-Type: text/xml" --data-binary '<delete><query>title:"**REQUIRED FIELD**"</query></delete>'
 curl -s -S http://localhost:$JETTY_PORT/solr/$SOLRCORE/update/ -H "Content-Type: text/xml" --data-binary '<commit/>'
+
+# shutdown and restart
+/usr/local/vufind/vufind.sh stop
+sleep 10
+/usr/local/vufind/vufind.sh start
+sleep 10
+
+# print date/time
+date
