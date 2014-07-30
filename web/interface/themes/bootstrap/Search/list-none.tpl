@@ -38,7 +38,7 @@
     <li>In-person help is available at research or reference desks during <a href="http://www.library.yorku.ca/web/hours-and-locations" target="_blank">reference hours</a>. </li>
     <li> <a href="http://www.library.yorku.ca/web/ask-services/" target="_blank">Live chat and IM help</a> is available.</li>
     <li><a href="http://www.library.yorku.ca/web/ask-services/e-mail-and-telephone-reference/" target="_blank">E-mail brief research questions to us</a> and expect a response by 5 pm the next weekday.</li>
-    <li>Phone us at a <a href="http://www.library.yorku.ca/web/ask-services/in-person-references/" target="_blank" >Library reference desk</a>.</li>
+    <li>Phone us at a <a href="http://www.library.yorku.ca/web/ask-services/e-mail-and-telephone-reference/" target="_blank" >Library reference desk</a>.</li>
   </ul>
 
   <h2>RACER - Interlibrary Loan</h2>
