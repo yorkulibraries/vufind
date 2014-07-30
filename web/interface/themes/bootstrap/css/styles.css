@@ -406,6 +406,9 @@ a.accordion-toggle:hover {
 .no-hit-container a:hover {
   color: #cc0000;
 }
+.request-buttons-container {
+  margin-bottom: 10px;
+}
 @media screen and (max-width: 1023px) {
   .row-offcanvas {
     position: relative;

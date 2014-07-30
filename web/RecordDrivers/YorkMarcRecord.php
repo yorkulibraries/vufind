@@ -18,6 +18,7 @@ class YorkMarcRecord extends MarcRecord
         global $interface;
         $interface->assign('isJournal', $this->isJournal());
         $interface->assign('isFond', $this->isFond());
+        $interface->assign('recordDataSource', $this->fields['data_source_str']);
     }
 
     public function isJournal()
