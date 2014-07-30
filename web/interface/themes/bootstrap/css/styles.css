@@ -399,6 +399,13 @@ a.accordion-toggle:hover {
 .bookbag-count {
   padding: 0 4px 2px;
 }
+.no-hit-container a,
+.no-hit-container a:active,
+.no-hit-container a:visited,
+.no-hit-container a:link,
+.no-hit-container a:hover {
+  color: #cc0000;
+}
 @media screen and (max-width: 1023px) {
   .row-offcanvas {
     position: relative;
