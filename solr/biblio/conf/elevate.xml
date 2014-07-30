@@ -22,47 +22,35 @@
 -->
 
 <elevate>
-<!-- 
   <query text="ulrich's">
-    <doc id="muler22491" />
     <doc id="24632" />
   </query> 
   <query text="ulrich">
-    <doc id="muler22491" />
     <doc id="24632" />
   </query>
   <query text="Ulrich's">
-    <doc id="muler22491" />
     <doc id="24632" />
   </query> 
   <query text="Ulrich">
-    <doc id="muler22491" />
     <doc id="24632" />
   </query>  
--->
   <query text="scholars portal">
-    <doc id="muler30631" />
-    <doc id="muler25609" />
+    <doc id="1662486" />
   </query>
   <query text="Scholars Portal">
-    <doc id="muler30631" />
-    <doc id="muler25609" />
+    <doc id="1662486" />
   </query>
   <query text="Scholars portal">
-    <doc id="muler30631" />
-    <doc id="muler25609" />
+    <doc id="1662486" />
   </query>
   <query text="scholar's portal">
-    <doc id="muler30631" />
-    <doc id="muler25609" />
+    <doc id="1662486" />
   </query>
   <query text="Scholar's Portal">
-    <doc id="muler30631" />
-    <doc id="muler25609" />
+    <doc id="1662486" />
   </query>
   <query text="Scholar's portal">
-    <doc id="muler30631" />
-    <doc id="muler25609" />
+    <doc id="1662486" />
   </query> 
   <query text="La Presse">
     <doc id="90871" />
@@ -89,12 +77,12 @@
     <doc id="90871" />
   </query>
   <query text="Journal of Management">
-    <doc id="muler6822" />
+    <doc id="184497" />
   </query>
   <query text="journal of management">
-      <doc id="muler6822" />
+      <doc id="184497" />
   </query>
   <query text="JOURNAL OF MANAGEMENT">
-    <doc id="muler6822" />
+    <doc id="184497" />
   </query>
 </elevate>
