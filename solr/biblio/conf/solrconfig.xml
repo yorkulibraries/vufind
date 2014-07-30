@@ -682,8 +682,8 @@
     </lst>
     <lst name="slave">
       <str name="enable">${slave.enable:false}</str> 
-      <str name="masterUrl">${master.url:http://localhost:8983/solr}/biblio/replication</str>
-      <str name="pollInterval">02:00:00</str>
+      <str name="masterUrl">${master.url:http://localhost:8080/solr}/biblio/replication</str>
+      <str name="pollInterval">12:00:00</str>
     </lst>
   </requestHandler>
   

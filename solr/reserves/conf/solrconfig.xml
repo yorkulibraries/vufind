@@ -579,8 +579,8 @@
     </lst>
     <lst name="slave">
       <str name="enable">${slave.enable:false}</str> 
-      <str name="masterUrl">${master.url:http://localhost:8983/solr}/reserves/replication</str>
-      <str name="pollInterval">02:00:00</str>
+      <str name="masterUrl">${master.url:http://localhost:8080/solr}/reserves/replication</str>
+      <str name="pollInterval">00:00:05</str>
     </lst>
   </requestHandler>
 
