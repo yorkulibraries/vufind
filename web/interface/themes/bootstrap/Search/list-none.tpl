@@ -61,7 +61,7 @@
         <div class="input-group">
           <input type="text" name="Ntt" id="search_toronto" value="{$lookfor}" class="form-control"/>
           <div class="input-group-btn">
-            <button type="submit" class="btn btn-default" tabindex="-1"><span class="fa fa-search"></span></button>
+            <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Search'}"><span class="fa fa-search"></span></button>
           </div>
         </div>
       </form>
@@ -78,7 +78,7 @@
         <div class="input-group">
           <input type="text" name="SEARCH" id="search_ryerson" value="{$lookfor}" class="form-control"/>
           <div class="input-group-btn">
-            <button type="submit" class="btn btn-default" tabindex="-1"><span class="fa fa-search"></span></button>
+            <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Search'}"><span class="fa fa-search"></span></button>
           </div>
         </div>
       </form>
@@ -95,7 +95,7 @@
         <div class="input-group">
           <input type="text" name="q" id="search_worldcat" value="{$lookfor}" class="form-control"/>
           <div class="input-group-btn">
-            <button type="submit" class="btn btn-default" tabindex="-1"><span class="fa fa-search"></span></button>
+            <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Search'}"><span class="fa fa-search"></span></button>
           </div>
         </div>
       </form>
@@ -114,7 +114,7 @@
         <div class="input-group">
           <input type="text" name="q" id="google_scholar" value="{$lookfor}" class="form-control"/>
           <div class="input-group-btn">
-            <button type="submit" class="btn btn-default" tabindex="-1"><span class="fa fa-search"></span></button>
+            <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Search'}"><span class="fa fa-search"></span></button>
           </div>
         </div>
       </form>
@@ -130,7 +130,7 @@
         <div class="input-group">
           <input type="text" name="q" id="google_books" value="{$lookfor}" class="form-control"/>
           <div class="input-group-btn">
-            <button type="submit" class="btn btn-default" tabindex="-1"><span class="fa fa-search"></span></button>
+            <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Search'}"><span class="fa fa-search"></span></button>
           </div>
         </div>
       </form> 
