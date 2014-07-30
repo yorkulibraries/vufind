@@ -35,15 +35,15 @@
   <h2>If you need librarian assistance with your search:</h2>
   
   <ul>
-    <li>In-person help is available at research or reference desks during <a href="http://www.library.yorku.ca/cms/library-hours/" target="_blank">reference hours</a>. </li>
-    <li> <a href="http://www.library.yorku.ca/cms/askalibrarian2/" target="_blank">Live chat and IM help</a> is available.</li>
-    <li><a href="http://www.library.yorku.ca/cms/help-with-research/askalibrarian/" target="_blank">E-mail brief research questions to us</a> and expect a response by 5 pm the next weekday.</li>
-    <li>Phone us at a <a href="http://www.library.yorku.ca/cms/help-with-research/in-person-help/" target="_blank" >Library reference desk</a>.</li>
+    <li>In-person help is available at research or reference desks during <a href="http://www.library.yorku.ca/web/hours-and-locations" target="_blank">reference hours</a>. </li>
+    <li> <a href="http://www.library.yorku.ca/web/ask-services/" target="_blank">Live chat and IM help</a> is available.</li>
+    <li><a href="http://www.library.yorku.ca/web/ask-services/e-mail-and-telephone-reference/" target="_blank">E-mail brief research questions to us</a> and expect a response by 5 pm the next weekday.</li>
+    <li>Phone us at a <a href="http://www.library.yorku.ca/web/ask-services/in-person-references/" target="_blank" >Library reference desk</a>.</li>
   </ul>
 
   <h2>RACER - Interlibrary Loan</h2>
   
-  <p><a href="http://www.library.yorku.ca/cms/resourcesharing/services-for-york-faculty-and-students/" target="_blank">Make a request through interlibrary loan</a> (if York does not own the material you require, and it is not a textbook).  Please allow sufficient time for the material to arrive.  For more information please see the Interlibrary Loan Policy and Procedures.</p>
+  <p><a href="http://www.library.yorku.ca/web/ask-services/borrow-renew-return/racer-interlibrary-loan/" target="_blank">Make a request through interlibrary loan</a> (if York does not own the material you require, and it is not a textbook).  Please allow sufficient time for the material to arrive.  For more information please see the Interlibrary Loan Policy and Procedures.</p>
 
   <h2>Try Other Catalogues</h2>
 
