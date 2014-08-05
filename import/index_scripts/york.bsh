@@ -218,7 +218,7 @@ public String getRecordId(Record record, String source, String table) {
         try {
             PreparedStatement sql = vufindDatabase.prepareStatement(
                 "INSERT INTO " + table + "(record_id, marc) " +
-                "VALUES(?, ?) ON DUPLICATE KEY UPDATE marc=VALUES(marc)"
+                "VALUES(?, ?) ON DUPLICATE KEY UPDATE record_id=record_id"
             );
             sql.setString(1, id);
             sql.setString(2, marc);
