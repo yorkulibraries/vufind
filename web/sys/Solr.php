@@ -1337,7 +1337,8 @@ class Solr implements IndexEngine
         $this->client->setURL($this->host . "/select/");
 
         $params['wt'] = 'json';
-        $params['json.nl'] = 'arrarr';
+        $params['json.nl'] = 'arrarr';        
+        $params['fl'] = '*,score';
 
         // Build query string for use with GET or POST:
         $query = array();
