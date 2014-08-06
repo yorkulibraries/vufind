@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `issns` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `issn_record_id_UNIQUE` (`number`, `record_id`)
 ) ENGINE=InnoDB;
+CREATE INDEX issns_source_index ON issns(source);
 
 CREATE TABLE IF NOT EXISTS `resolver_ids` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -46,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `resolver_ids` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `record_id_UNIQUE` (`number`, `record_id`)
 ) ENGINE=InnoDB;
+CREATE INDEX resolver_ids_source_index ON resolver_ids(source);
 
 
 CREATE TABLE IF NOT EXISTS `marc` (
