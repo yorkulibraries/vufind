@@ -1,12 +1,20 @@
 <?xml version="1.0" ?>
 <schema name="VuFind Bibliographic Index" version="1.2">
   <types>
+    <!-- Define fieldType long as it is needed by the _version_ field required by Solr 4.x -->
+    <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
     <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
     <fieldType name="textFacet" class="solr.TextField" sortMissingLast="true" omitNorms="true">
       <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <!-- strip trailing punctuation from facets: -->
         <filter class="solr.PatternReplaceFilterFactory" pattern="(?&lt;!\b[A-Z])[.\s]*$" replacement="" replace="first"/>
+      </analyzer>
+    </fieldType>
+    <fieldType name="textFacetRaw" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+      <analyzer>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <!-- this is just like textFacet but without punctuation stripping. -->
       </analyzer>
     </fieldType>
     <fieldType name="text" class="solr.TextField" positionIncrementGap="100">
@@ -85,20 +93,20 @@
         <filter class="solr.LengthFilterFactory" min="1" max="100" />
       </analyzer>
     </fieldType>
-    <fieldType name="date" class="solr.TrieDateField" omitNorms="true" precisionStep="0" positionIncrementGap="0"/>
-    <!-- A Trie based date field for faster date range queries and date faceting. -->
-    <fieldType name="tdate" class="solr.TrieDateField" omitNorms="true" precisionStep="6" positionIncrementGap="0"/>
+    <fieldType name="date" class="solr.TrieDateField" sortMissingLast="true" omitNorms="true" precisionStep="6"/>
   </types>
  <fields>
+   <!-- Required by Solr 4.x -->
+   <field name="_version_" type="long" indexed="true" stored="true"/>
    <!-- Core Fields  -->
    <field name="id" type="string" indexed="true" stored="true"/>
    <field name="fullrecord" type="string" indexed="false" stored="true"/>
    <field name="marc_error" type="string" indexed="false" stored="true" multiValued="true"/>
-   <field name="allfields" type="text" indexed="true" stored="false"/>
-   <field name="allfields_unstemmed" type="textProper" indexed="true" stored="false"/>
+   <field name="allfields" type="text" indexed="true" stored="false" multiValued="true"/>
+   <field name="allfields_unstemmed" type="textProper" indexed="true" stored="false" multiValued="true"/>
    <field name="fulltext" type="text" indexed="true" stored="false"/>
    <field name="fulltext_unstemmed" type="textProper" indexed="true" stored="false"/>
-   <field name="spelling" type="textSpell" indexed="true" stored="true"/>
+   <field name="spelling" type="textSpell" indexed="true" stored="true" multiValued="true"/>
    <field name="spellingShingle" type="textSpellShingle" indexed="true" stored="true" multiValued="true"/>
    <!-- Institutional Fields -->
    <field name="institution" type="string" indexed="true" stored="true" multiValued="true"/>
@@ -146,7 +154,8 @@
    <field name="dewey-ones" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="dewey-full" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="dewey-sort" type="string" indexed="true" stored="true" />
-   <field name="dewey-raw" type="string" indexed="true" stored="true" />
+   <field name="dewey-sort-browse" type="string" indexed="true" stored="true" multiValued="true" />
+   <field name="dewey-raw" type="string" indexed="true" stored="true" multiValued="true" />
    <field name="author2" type="textProper" indexed="true" stored="true" multiValued="true"/>
    <field name="author2Str" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="author2-role" type="string" indexed="true" stored="true" multiValued="true"/>
@@ -172,6 +181,22 @@
    <field name="era_facet" type="textFacet" indexed="true" stored="true" multiValued="true"/>
    <field name="illustrated" type="string" indexed="true" stored="true" multiValued="false"/>
    <field name="long_lat" type="textFacet" indexed="true" stored="true" multiValued="false"/>
+   <!-- Container fields (i.e. for describing journal containing an article) -->
+   <field name="container_title" type="text" indexed="true" stored="true"/>
+   <field name="container_volume" type="text" indexed="true" stored="true"/>
+   <field name="container_issue" type="text" indexed="true" stored="true"/>
+   <field name="container_start_page" type="text" indexed="true" stored="true"/>
+   <field name="container_reference" type="text" indexed="true" stored="true"/>
+   <!-- Hierarchy Fields -->
+   <field name="hierarchytype" type="string" indexed="true" stored="true" multiValued="false"/>
+   <field name="hierarchy_top_id" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="hierarchy_top_title" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="hierarchy_parent_id" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="hierarchy_parent_title" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="hierarchy_sequence" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="is_hierarchy_id" type="string" indexed="true" stored="true" multiValued="false"/>
+   <field name="is_hierarchy_title" type="string" indexed="true" stored="true" multiValued="false"/>
+   <field name="hierarchy_browse" type="textFacetRaw" indexed="true" stored="false" multiValued="true"/>
    <!-- Used for loading correct record driver -->
    <field name="recordtype" type="string" indexed="false" stored="true"/>
    <!-- Tracking fields to keep track of oldest and most recent index times -->
@@ -180,8 +205,6 @@
    <!-- Dynamic fields for customization without schema modification -->
    <dynamicField name="*_date" type="date" indexed="true" stored="true"/>
    <dynamicField name="*_date_mv" type="date" indexed="true" stored="true" multiValued="true"/>
-   <dynamicField name="*_tdate" type="date" indexed="true" stored="true"/>
-   <dynamicField name="*_tdate_mv" type="date" indexed="true" stored="true" multiValued="true"/>
    <dynamicField name="*_isn" type="isn" indexed="true" stored="true"/>
    <dynamicField name="*_isn_mv" type="isn" indexed="true" stored="true" multiValued="true"/>
    <dynamicField name="*_str" type="string" indexed="true" stored="true"/>
@@ -218,6 +241,9 @@
  <copyField source="topic"    dest="topic_browse"/>
  <copyField source="author"    dest="author_browse"/>
  <copyField source="author2"    dest="author_browse"/>
+ <!-- CopyFields for All Fields -->
+ <copyField source="format"    dest="allfields"/>
+ <copyField source="format"    dest="allfields_unstemmed"/>
  <!-- Default Boolean Operator -->
  <solrQueryParser defaultOperator="AND"/>
 </schema>
