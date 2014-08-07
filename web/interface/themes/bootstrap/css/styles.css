@@ -134,8 +134,9 @@ a.online-access:focus {
 .result-list .result-container .result-details dl.checkout-details dd {
   font-size: 100%;
 }
-.result-list .result-container .result-details dl.checkout-details .due-date {
+.result-list .result-container .result-details .due-date {
   font-size: 150%;
+  font-weight: bold;
 }
 .result-summary {
   margin-top: 15px;
