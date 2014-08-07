@@ -38,32 +38,14 @@
         </dd>
       {/if}
     </dl>
-
-    <dl class="dl-horizontal checkout-details">
-      {if !empty($ils_details.recall_duedate)}
-        <dt>{translate text='Original Due Date'}:</dt>
-        <dd>{$ils_details.original_duedate|escape}</dd>
-        <dt class="due-date">{translate text='Due'}:</dt>
-        <dd class="due-date">
-          {$ils_details.recall_duedate|escape}
-        </dd>
-      {else}
-        {if !empty($ils_details.duedate)}
-          <dt class="due-date">{translate text='Due'}:</dt>
-          <dd class="due-date">
-            {$ils_details.duedate|escape} 
-            {if $ils_details.dueTime} 
-              {$ils_details.dueTime|escape}
-            {/if}
-          </dd>
-        {/if}
-      {/if}
     
-      {if $ils_details.number_of_renewals}
-        <dt>{translate text='Renewals'}:</dt>
-        <dd>{$ils_details.number_of_renewals}</dd>
+    {if !empty($ils_details.recall_duedate)}
+      <p class="due-date">{translate text='Due'}: {$ils_details.recall_duedate|escape}</p>
+    {else}
+      {if !empty($ils_details.duedate)}
+        <p class="due-date">{translate text='Due'}: {$ils_details.duedate|escape} {if $ils_details.dueTime}{$ils_details.dueTime|escape}{/if}</p>
       {/if}
-    </dl>
+    {/if}
     
     {if !empty($ils_details.recall_duedate)}
     <div class="alert alert-danger">
@@ -76,6 +58,18 @@
       <p>{translate text='overdue_item_warning'}</p>
     </div>
     {/if}
+
+    <dl class="dl-horizontal checkout-details">
+      {if !empty($ils_details.recall_duedate) && !empty($ils_details.original_duedate})}
+        <dt>{translate text='Previous Due Date'}:</dt>
+        <dd>{$ils_details.original_duedate|escape}</dd>
+      {/if}
+    
+      {if $ils_details.number_of_renewals}
+        <dt>{translate text='Renewals'}:</dt>
+        <dd>{$ils_details.number_of_renewals}</dd>
+      {/if}
+    </dl>
     
     {if $renewResult.$renew_details}
       {assign var="itemRenewResult" value=$renewResult.$renew_details}
