@@ -60,7 +60,7 @@
     {/if}
 
     <dl class="dl-horizontal checkout-details">
-      {if !empty($ils_details.recall_duedate) && !empty($ils_details.original_duedate})}
+      {if !empty($ils_details.recall_duedate) && !empty($ils_details.original_duedate)}
         <dt>{translate text='Previous Due Date'}:</dt>
         <dd>{$ils_details.original_duedate|escape}</dd>
       {/if}
