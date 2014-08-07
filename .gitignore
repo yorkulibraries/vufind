@@ -4,7 +4,9 @@
 solr/*/index/
 solr/*/spellchecker/
 solr/*/spellShingle/
+solr/*/tlog/
 solr/jetty/logs/*
+solr/jetty/work/
 openurl_cache/*
 log/*
 web/interface/cache/*
