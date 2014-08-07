@@ -25,6 +25,10 @@
         <dt class="sr-only">{translate text='Publication info'}:</dt>
         <dd class="publication-info">{$summPublicationInfo|trim:' *,:/'|escape}</dd>
       {/if}
+      {if $ils_details.callnum}
+        <dt class="sr-only">{translate text='Call Number'}:</dt>
+        <dd class="callnum-info">{$ils_details.callnum|escape}</dd>
+      {/if}
       {if !empty($summFormats)}
         <dt class="sr-only">{translate text='Format'}:</dt>
         <dd class="format-info">
@@ -36,28 +40,21 @@
     </dl>
 
     <dl class="dl-horizontal checkout-details">
-      {if $ils_details.callnum}
-        <dt>{translate text='Call Number'}:</dt>
-        <dd>{$ils_details.callnum|escape}</dd>
-      {/if}
-
       {if !empty($ils_details.recall_duedate)}
         <dt>{translate text='Original Due Date'}:</dt>
         <dd>{$ils_details.original_duedate|escape}</dd>
-        <dt>{translate text='Recall Due Date'}:</dt>
-        <dd>
+        <dt class="due-date">{translate text='Due'}:</dt>
+        <dd class="due-date">
           {$ils_details.recall_duedate|escape}
-          <span class="label label-info">{translate text='This Item Has Been Recalled'}</span>
         </dd>
       {else}
         {if !empty($ils_details.duedate)}
-          <dt>{translate text='Due'}:</dt>
-          <dd>
+          <dt class="due-date">{translate text='Due'}:</dt>
+          <dd class="due-date">
             {$ils_details.duedate|escape} 
             {if $ils_details.dueTime} 
               {$ils_details.dueTime|escape}
             {/if}
-            {if $ils_details.overdue == 'Y'}<span class="label label-danger">{translate text='This Item is Overdue'}</span>{/if}
           </dd>
         {/if}
       {/if}
@@ -68,13 +65,13 @@
       {/if}
     </dl>
     
-    {if !empty($resource.ils_details.recall_duedate)}
+    {if !empty($ils_details.recall_duedate)}
     <div class="alert alert-danger">
       <p>{translate text='recalled_item_warning'}</p>
     </div>
     {/if}
     
-    {if $resource.ils_details.overdue == 'Y'}
+    {if $ils_details.overdue == 'Y'}
     <div class="alert alert-danger">
       <p>{translate text='overdue_item_warning'}</p>
     </div>

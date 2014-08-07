@@ -127,15 +127,15 @@ a.online-access:focus {
 .result-list .result-container .result-details dl dd .format {
   font-weight: bold;
 }
-.result-list .result-container .result-details dl.checkout-details {
-  margin-left: -3px;
-}
 .result-list .result-container .result-details dl.checkout-details dt {
   width: 90px;
   margin-right: 10px;
 }
 .result-list .result-container .result-details dl.checkout-details dd {
   font-size: 100%;
+}
+.result-list .result-container .result-details dl.checkout-details .due-date {
+  font-size: 150%;
 }
 .result-summary {
   margin-top: 15px;
