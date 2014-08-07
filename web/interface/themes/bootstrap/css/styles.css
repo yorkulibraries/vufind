@@ -128,7 +128,7 @@ a.online-access:focus {
   font-weight: bold;
 }
 .result-list .result-container .result-details dl.checkout-details dt {
-  width: 90px;
+  width: 135px;
   margin-right: 10px;
 }
 .result-list .result-container .result-details dl.checkout-details dd {
@@ -137,6 +137,11 @@ a.online-access:focus {
 .result-list .result-container .result-details .due-date {
   font-size: 150%;
   font-weight: bold;
+  color: #444;
+}
+.result-list .result-container .result-details .due-date .previous-due-date {
+  font-size: 14px;
+  font-weight: normal;
 }
 .result-summary {
   margin-top: 15px;

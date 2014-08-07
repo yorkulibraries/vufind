@@ -40,14 +40,6 @@
     </dl>
     
     {if !empty($ils_details.recall_duedate)}
-      <p class="due-date">{translate text='Due'}: {$ils_details.recall_duedate|escape}</p>
-    {else}
-      {if !empty($ils_details.duedate)}
-        <p class="due-date">{translate text='Due'}: {$ils_details.duedate|escape} {if $ils_details.dueTime}{$ils_details.dueTime|escape}{/if}</p>
-      {/if}
-    {/if}
-    
-    {if !empty($ils_details.recall_duedate)}
     <div class="alert alert-danger">
       <p>{translate text='recalled_item_warning'}</p>
     </div>
@@ -58,28 +50,36 @@
       <p>{translate text='overdue_item_warning'}</p>
     </div>
     {/if}
-
-    <dl class="dl-horizontal checkout-details">
-      {if !empty($ils_details.recall_duedate) && !empty($ils_details.original_duedate)}
-        <dt>{translate text='Previous Due Date'}:</dt>
-        <dd>{$ils_details.original_duedate|escape}</dd>
-      {/if}
-    
-      {if $ils_details.number_of_renewals}
-        <dt>{translate text='Renewals'}:</dt>
-        <dd>{$ils_details.number_of_renewals}</dd>
-      {/if}
-    </dl>
     
     {if $renewResult.$renew_details}
       {assign var="itemRenewResult" value=$renewResult.$renew_details}
       <div class="alert alert-{if $itemRenewResult.success}success{else}danger{/if} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <p>
-          <strong>{if $itemRenewResult.success}{translate text='Success'}{else}{translate text='Error'}{/if}!</strong>
-          {$itemRenewResult.sysMessage|translate|escape}.
+          <strong>{if $itemRenewResult.success}{translate text='Item renewed'}{else}{$itemRenewResult.sysMessage|translate|escape}{/if}.</strong>
         </p>
       </div>
     {/if}
+    
+    <p class="due-date">
+    {if !empty($ils_details.recall_duedate)}
+      {translate text='Due'}: {$ils_details.recall_duedate|escape}
+      {if !empty($ils_details.original_duedate)}
+        <span class="previous-due-date">({translate text='Original'}: {$ils_details.original_duedate|escape})</span>
+      {/if}
+    {else}
+      {if !empty($ils_details.duedate)}
+        {translate text='Due'}: {$ils_details.duedate|escape} {if $ils_details.dueTime}{$ils_details.dueTime|escape}{/if}
+        {if $itemRenewResult.success}
+          <span class="previous-due-date">({translate text='Original'}: {$ils_details.original_duedate|escape})</span>
+        {/if}
+      {/if}
+    {/if}
+    </p>
+
+      {if $ils_details.number_of_renewals}
+        <p class="renewals">{translate text='Renewals'}: {$ils_details.number_of_renewals}</p>
+      {/if}
+
   </div>
 </li>
