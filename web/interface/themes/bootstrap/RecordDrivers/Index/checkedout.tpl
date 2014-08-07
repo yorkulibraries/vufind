@@ -77,9 +77,9 @@
     {/if}
     </p>
 
-      {if $ils_details.number_of_renewals}
-        <p class="renewals">{translate text='Renewals'}: {$ils_details.number_of_renewals}</p>
-      {/if}
+    {if $ils_details.number_of_renewals}
+      <p class="renewals">{translate text='Renewals'}: {$ils_details.number_of_renewals}</p>
+    {/if}
 
   </div>
 </li>
