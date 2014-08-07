@@ -225,7 +225,7 @@ public String getRecordId(Record record, String source, String table) {
             sql.executeUpdate();
             sql.close();
         } catch (Exception e) {
-            logger.error(e.getCause());
+            logger.error(e.getMessage());
         }
     }
     return id;
