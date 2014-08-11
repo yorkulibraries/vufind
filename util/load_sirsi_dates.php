@@ -1,6 +1,6 @@
 <?php
 /**
- * Command-line tool to load all ISSNs/ISBNs into a database table.
+ * Command-line tool to load all SIRSI's "date catalogued" into change_tracker table.
  *
  * PHP version 5
  *
