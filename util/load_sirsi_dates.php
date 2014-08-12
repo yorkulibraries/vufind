@@ -32,7 +32,6 @@ ini_set('memory_limit', '512M');
 
 $configArray = readConfig();
 $core = (isset($argv[1])) ? $argv[1] : 'biblio';
-$field = (isset($argv[2])) ? $argv[2] : 'first_indexed';
 
 ConnectionManager::connectToDatabase();
 while($line = fgets(STDIN)) {
@@ -42,7 +41,7 @@ while($line = fgets(STDIN)) {
     if (strlen($date) != 8) {
         die('Expecting date to be 8-digit YYYYMMDD string, but got: ' . $date);
     }
-    $sql = "insert into change_tracker (id, $field, core) values ('{$id}', '{$date}', '{$core}') on duplicate key update id=id";
+    $sql = "insert into change_tracker (id, first_indexed, last_indexed, core) values ('{$id}', '{$date}', '{$date}', '{$core}') on duplicate key update id=id";
     $result = mysql_query($sql);
     if (!$result) {
         die(mysql_error() . "\n" . $sql);
