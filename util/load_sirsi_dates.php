@@ -41,7 +41,7 @@ while($line = fgets(STDIN)) {
     if (strlen($date) != 8) {
         die('Expecting date to be 8-digit YYYYMMDD string, but got: ' . $date);
     }
-    $sql = "insert into change_tracker (id, first_indexed, last_indexed, core) values ('{$id}', '{$date}', '{$date}', '{$core}') on duplicate key update id=id";
+    $sql = "insert into change_tracker (id, first_indexed, last_indexed, last_record_change, core) values ('{$id}', '{$date}', '{$date}', '{$date}', '{$core}') on duplicate key update id=id";
     $result = mysql_query($sql);
     if (!$result) {
         die(mysql_error() . "\n" . $sql);
