@@ -3,6 +3,9 @@ $.ajaxSetup ({
     cache: false
 });
 $(document).ready(function() {
+    // disable repeat submissions when enter is pressed and held down
+    preventRepeatedEnters();    
+    
 	// check availability
 	checkAvailability();
 	
@@ -36,7 +39,6 @@ $(document).ready(function() {
     // setup more/less buttons
     activateMoreLessButtons('.container');
 });
-
 
 // handle logged out event
 $(document).on('loggedout.vufind', function(e, params) {
@@ -73,6 +75,23 @@ $(document).on('commentdeleted.vufind', function(e, params) {
 $(document).on('requestplaced.vufind', function(e, params) {
     console.log('requestplaced');
 });
+
+// press and hold Enter key causes repeated submissions, prevent it.
+function preventRepeatedEnters() {
+    // don't submit the form when enter key is pressed (and possibly held down)
+    $('input').keypress(function(event) {
+        if (event.which == 13) {
+            event.preventDefault();
+        }
+    });
+    // submit the form when the enter key is released instead
+    $('input').keyup(function(event) {
+        if (event.which == 13) {
+            event.preventDefault();
+            $(this).closest('form').submit();
+        }
+    });
+}
 
 function setupUploadCoverForm() {
     $('form.coverupload').fileupload({
