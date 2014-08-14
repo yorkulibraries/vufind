@@ -303,6 +303,7 @@ AllFields:
     - allfields
   DismaxParams:
     - [pf, title_txtP^100]
+    - [bf, recip(ms(NOW,first_indexed),3.16e-11,1,1)^1.0]
   QueryFields:
     - 
       - [OR, 50]

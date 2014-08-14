@@ -25,6 +25,10 @@
         <dt class="sr-only">{translate text='Publication info'}:</dt>
         <dd class="publication-info">{$summPublicationInfo|trim:' *,:/'|escape}</dd>
       {/if}
+      {if $ils_details.callnum}
+        <dt class="sr-only">{translate text='Call Number'}:</dt>
+        <dd class="callnum-info">{$ils_details.callnum|escape}</dd>
+      {/if}
       {if !empty($summFormats)}
         <dt class="sr-only">{translate text='Format'}:</dt>
         <dd class="format-info">
@@ -34,47 +38,14 @@
         </dd>
       {/if}
     </dl>
-
-    <dl class="dl-horizontal checkout-details">
-      {if $ils_details.callnum}
-        <dt>{translate text='Call Number'}:</dt>
-        <dd>{$ils_details.callnum|escape}</dd>
-      {/if}
-
-      {if !empty($ils_details.recall_duedate)}
-        <dt>{translate text='Original Due Date'}:</dt>
-        <dd>{$ils_details.original_duedate|escape}</dd>
-        <dt>{translate text='Recall Due Date'}:</dt>
-        <dd>
-          {$ils_details.recall_duedate|escape}
-          <span class="label label-info">{translate text='This Item Has Been Recalled'}</span>
-        </dd>
-      {else}
-        {if !empty($ils_details.duedate)}
-          <dt>{translate text='Due'}:</dt>
-          <dd>
-            {$ils_details.duedate|escape} 
-            {if $ils_details.dueTime} 
-              {$ils_details.dueTime|escape}
-            {/if}
-            {if $ils_details.overdue == 'Y'}<span class="label label-danger">{translate text='This Item is Overdue'}</span>{/if}
-          </dd>
-        {/if}
-      {/if}
     
-      {if $ils_details.number_of_renewals}
-        <dt>{translate text='Renewals'}:</dt>
-        <dd>{$ils_details.number_of_renewals}</dd>
-      {/if}
-    </dl>
-    
-    {if !empty($resource.ils_details.recall_duedate)}
+    {if !empty($ils_details.recall_duedate)}
     <div class="alert alert-danger">
       <p>{translate text='recalled_item_warning'}</p>
     </div>
     {/if}
     
-    {if $resource.ils_details.overdue == 'Y'}
+    {if $ils_details.overdue == 'Y'}
     <div class="alert alert-danger">
       <p>{translate text='overdue_item_warning'}</p>
     </div>
@@ -85,10 +56,30 @@
       <div class="alert alert-{if $itemRenewResult.success}success{else}danger{/if} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <p>
-          <strong>{if $itemRenewResult.success}{translate text='Success'}{else}{translate text='Error'}{/if}!</strong>
-          {$itemRenewResult.sysMessage|translate|escape}.
+          <strong>{if $itemRenewResult.success}{translate text='Item renewed'}{else}{$itemRenewResult.sysMessage|translate|escape}{/if}.</strong>
         </p>
       </div>
     {/if}
+    
+    <p class="due-date">
+    {if !empty($ils_details.recall_duedate)}
+      {translate text='Due'}: {$ils_details.recall_duedate|escape}
+      {if !empty($ils_details.original_duedate)}
+        <span class="previous-due-date">({translate text='Original'}: {$ils_details.original_duedate|escape})</span>
+      {/if}
+    {else}
+      {if !empty($ils_details.duedate)}
+        {translate text='Due'}: {$ils_details.duedate|escape} {if $ils_details.dueTime}{$ils_details.dueTime|escape}{/if}
+        {if $itemRenewResult.success}
+          <span class="previous-due-date">({translate text='Original'}: {$ils_details.original_duedate|escape})</span>
+        {/if}
+      {/if}
+    {/if}
+    </p>
+
+    {if $ils_details.number_of_renewals}
+      <p class="renewals">{translate text='Renewals'}: {$ils_details.number_of_renewals}</p>
+    {/if}
+
   </div>
 </li>

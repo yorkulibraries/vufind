@@ -15,13 +15,14 @@
     </div>
   {/if}    
 
+  <h1>{translate text='Checkouts'}: {$transList|@count}</h1>
   {if is_array($transList)}
     <form role="form" action="{$path}/MyResearch/CheckedOut" method="post">
       <div class="print-hidden pull-right">
         <div class="btn-group renew-selected-items">
           <input class="btn btn-default btn-sm renew-button" type="submit" name="renewSelected" value="{translate text='renew_selected'}" />
         </div>
-        <div class="btn-group renew-all-items print-hidden">
+        <div class="btn-group renew-all-items">
           <input class="btn btn-default btn-sm renew-button" type="submit" name="renewAll" value="{translate text='renew_all'}" />
         </div>
       </div>

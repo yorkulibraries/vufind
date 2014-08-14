@@ -19,12 +19,12 @@ if (typeof window.VuFind_Carousel_createCarousel == 'undefined') {
     jqPlaceHolder.append(html);
 
     var slider = jQuery('ul', jqPlaceHolder).bxSlider({
-        slideWidth: 120,
+        slideWidth: 128,
         slideMargin: 10,
         minSlides: count,
         maxSlides: count,
         moveSlides: 1,
-        auto: true,
+        auto: false,
         pager: false,
         pause: 2000,
         autoHover: true,

@@ -102,7 +102,7 @@ function sanitizeParameters()
     }
     // sanitize ISBN
     $_GET['isn'] = isset($_GET['isn'])
-        ? preg_replace('/[^0-9xX]/', '', $_GET['isn']) : '';
+        ? preg_replace('/[^0-9xX,]/', '', $_GET['isn']) : '';
 
     // sanitize contenttype
     // file names correspond to Summon Content Types with spaces
@@ -610,7 +610,7 @@ function fetchFromId($id, $size)
 
 function scaleImage($file) {
     $size = $_GET['size'];
-    $sizes = array('small'=>'120', 'medium'=>'140','large'=>'160');
+    $sizes = array('small'=>'128', 'medium'=>'140','large'=>'160');
     if (function_exists('imagecreatefromjpeg') 
         && ($image = @imagecreatefromjpeg($file))) {
         $fullSize = getimagesize($file);
@@ -633,15 +633,6 @@ function generateImage($id, $size) {
     $solr = ConnectionManager::connectToIndex();
     if (!($record = $solr->getRecord($id))) {
         return false;
-    }
-    
-    // if not a supported format, then ignore it
-    if (!(in_array('Book', $record['format']) 
-            || in_array('eBook', $record['format'])
-            || in_array('Journal/Periodical', $record['format'])
-            || in_array('eJournal', $record['format']))
-    ) {
-        //return false;
     }
     
     $generatedImage = 'images/covers/local/original/' . $id . '.jpg';    
