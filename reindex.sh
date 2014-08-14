@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# print date/time
-date
-
 . ~/.bash_profile
 
 if [ -z "$VUFIND_HOME" ]
@@ -52,12 +49,3 @@ grep -A2 -B2 -i severe /tmp/import-muler.log
 curl -s -S http://localhost:$JETTY_PORT/solr/$SOLRCORE/update/ -H "Content-Type: text/xml" --data-binary '<delete><query>format:Delete</query></delete>' 1>/dev/null
 curl -s -S http://localhost:$JETTY_PORT/solr/$SOLRCORE/update/ -H "Content-Type: text/xml" --data-binary '<delete><query>title:"**REQUIRED FIELD**"</query></delete>' 1>/dev/null
 curl -s -S http://localhost:$JETTY_PORT/solr/$SOLRCORE/update/ -H "Content-Type: text/xml" --data-binary '<commit/>' 1>/dev/null
-
-# shutdown and restart
-/usr/local/vufind/vufind.sh stop
-sleep 10
-/usr/local/vufind/vufind.sh start
-sleep 10
-
-# print date/time
-date
