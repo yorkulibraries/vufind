@@ -16,10 +16,6 @@
 #####################################################
 # handle the -p option to override properties file
 #####################################################
-if [ -z "$PROPERTIES_FILE" ]
-then
-  PROPERTIES_FILE="import.properties"
-fi
 while getopts ":p:" Option
 do
   case $Option in
@@ -53,9 +49,9 @@ fi
 # -XX:+UseParallelGC
 # -XX:+AggressiveOpts
 ##################################################
-INDEX_OPTIONS='-Xms512m -Xmx8192m'
-if [ ! -z "$SOLRMARC_MEM_ARGS" ]; then
-  INDEX_OPTIONS=$SOLRMARC_MEM_ARGS
+if [ -z "$INDEX_OPTIONS" ]
+then
+  INDEX_OPTIONS='-Xms512m -Xmx512m -DentityExpansionLimit=0'
 fi
 
 
@@ -69,26 +65,29 @@ fi
 
 
 ##################################################
-# Set SOLR_HOME
+# Set VUFIND_HOME
 ##################################################
-if [ -z "$SOLR_HOME" ]
+if [ -z "$VUFIND_HOME" ]
 then
-  if [ -z "$VUFIND_HOME" ]
-  then
-    echo "You need to set the VUFIND_HOME environmental variable before running this script."
-    exit 1
-  else
-    SOLR_HOME="$VUFIND_HOME/solr"
-  fi
+  VUFIND_HOME="/usr/local/vufind2"
+fi
+
+
+##################################################
+# Use SOLR_HOME if set
+##################################################
+if [ ! -z "$SOLR_HOME" ]
+then
+  EXTRA_SOLRMARC_SETTINGS="$EXTRA_SOLRMARC_SETTINGS -Dsolr.path=$SOLR_HOME -Dsolr.solr.home=$SOLR_HOME -Dsolrmarc.solr.war.path=$SOLR_HOME/jetty/webapps/solr.war"
 fi
 
 
 ##################################################
 # Set SOLRMARC_HOME
 ##################################################
-if [ -z "$SOLRMARC_HOME" ]
+if [ ! -z "$SOLRMARC_HOME" ]
 then
-  SOLRMARC_HOME="$VUFIND_HOME/import"
+  EXTRA_SOLRMARC_SETTINGS="$EXTRA_SOLRMARC_SETTINGS -Dsolrmarc.path=$VUFIND_HOME/import"
 fi
 
 
@@ -107,17 +106,27 @@ fi
 ##################################################
 if [ -z "$PROPERTIES_FILE" ]
 then
-  PROPERTIES_FILE="$VUFIND_HOME/import/import.properties"
+  if [ -f "$VUFIND_LOCAL_DIR/import/import.properties" ]
+  then
+    PROPERTIES_FILE="$VUFIND_LOCAL_DIR/import/import.properties"
+  else
+    PROPERTIES_FILE="$VUFIND_HOME/import/import.properties"
+  fi
 fi
 
 ##################################################
 # Set Command Options
 ##################################################
 JAR_FILE="$VUFIND_HOME/import/SolrMarc.jar"
-#SOLRWARLOCATIONORJARDIR="$VUFIND_HOME/solr/jetty/webapps/solr.war"
-#TEST_SOLR_JAR_DEF=-Done-jar.class.path=$SOLRWARLOCATIONORJARDIR
-#SOLR_JAR_DEF=`echo $TEST_SOLR_JAR_DEF | sed -e"s|-Done-jar.class.path=.*|-Done-jar.class.path=$SOLRWARLOCATIONORJARDIR|"`
-SOLR_JAR_DEF="-Dsolrmarc.solr.war.path=$VUFIND_HOME/solr/jetty/webapps/solr.war"
+
+#####################################################
+# Verify that JAR_FILE exists
+#####################################################
+if [ ! -f "$JAR_FILE" ]
+then
+  echo "Could not find $JAR_FILE.  Make sure VUFIND_HOME is set correctly."
+  exit 1
+fi
 
 #####################################################
 # Normalize target file path to absolute path
@@ -130,12 +139,10 @@ MARC_FILE=`basename $1`
 # Execute Importer
 #####################################################
 
-pushd $SOLR_HOME
-RUN_CMD="$JAVA $INDEX_OPTIONS $SOLR_JAR_DEF -Dsolr.core.name=$SOLRCORE -Dsolrmarc.path=$SOLRMARC_HOME -Dsolr.path=$SOLR_HOME -Dsolr.solr.home=$SOLR_HOME $EXTRA_SOLRMARC_SETTINGS -jar $JAR_FILE $PROPERTIES_FILE $MARC_PATH/$MARC_FILE"
-#echo "Now Importing $1 ..."
-#echo $RUN_CMD
-$RUN_CMD
-
-popd
+RUN_CMD="$JAVA $INDEX_OPTIONS -Duser.timezone=UTC -Dsolr.core.name=$SOLRCORE $EXTRA_SOLRMARC_SETTINGS -jar $JAR_FILE $PROPERTIES_FILE $MARC_PATH/$MARC_FILE"
+echo "Now Importing $1 ..."
+# solrmarc writes log messages to stderr, write RUN_CMD to the same place
+echo "`date '+%h %d, %H:%M:%S'` $RUN_CMD" >&2
+exec $RUN_CMD
 
 exit 0
