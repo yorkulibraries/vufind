@@ -197,6 +197,9 @@ class SearchObject_York extends SearchObject_Solr {
         // assign list of "multiselect" facets to the templates
         $interface->assign('multiSelectFacets', $this->multiSelectFacets);
         
+        // set default facet sort order explicitly, required for Solr 4.x
+        $this->setFacetSortOrder('count');
+        
         // Call the standard initialization routine in the parent:
         return parent::init();
     } // End init()
