@@ -23,10 +23,6 @@ import java.util.regex.Pattern;
 import java.io.*;
 import java.sql.*;
 
-// get a logger
-import org.apache.log4j.Logger;
-final Logger logger = Logger.getLogger(org.solrmarc.index.VuFindIndexer.class.getName());
-
 // get the VUFIND_HOME environment variable
 final String vufindHome = System.getenv("VUFIND_HOME");
 
@@ -50,7 +46,7 @@ Map shelvingKeysMap = null;
  */
 private void dieWithError(String msg)
 {
-    logger.error(msg);
+    indexer.logger.error(msg);
     throw new SolrMarcIndexerException(SolrMarcIndexerException.EXIT, msg);
 }
 
@@ -95,7 +91,7 @@ private void connectToDatabase()
         }
 
         // Connect to the database:
-        logger.info("Connecting to db...");
+        indexer.logger.info("Connecting to db...");
         vufindDatabase = DriverManager.getConnection("jdbc:" + dsn, username, password);
     } catch (Throwable e) {
         dieWithError("Unable to connect to VuFind database");
@@ -106,7 +102,7 @@ public boolean loadISSNs() {
     if (mulerISSNs == null && sfxISSNs == null && sirsiISSNs == null) {
         connectToDatabase();
         
-        logger.info("Loading ISSNs from db...");
+        indexer.logger.info("Loading ISSNs from db...");
         
         // Statement to get ISSNs in DB
         PreparedStatement stmt = vufindDatabase.prepareStatement(
@@ -121,7 +117,7 @@ public boolean loadISSNs() {
             mulerISSNs.add(rs.getString(1));    
         }
         rs.close();
-        logger.info("Loaded " + mulerISSNs.size() + " ISSNs from MULER");
+        indexer.logger.info("Loaded " + mulerISSNs.size() + " ISSNs from MULER");
         
         // load sfx ISSNs
         sfxISSNs = new TreeSet();
@@ -131,7 +127,7 @@ public boolean loadISSNs() {
             sfxISSNs.add(rs.getString(1));    
         }
         rs.close();
-        logger.info("Loaded " + sfxISSNs.size() + " ISSNs from SFX");
+        indexer.logger.info("Loaded " + sfxISSNs.size() + " ISSNs from SFX");
         
         // load sirsi ISSNs
         sirsiISSNs = new TreeSet();
@@ -141,7 +137,7 @@ public boolean loadISSNs() {
             sirsiISSNs.add(rs.getString(1));    
         }
         rs.close();
-        logger.info("Loaded " + sirsiISSNs.size() + " ISSNs from SIRSI");
+        indexer.logger.info("Loaded " + sirsiISSNs.size() + " ISSNs from SIRSI");
         
         stmt.close();
     }
@@ -152,7 +148,7 @@ public boolean loadResolverIDs() {
     if (resolverIDsInSirsi == null) {
         connectToDatabase();
         
-        logger.info("Loading Resolver IDs from db...");
+        indexer.logger.info("Loading Resolver IDs from db...");
         
         // Statement to get IDs in DB
         PreparedStatement stmt = vufindDatabase.prepareStatement(
@@ -167,7 +163,7 @@ public boolean loadResolverIDs() {
             resolverIDsInSirsi.add(rs.getString(1));    
         }
         rs.close();
-        logger.info("Loaded " + resolverIDsInSirsi.size() + " Resolver IDs from SIRSI");
+        indexer.logger.info("Loaded " + resolverIDsInSirsi.size() + " Resolver IDs from SIRSI");
         
         stmt.close();
     }
@@ -197,7 +193,7 @@ public void loadShelvingKeys() {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        logger.info("Loaded " + shelvingKeysMap.size() + " shelving keys from " + tmpFile.getAbsolutePath());
+        indexer.logger.info("Loaded " + shelvingKeysMap.size() + " shelving keys from " + tmpFile.getAbsolutePath());
     }
 }
 
@@ -212,8 +208,8 @@ public String getRecordId(Record record, String source, String table) {
     }
     
     if (table != null && !table.trim().equals("")) {
-        logger.info("Saving MARC record " +  id + " to table " + table);
         connectToDatabase();
+        //indexer.logger.debug("Saving MARC record " +  id + " to table " + table);
         String marc = writeRaw(record);
         try {
             PreparedStatement sql = vufindDatabase.prepareStatement(
@@ -225,7 +221,7 @@ public String getRecordId(Record record, String source, String table) {
             sql.executeUpdate();
             sql.close();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            indexer.logger.error(e.getMessage());
         }
     }
     return id;
@@ -246,7 +242,7 @@ public String writeRaw(Record record)
     catch (UnsupportedEncodingException e)
     {
         // e.printStackTrace();
-        logger.error(e.getCause());
+        indexer.logger.error(e.getCause());
     }
     return result;
 }
@@ -797,11 +793,11 @@ public String getSuppressed(Record record, String source) {
                 String id = null;
                 if (url.indexOf("http://www.library.yorku.ca/eresolver/?id=") != -1) {
                     id = url.substring("http://www.library.yorku.ca/eresolver/?id=".length());
-                    logger.debug(url + " " + id);
+                    indexer.logger.debug(url + " " + id);
                 }
                 if (url.indexOf("http://www.library.yorku.ca/e/resolver/id/") != -1) {
                     id = url.substring("http://www.library.yorku.ca/e/resolver/id/".length());
-                    logger.debug(url + " " + id);
+                    indexer.logger.debug(url + " " + id);
                 }
                 if (resolverIDsInSirsi.contains(id)) {
                     return "resolver_id_exists_in_sirsi";
@@ -856,7 +852,7 @@ public Set getLocation(Record record) {
             Set issns = getISSNs(record);
             for (String issn : issns) {
                 if (sfxISSNs.contains(issn) || mulerISSNs.contains(issn)) {
-                    logger.info(issn + " is in MULER or SFX");
+                    indexer.logger.info(issn + " is in MULER or SFX");
                     locations.add("INTERNET");
                     break;
                 }
