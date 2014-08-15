@@ -201,6 +201,7 @@ class SearchObject_SolrReserves extends SearchObject_Base
         $facetSet = array();
         if (!empty($this->facetConfig)) {
             $facetSet['limit'] = $this->_facetLimit;
+            $facetSet['sort'] = 'count';
             foreach ($this->facetConfig as $facetField => $facetName) {
                 $facetSet['field'][] = $facetField;
             }
