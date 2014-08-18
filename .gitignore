@@ -1,6 +1,8 @@
 # Specific locations within VuFind #
 ####################################
 .settings/
+.metadata/
+import/build
 solr/*/index/
 solr/*/spellchecker/
 solr/*/spellShingle/
@@ -53,8 +55,6 @@ web/images/covers/local/small/*
 # IDE Files #
 #################
 .buildpath
-.project
-.classpath
 org.eclipse.*.prefs
 *.iml
 

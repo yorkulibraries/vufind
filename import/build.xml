@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_york_jar" name="Create Runnable Jar for Project import with libraries in sub-folder">
+	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
+	<!--ANT 1.7 is required                                        -->
+	<target name="create_york_jar">
+		<unzip src="SolrMarc.jar" dest="build">
+			<patternset>
+				<include name="**/*.jar" />
+			</patternset>
+		</unzip>
+		<copy todir="lib">
+			<fileset dir="build/lib">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="build/main">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+
+		<path id="dep.runtime">
+			<fileset dir="./lib">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir=".">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<property name="dep_cp" value="${toString:dep.runtime}" />
+
+		<manifestclasspath property="manifest_cp" jarfile="york.jar">
+			<classpath refid="dep.runtime" />
+		</manifestclasspath>
+
+		<jar destfile="york.jar">
+			<manifest>
+				<attribute name="Main-Class" value="org.solrmarc.index.YorkIndexer" />
+				<attribute name="Class-Path" value="${manifest_cp}" />
+			</manifest>
+			<fileset dir="build" />
+		</jar>
+	</target>
+</project>
