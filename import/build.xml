@@ -3,6 +3,21 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
+<unzip src="SolrMarc.jar" dest="build">
+  <patternset>
+    <include name="**/log4j*.jar" />
+    <include name="**/marc4j*.jar" />
+    <include name="**/MarcImporter*.jar" />
+  </patternset>
+</unzip>
+<copy todir="lib">
+    <fileset dir="build/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+<fileset dir="build/main">
+      <include name="**/*.jar"/>
+    </fileset>
+  </copy>
         <jar destfile="york.jar">
             <manifest>
                 <attribute name="Main-Class" value="ca.yorku.library.vufind.Util"/>
