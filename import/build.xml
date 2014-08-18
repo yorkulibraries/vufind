@@ -21,20 +21,17 @@
 			<fileset dir="./lib">
 				<include name="**/*.jar" />
 			</fileset>
-			<fileset dir=".">
-				<include name="*.jar" />
-			</fileset>
 		</path>
 		<property name="dep_cp" value="${toString:dep.runtime}" />
 
-		<manifestclasspath property="manifest_cp" jarfile="york.jar">
+		<manifestclasspath property="manifest_cp" jarfile="YorkIndexer.jar">
 			<classpath refid="dep.runtime" />
 		</manifestclasspath>
-
-		<jar destfile="york.jar">
+    
+		<jar destfile="YorkIndexer.jar">
 			<manifest>
 				<attribute name="Main-Class" value="org.solrmarc.index.YorkIndexer" />
-				<attribute name="Class-Path" value="${manifest_cp}" />
+				<attribute name="Class-Path" value="VuFindIndexer.jar ${manifest_cp}" />
 			</manifest>
 			<fileset dir="build" />
 		</jar>

@@ -2,10 +2,17 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/apache-solr-solrj-3.5-PATCHED.jar"/>
+	<classpathentry kind="lib" path="lib/bsh-2.0b4.jar"/>
+	<classpathentry kind="lib" path="lib/embedded_direct_solr_server.jar"/>
+	<classpathentry kind="lib" path="lib/ini4j-0.5.2-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.5.jar"/>
 	<classpathentry kind="lib" path="lib/marc4j-2.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/MarcImporter.jar"/>
-	<classpathentry kind="lib" path="lib/ini4j-0.5.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-5.0.8-bin.jar"/>
+	<classpathentry kind="lib" path="lib/normalizer_solrmarc.jar"/>
+	<classpathentry kind="lib" path="lib/postgresql-9.1-902.jdbc4.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api-6.0.18.jar"/>
 	<classpathentry kind="lib" path="VuFindIndexer.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
