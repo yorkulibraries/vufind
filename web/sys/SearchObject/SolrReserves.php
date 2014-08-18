@@ -61,7 +61,7 @@ class SearchObject_SolrReserves extends SearchObject_Base
     private $_index = null;
 
     // Field List
-    private $_fields = 'score';
+    private $_fields = '*,score';
 
     /**
      * Constructor. Initialise some details about the server

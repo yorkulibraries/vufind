@@ -27,7 +27,7 @@ chown -R vslave:vufind vufind
 
 export VUFIND_HOME=/usr/local/vufind
 export PATH=$JAVA_HOME/bin:$PATH
-export SOLRMARC_MEM_ARGS='-Xmx2048m'
+export INDEX_OPTIONS="-Xms512m -Xmx4g -DentityExpansionLimit=0"
 export JETTY_CONSOLE=$VUFIND_HOME/solr/jetty/logs/console.log
 export JAVA_OPTIONS="-server -Dmaster.enable=true"
 export JETTY_PORT=8080
@@ -35,7 +35,8 @@ export JETTY_PID=/tmp/$USER.pid
 export SOLRCORE=biblio
 
 - Add the following to the /home/vslave/.bash_profile for the slave OS user (vslave)
-
+export JAVA_HOME=~/java
+export VUFIND_HOME=~/vufind
 export JETTY_CONSOLE=$VUFIND_HOME/solr/jetty/logs/console.log
 export JAVA_OPTIONS="-server -Xmx8192m -Dslave.enable=true -Dmaster.url=http://localhost:8080/solr"
 export JETTY_PORT=8081
