@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project import with libraries in sub-folder">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="york.jar">
+            <manifest>
+                <attribute name="Main-Class" value="ca.yorku.library.vufind.Util"/>
+                <attribute name="Class-Path" value=". lib/log4j-1.2.5.jar lib/marc4j-2.6.0.jar"/>
+            </manifest>
+            <fileset dir="build"/>
+        </jar>
+    </target>
+</project>

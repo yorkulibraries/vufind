@@ -2,6 +2,7 @@
 ####################################
 .settings/
 .metadata/
+import/build
 solr/*/index/
 solr/*/spellchecker/
 solr/*/spellShingle/
