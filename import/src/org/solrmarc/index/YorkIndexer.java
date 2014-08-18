@@ -10,10 +10,10 @@ public class YorkIndexer extends VuFindIndexer {
 			final String[] propertyDirs) throws FileNotFoundException,
 			IOException, ParseException {
 		super(propertiesMapFile, propertyDirs);
+		logger.debug("Constructor: YorkIndexer");
 	}
 	
 	public static void main(String[] args) {
-		logger.info("Hello, world");
 	}
 
 }
