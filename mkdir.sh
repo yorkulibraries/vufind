@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$VUFIND_HOME"="" ]; then
-  VUFIND_HOME=/usr/local/vufind
+  VUFIND_HOME=.
 fi
 
 if [ ! -d $VUFIND_HOME/solr/jetty/logs ]; then
