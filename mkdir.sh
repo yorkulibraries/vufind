@@ -1,8 +1,6 @@
 #!/bin/sh
 
-if [ "$VUFIND_HOME"="" ]; then
-  VUFIND_HOME=/usr/local/vufind
-fi
+VUFIND_HOME=.
 
 if [ ! -d $VUFIND_HOME/solr/jetty/logs ]; then
   echo mkdir $VUFIND_HOME/solr/jetty/logs does not exist, creating it...
