@@ -466,6 +466,8 @@ case "$ACTION" in
         echo "$RUN_CMD"
         nohup sh -c "exec $RUN_CMD >>$JETTY_CONSOLE 2>&1" > /dev/null &
         echo $! > $JETTY_PID
+        sleep 10
+        curl -s -S http://localhost:$JETTY_PORT/solr/biblio/replication?command=disablepoll &>/dev/null
         echo "VuFind running pid="`cat $JETTY_PID`
         ;;
 
