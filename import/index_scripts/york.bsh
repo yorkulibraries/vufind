@@ -31,81 +31,19 @@ import org.ini4j.Ini;
 final Ini configIni = new Ini();
 configIni.load(new File(vufindHome + "/web/conf/config.ini"));
 
-// Connect to VuFind database
-Connection vufindDatabase = null;
-
 Set sfxISSNs = null;
 Set mulerISSNs = null;
 Set sirsiISSNs = null;
 Set resolverIDsInSirsi = null;
 Map shelvingKeysMap = null;
 
-/**
- * Log an error message and throw a fatal exception.
- * @param msg
- */
-private void dieWithError(String msg)
-{
-    indexer.logger.error(msg);
-    throw new SolrMarcIndexerException(SolrMarcIndexerException.EXIT, msg);
-}
-
-/**
- * Connect to the VuFind database if we do not already have a connection.
- */
-private void connectToDatabase()
-{   
-    // Already connected?  Do nothing further!
-    if (vufindDatabase != null) {
-        return;
-    }
-
-    String dsn = configIni.get("Database", "database");
-
-    try {
-        // Parse key settings from the PHP-style DSN:
-        String username = "";
-        String password = "";
-        String classname = "invalid";
-        String prefix = "invalid";
-        if (dsn.substring(0, 8).equals("mysql://")) {
-            classname = "com.mysql.jdbc.Driver";
-            prefix = "mysql";
-        } else if (dsn.substring(0, 8).equals("pgsql://")) {
-            classname = "org.postgresql.Driver";
-            prefix = "postgresql";
-        }
-
-        Class.forName(classname).newInstance();
-        String[] parts = dsn.split("://");
-        if (parts.length > 1) {
-            parts = parts[1].split("@");
-            if (parts.length > 1) {
-                dsn = prefix + "://" + parts[1];
-                parts = parts[0].split(":");
-                username = parts[0];
-                if (parts.length > 1) {
-                    password = parts[1];
-                }
-            }
-        }
-
-        // Connect to the database:
-        indexer.logger.info("Connecting to db...");
-        vufindDatabase = DriverManager.getConnection("jdbc:" + dsn, username, password);
-    } catch (Throwable e) {
-        dieWithError("Unable to connect to VuFind database");
-    }
-}
-
 public boolean loadISSNs() {
     if (mulerISSNs == null && sfxISSNs == null && sirsiISSNs == null) {
-        connectToDatabase();
         
         indexer.logger.info("Loading ISSNs from db...");
         
         // Statement to get ISSNs in DB
-        PreparedStatement stmt = vufindDatabase.prepareStatement(
+        PreparedStatement stmt = indexer.vufindDatabase.prepareStatement(
             "select distinct number from issns where source=?"
         );
         
@@ -146,12 +84,11 @@ public boolean loadISSNs() {
 
 public boolean loadResolverIDs() {
     if (resolverIDsInSirsi == null) {
-        connectToDatabase();
         
         indexer.logger.info("Loading Resolver IDs from db...");
         
         // Statement to get IDs in DB
-        PreparedStatement stmt = vufindDatabase.prepareStatement(
+        PreparedStatement stmt = indexer.vufindDatabase.prepareStatement(
             "select distinct number from resolver_ids where source=?"
         );
         
@@ -208,11 +145,10 @@ public String getRecordId(Record record, String source, String table) {
     }
     
     if (table != null && !table.trim().equals("")) {
-        connectToDatabase();
         //indexer.logger.debug("Saving MARC record " +  id + " to table " + table);
         String marc = writeRaw(record);
         try {
-            PreparedStatement sql = vufindDatabase.prepareStatement(
+            PreparedStatement sql = indexer.vufindDatabase.prepareStatement(
                 "INSERT INTO " + table + "(record_id, marc) " +
                 "VALUES(?, ?) ON DUPLICATE KEY UPDATE record_id=record_id"
             );
