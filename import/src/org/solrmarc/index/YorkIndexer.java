@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.text.ParseException;
 
 public class YorkIndexer extends VuFindIndexer {
-
+    // Initialize logging category
+    static Logger logger = Logger.getLogger(YorkIndexer.class.getName());
+    
 	public YorkIndexer(final String propertiesMapFile,
 			final String[] propertyDirs) throws FileNotFoundException,
 			IOException, ParseException {
