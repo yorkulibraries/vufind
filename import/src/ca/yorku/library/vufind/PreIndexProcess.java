@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.marc4j.MarcReader;
@@ -90,7 +90,7 @@ public class PreIndexProcess implements Runnable {
 
 	private void saveResolverIDs(Record record) throws SQLException {
 		if (recordId != null) {
-			Set<String> urls = Utils.getFieldValues(record, "856u:856a");
+			List<String> urls = Utils.getFieldValues(record, "856u:856a");
 			for (String url : urls) {
 				for (String prefix : resolverPrefixes) {
 					if (url.startsWith(prefix)) {
@@ -107,7 +107,7 @@ public class PreIndexProcess implements Runnable {
 
 	private void saveISSNs(Record record) throws SQLException {
 		if (recordId != null) {
-			Set<String> issns = Utils.getFieldValues(record, issnFieldSpecs);
+			List<String> issns = Utils.getFieldValues(record, issnFieldSpecs);
 			for (String issn : issns) {
 				issn = issn.toUpperCase().replaceAll("[^0-9X]", "");
 				logger.debug("ISSN number: " + issn + " for record ID: " + recordId);

@@ -9,10 +9,9 @@ import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.ini4j.Ini;
@@ -206,8 +205,8 @@ public class Utils {
 		return retVal == null ? null : sanitizeConfigSetting(retVal);
 	}
 
-	public static Set<String> getFieldValues(Record record, String fieldSpecs) {
-		Set<String> results = new TreeSet<String>();
+	public static List<String> getFieldValues(Record record, String fieldSpecs) {
+		List<String> results = new ArrayList<String>();
 		String[] specs = fieldSpecs.split(":");
 		for (String spec : specs) {
 			if (spec.length() == 4) {
@@ -227,29 +226,14 @@ public class Utils {
 	}
 	
 	public static String getFirstFieldValue(Record record, String fieldSpecs) {
-		String value = null;
-		String[] specs = fieldSpecs.split(":");
-		for (String spec : specs) {
-			if (spec.length() == 4) {
-				String tag = spec.substring(0, 3);
-				char code = spec.charAt(3);
-				List<VariableField> fields = record.getVariableFields(tag);
-				for (VariableField f : fields) {
-					DataField field = (DataField) f;
-					Subfield subfield = field.getSubfield(code);
-					if (subfield != null) {
-						return subfield.getData().trim();
-					}
-				}
-			}
-		}
-		return value;
+		List<String> values = getFieldValues(record, fieldSpecs);
+		return values.isEmpty() ? null : values.get(0);
 	}
 	
 	public static String getRecordId(Record record, String source) {
 		String id = null;
 	    if ("sirsi".equals(source)) {
-	    	Set<String> vals = getFieldValues(record, "035a");
+	    	List<String> vals = getFieldValues(record, "035a");
 	    	for (String val : vals) {
 	    		if (val.startsWith(sirsiCatkeyPrefix)) {
 	    			id = val.substring(sirsiCatkeyPrefix.length());
