@@ -23,176 +23,15 @@ import java.util.regex.Pattern;
 import java.io.*;
 import java.sql.*;
 
-// get the VUFIND_HOME environment variable
-final String vufindHome = System.getenv("VUFIND_HOME");
-
-// load config.ini
-import org.ini4j.Ini;
-final Ini configIni = new Ini();
-configIni.load(new File(vufindHome + "/web/conf/config.ini"));
-
-Set sfxISSNs = null;
-Set mulerISSNs = null;
-Set sirsiISSNs = null;
-Set resolverIDsInSirsi = null;
-Map shelvingKeysMap = null;
-
-public boolean loadISSNs() {
-    if (mulerISSNs == null && sfxISSNs == null && sirsiISSNs == null) {
-        
-        indexer.logger.info("Loading ISSNs from db...");
-        
-        // Statement to get ISSNs in DB
-        PreparedStatement stmt = indexer.vufindDatabase.prepareStatement(
-            "select distinct number from issns where source=?"
-        );
-        
-        // load muler ISSNs
-        mulerISSNs = new TreeSet();
-        stmt.setString(1, "muler");
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            mulerISSNs.add(rs.getString(1));    
-        }
-        rs.close();
-        indexer.logger.info("Loaded " + mulerISSNs.size() + " ISSNs from MULER");
-        
-        // load sfx ISSNs
-        sfxISSNs = new TreeSet();
-        stmt.setString(1, "sfx");
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            sfxISSNs.add(rs.getString(1));    
-        }
-        rs.close();
-        indexer.logger.info("Loaded " + sfxISSNs.size() + " ISSNs from SFX");
-        
-        // load sirsi ISSNs
-        sirsiISSNs = new TreeSet();
-        stmt.setString(1, "sirsi");
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            sirsiISSNs.add(rs.getString(1));    
-        }
-        rs.close();
-        indexer.logger.info("Loaded " + sirsiISSNs.size() + " ISSNs from SIRSI");
-        
-        stmt.close();
-    }
-    return true;
-}
-
-public boolean loadResolverIDs() {
-    if (resolverIDsInSirsi == null) {
-        
-        indexer.logger.info("Loading Resolver IDs from db...");
-        
-        // Statement to get IDs in DB
-        PreparedStatement stmt = indexer.vufindDatabase.prepareStatement(
-            "select distinct number from resolver_ids where source=?"
-        );
-        
-        // load 
-        resolverIDsInSirsi = new TreeSet();
-        stmt.setString(1, "sirsi");
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            resolverIDsInSirsi.add(rs.getString(1));    
-        }
-        rs.close();
-        indexer.logger.info("Loaded " + resolverIDsInSirsi.size() + " Resolver IDs from SIRSI");
-        
-        stmt.close();
-    }
-    return true;
-}
-
-public void loadShelvingKeys() {
-    if (shelvingKeysMap == null) {
-        shelvingKeysMap = new HashMap();
-        File tmpFile = new File("/tmp/callnums.txt");
-        try {
-            if (tmpFile.exists() && tmpFile.length() > 0) {
-                BufferedReader reader = new BufferedReader(new FileReader(tmpFile));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split("\\|");
-                    if (parts.length > 0) {
-                        String key = parts[0].replaceAll("[^a-zA-Z0-9. ]", "").toUpperCase().trim();
-                        String value = key;
-                        if (parts.length > 1) {
-                            value = parts[1].trim();
-                        }
-                        shelvingKeysMap.put(key, value);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        indexer.logger.info("Loaded " + shelvingKeysMap.size() + " shelving keys from " + tmpFile.getAbsolutePath());
-    }
-}
-
-public String getRecordId(Record record, String source, String table) {
-    String id = null;
-    if ("sirsi".equalsIgnoreCase(source)) {
-        id = indexer.getFirstFieldVal(record, "035a").substring(9);
-    } else if ("sfx".equalsIgnoreCase(source)) {
-        id = indexer.getFirstFieldVal(record, "090a");
-    } else if ("muler".equalsIgnoreCase(source)) {
-        id = indexer.getFirstFieldVal(record, "035a");
-    }
-    
-    if (table != null && !table.trim().equals("")) {
-        //indexer.logger.debug("Saving MARC record " +  id + " to table " + table);
-        String marc = writeRaw(record);
-        try {
-            PreparedStatement sql = indexer.vufindDatabase.prepareStatement(
-                "INSERT INTO " + table + "(record_id, marc) " +
-                "VALUES(?, ?) ON DUPLICATE KEY UPDATE record_id=record_id"
-            );
-            sql.setString(1, id);
-            sql.setString(2, marc);
-            sql.executeUpdate();
-            sql.close();
-        } catch (Exception e) {
-            indexer.logger.error(e.getMessage());
-        }
-    }
-    return id;
-}
-
-public String writeRaw(Record record)
-{
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    MarcWriter writer = new MarcStreamWriter(out, "UTF-8", true);
-    writer.write(record);
-    writer.close();
-
-    String result = null;
-    try
-    {
-        result = out.toString("UTF-8");
-    }
-    catch (UnsupportedEncodingException e)
-    {
-        // e.printStackTrace();
-        indexer.logger.error(e.getCause());
-    }
-    return result;
-}
-
 /**
  * Get the call number that is sortable. 
  */
 public String getCallNumberSortable(Record record) {
-    loadShelvingKeys();
     
     // get all LC call numbers and try to find first matching shelving key
     Set callnums = getLCCallNumbersFrom999(record);
     for (String callnum : callnums) {
-        String key = shelvingKeysMap.get(callnum);
+        String key = indexer.shelvingKeysMap.get(callnum);
         if (key != null && !key.trim().equals("")) {
             return key;
         }
@@ -712,18 +551,16 @@ public Set getCleanedISSNs(Record record) {
 public String getSuppressed(Record record, String source) {
     if ("muler".equals(source)) {
         Set issns = getCleanedISSNs(record);
-        if (loadISSNs()) {
             for (String issn : issns) {
-                if (sfxISSNs.contains(issn)) {
+                if (indexer.sfxISSNs.contains(issn)) {
                     // suppress MULER records that exist in SFX 
                     return "issn_exists_in_sfx";
                 }
-                if (sirsiISSNs.contains(issn)) {
+                if (indexer.sirsiISSNs.contains(issn)) {
                     return "issn_exists_in_sirsi_but_not_in_sfx";
                 }
             }
-        }
-        if (loadResolverIDs()) {
+
             Set urls = indexer.getFullTextUrls(record);
             for (String url : urls) {
                 String id = null;
@@ -735,11 +572,10 @@ public String getSuppressed(Record record, String source) {
                     id = url.substring("http://www.library.yorku.ca/e/resolver/id/".length());
                     indexer.logger.debug(url + " " + id);
                 }
-                if (resolverIDsInSirsi.contains(id)) {
+                if (indexer.resolverIDsInSirsi.contains(id)) {
                     return "resolver_id_exists_in_sirsi";
                 }
             }
-        }
     }
     if ("sfx".equals(source)) {
         Set issns = getCleanedISSNs(record);
@@ -747,14 +583,12 @@ public String getSuppressed(Record record, String source) {
             // suppress SFX records with no ISSN
             return "no_issn";
         }
-        if (loadISSNs()) {
             for (String issn : issns) {
-                if (sirsiISSNs.contains(issn)) {
+                if (indexer.sirsiISSNs.contains(issn)) {
                     // suppress SFX records that exist in SIRSI 
                     return "issn_exists_in_sirsi";
                 }
             }
-        }
     }
     return "no";
 }
@@ -784,16 +618,15 @@ public Set getLocation(Record record) {
     }
     if (!locations.contains("INTERNET")) {
         // check if issn in SFX or MULER
-        if (loadISSNs()) {
             Set issns = getISSNs(record);
             for (String issn : issns) {
-                if (sfxISSNs.contains(issn) || mulerISSNs.contains(issn)) {
+                if (indexer.sfxISSNs.contains(issn) || indexer.mulerISSNs.contains(issn)) {
                     indexer.logger.info(issn + " is in MULER or SFX");
                     locations.add("INTERNET");
                     break;
                 }
             }
-        }
+
         Set urls = getFullTextUrls(record);
         if (!urls.isEmpty()) {
             locations.add("INTERNET");

@@ -30,8 +30,8 @@
     
 		<jar destfile="YorkIndexer.jar">
 			<manifest>
-				<attribute name="Main-Class" value="org.solrmarc.index.YorkIndexer" />
-				<attribute name="Class-Path" value="VuFindIndexer.jar ${manifest_cp}" />
+				<attribute name="Main-Class" value="ca.yorku.library.vufind.PreIndexProcess" />
+				<attribute name="Class-Path" value=". VuFindIndexer.jar ${manifest_cp}" />
 			</manifest>
 			<fileset dir="build" />
 		</jar>
