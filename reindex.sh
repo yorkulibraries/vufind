@@ -10,7 +10,7 @@ fi
 cd $VUFIND_HOME || exit
 
 # run preprocessing
-java -jar import/YorkIndexer.jar
+java $INDEX_OPTIONS -jar import/YorkIndexer.jar
 
 # import catalog marc files
 [ -f /tmp/catalog.mrc ] && /usr/local/vufind/import-marc.sh /tmp/catalog.mrc &>/tmp/import-catalog.log
