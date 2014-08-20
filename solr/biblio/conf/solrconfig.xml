@@ -125,11 +125,12 @@
          maxDocs - number of updates since last commit is greater than this
          maxTime - oldest uncommited update (in ms) is this long ago
     -->
+    <!--
      <autoCommit>
        <maxTime>15000</maxTime>
        <openSearcher>false</openSearcher>
      </autoCommit>
-
+    -->
     <!-- The RunExecutableListener executes an external command.
          exe - the name of the executable to run
          dir - dir to use as the current working directory. default="."
