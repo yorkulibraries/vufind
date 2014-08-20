@@ -1,11 +1,9 @@
 package ca.yorku.library.vufind;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,8 +14,6 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
-import org.marc4j.MarcStreamWriter;
-import org.marc4j.MarcWriter;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
@@ -232,7 +228,7 @@ public class Utils {
 
     public static String getRecordId(Record record, String source) {
         String id = null;
-        if ("sirsi".equals(source)) {
+        if ("catalog".equals(source)) {
             List<String> vals = getFieldValues(record, "035a");
             for (String val : vals) {
                 if (val.startsWith(sirsiCatkeyPrefix)) {
@@ -246,20 +242,5 @@ public class Utils {
             id = getFirstFieldValue(record, "035a");
         }
         return id;
-    }
-
-    public static String writeRaw(Record record) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        MarcWriter writer = new MarcStreamWriter(out, "UTF-8", true);
-        writer.write(record);
-        writer.close();
-
-        String result = null;
-        try {
-            result = out.toString("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage());
-        }
-        return result;
     }
 }
