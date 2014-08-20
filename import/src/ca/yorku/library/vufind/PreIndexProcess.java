@@ -149,6 +149,17 @@ public class PreIndexProcess implements Runnable {
     @Override
     public void run() {
         logger.info("Processing source=" + source + ", file=" + file);
+        if (source.equals("muler") || source.equals("sfx")) {
+            try {
+                logger.info("Deleting ISSNs from: " + source);
+                PreparedStatement stmt = db.prepareStatement("DELETE FROM issns WHERE source=?");
+                stmt.setString(1, source);
+                stmt.execute();
+                stmt.close();
+            } catch (SQLException e) {
+                logger.error(e.getMessage());
+            }
+        }
         int count = 0;
         try {
             File f = new File(file);
