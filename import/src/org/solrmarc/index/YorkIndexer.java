@@ -727,7 +727,7 @@ public class YorkIndexer extends VuFindIndexer {
 
         // load sirsi ISSNs
         sirsiISSNs = new TreeSet<String>();
-        stmt.setString(1, "sirsi");
+        stmt.setString(1, "catalog");
         rs = stmt.executeQuery();
         while (rs.next()) {
             sirsiISSNs.add(rs.getString(1));
