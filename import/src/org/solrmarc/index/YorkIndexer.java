@@ -25,45 +25,39 @@ import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 import org.marc4j.marc.VariableField;
-import org.solrmarc.tools.SolrMarcIndexerException;
 
 import ca.yorku.library.vufind.Utils;
 
 public class YorkIndexer extends VuFindIndexer {
     // make these properties public so bsh code can access them
-    public Connection vufindDatabase = null;
-    public Set<String> sfxISSNs = null;
-    public Set<String> mulerISSNs = null;
-    public Set<String> sirsiISSNs = null;
-    public Set<String> resolverIDsInSirsi = null;
-    public Map<String, String> shelvingKeysMap = null;
+    public static Connection vufindDatabase = null;
+    public static Set<String> sfxISSNs = null;
+    public static Set<String> mulerISSNs = null;
+    public static Set<String> sirsiISSNs = null;
+    public static Set<String> resolverIDsInSirsi = null;
+    public static Map<String, String> shelvingKeysMap = null;
 
     // Initialize logging category
     static Logger logger = Logger.getLogger(YorkIndexer.class.getName());
 
-    public YorkIndexer(final String propertiesMapFile,
-            final String[] propertyDirs) throws FileNotFoundException,
-            IOException, ParseException {
-        super(propertiesMapFile, propertyDirs);
-        logger.debug("Constructor: YorkIndexer");
-
-        String dsn = Utils.getConfigSetting("config.ini", "Database",
-                "database");
+    // Initialize the class
+    static {
+        logger.debug("Start of YorkIndexer static initialization block.");
         try {
-            vufindDatabase = Utils.connectToDatabase(dsn);
-        } catch (Exception e) {
-            throw new SolrMarcIndexerException(SolrMarcIndexerException.EXIT,
-                    e.getMessage());
-        }
-
-        try {
+            vufindDatabase = Utils.connectToDatabase();
             loadISSNs();
             loadResolverIDs();
             loadShelvingKeys();
         } catch (Exception e) {
-            throw new SolrMarcIndexerException(SolrMarcIndexerException.EXIT,
-                    e.getMessage());
+           throw new RuntimeException(e);
         }
+        logger.debug("End of YorkIndexer static initialization block.");
+    }
+    
+    public YorkIndexer(final String propertiesMapFile,
+            final String[] propertyDirs) throws FileNotFoundException,
+            IOException, ParseException {
+        super(propertiesMapFile, propertyDirs);
     }
 
     public String getRecordId(Record record, String source) {
@@ -704,7 +698,7 @@ public class YorkIndexer extends VuFindIndexer {
         return formats;
     }
 
-    private void loadISSNs() throws SQLException {
+    private static void loadISSNs() throws SQLException {
         logger.info("Loading ISSNs from db...");
 
         // Statement to get ISSNs in DB
@@ -744,7 +738,7 @@ public class YorkIndexer extends VuFindIndexer {
         stmt.close();
     }
 
-    private void loadResolverIDs() throws SQLException {
+    private static void loadResolverIDs() throws SQLException {
         logger.info("Loading Resolver IDs from db...");
 
         // Statement to get IDs in DB
@@ -765,7 +759,7 @@ public class YorkIndexer extends VuFindIndexer {
         stmt.close();
     }
 
-    private void loadShelvingKeys() {
+    private static void loadShelvingKeys() {
         shelvingKeysMap = new HashMap<String, String>();
         File tmpFile = new File("/tmp/callnums.txt");
         try {

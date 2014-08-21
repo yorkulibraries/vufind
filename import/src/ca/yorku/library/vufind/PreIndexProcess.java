@@ -2,22 +2,17 @@ package ca.yorku.library.vufind;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
-import org.marc4j.MarcStreamWriter;
-import org.marc4j.MarcWriter;
 import org.marc4j.MarcXmlReader;
 import org.marc4j.marc.Record;
 
@@ -28,13 +23,10 @@ public class PreIndexProcess implements Runnable {
     private Connection db = null;
     private PreparedStatement saveResolverIdStmt = null;
     private PreparedStatement saveISSNStmt = null;
+    private PreparedStatement deleteISSNStmt = null;
 
     // Initialize logging category
     static Logger logger = Logger.getLogger(PreIndexProcess.class.getName());
-
-    static String catalog = "/tmp/catalog.mrc";
-    static String muler = "/tmp/muler.mrc";
-    static String sfx = "/tmp/sfx.xml";
     
     static String[] resolverPrefixes = {
             "http://www.library.yorku.ca/eresolver/?id=",
@@ -48,27 +40,85 @@ public class PreIndexProcess implements Runnable {
     static String insertISSNSql = "insert into issns (record_id, number, source) "
             + "values (?, ?, ?) on duplicate key update id=id";
     
-    static String databaseDSN = null;
+    static String deleteISSNSql = "DELETE FROM issns WHERE source=?";
     
-    static int recordsPerFile = 0;
+    static String catalog = "/tmp/catalog.mrc";
+    static String muler = "/tmp/muler.mrc";
+    static String sfx = "/tmp/sfx.xml";
     
-    public PreIndexProcess(String file, String source) {
+    static int threadCount = 4;
+    
+    public PreIndexProcess(String file, String source) throws SQLException {
         this.file = file;
         this.source = source;
+        this.db = Utils.connectToDatabase();
+        saveResolverIdStmt = db.prepareStatement(insertResolverIdSql);
+        saveISSNStmt = db.prepareStatement(insertISSNSql);
+        deleteISSNStmt = db.prepareStatement(deleteISSNSql);
+    }
+    
+    public static void main(String[] args) {
+        // make sure we got all the files before doing anything
+        if (!(new File(catalog)).exists() || !(new File(sfx)).exists()
+                || !(new File(muler)).exists()) {
+            logger.error("Missing required MARC file(s). Abort!");
+            System.exit(1);
+        }
+
+        // get thread count from system properties
+        threadCount = Integer.valueOf(System.getProperty("thread_count", "4"));
+
+        // split the catalog file
+        logger.info("Splitting " + catalog + " into " + threadCount + " pieces.");
+        String[] catalogPieces = null;
+        try {
+            catalogPieces = Utils.splitMarcFile(catalog, threadCount);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            System.exit(1);
+        }
         
         try {
-            db = Utils.connectToDatabase(databaseDSN);
-            saveResolverIdStmt = db.prepareStatement(insertResolverIdSql);
-            saveISSNStmt = db.prepareStatement(insertISSNSql);
+            // run the pre-index process for each catalog piece in its own thread
+            List<Thread> threads = new ArrayList<Thread>(); 
+            for (String catalogPiece : catalogPieces) {
+                Thread t = new Thread(new PreIndexProcess(catalogPiece, "catalog"));
+                t.start();
+                threads.add(t);
+            }
+            
+            // wait for all catalog threads to complete
+            for (Thread t : threads) {
+                t.join();
+            }
+            
+            // run the pre-index process for the MULER piece
+            Thread t = new Thread(new PreIndexProcess(muler, "muler"));
+            t.start();
+            
+            // run the pre-index process for the SFX piece
+            t = new Thread(new PreIndexProcess(sfx, "sfx")); 
+            t.start();  
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.error(e.getMessage());
+            System.exit(1);
         }
+        
+
     }
     
     @Override
     public void run() {
         logger.info("Processing source=" + source + ", file=" + file);
         long startTime = (new java.util.Date()).getTime();
+        
+        if (!source.equals("catalog")) {
+            try {
+                deleteISSNs(source);
+            } catch (SQLException e) {
+                logger.error(e.getMessage());
+            }
+        }
         
         int count = 0;
         try {
@@ -85,105 +135,10 @@ public class PreIndexProcess implements Runnable {
             logger.error(e.getMessage());
         }
         
-        try {
-            db.close();
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-        }
-        
         long endTime = (new java.util.Date()).getTime();
         long duration = (endTime - startTime) / 1000;
         logger.info("Processed " + count + " records. source=" + source
                 + ", file=" + file + " in " + duration + " seconds");
-    }
-
-    public static void main(String[] args) throws Exception {
-        // make sure we got all the files before doing anything
-        if (!(new File(catalog)).exists() || !(new File(sfx)).exists() || !(new File(muler)).exists()) {
-            logger.error("Missing required MARC file(s). Abort!");
-            System.exit(1);
-        }
-            
-        databaseDSN = Utils.getConfigSetting("config.ini", "Database", "database");
-        recordsPerFile = Integer.valueOf(System.getProperty("records_per_file", "750000"));
-        
-        if (recordsPerFile > 0) {
-            Set<String> files = splitMarcFile(catalog, "catalog"); 
-            for (String file : files) {
-                Thread t = new Thread(new PreIndexProcess(file, "catalog"));
-                t.start();
-            }
-        }
-        
-        deleteISSNs("muler");
-        deleteISSNs("sfx");
-
-        Thread t2 = new Thread(new PreIndexProcess(muler, "muler"));
-        t2.start();
-
-        Thread t3 = new Thread(new PreIndexProcess(sfx, "sfx"));
-        t3.start();
-    }
-    
-    private static Set<String> splitMarcFile(String file, String source) {
-        logger.info("About to split MARC file into files of " + recordsPerFile + " records each. source=" + source + ", file=" + file);
-        long startTime = (new java.util.Date()).getTime();
-        Set<String> files = new TreeSet<String>();
-        int count = 0;
-        try {
-            File f = new File(file);
-            if (f.exists()) {
-                InputStream in = new FileInputStream(f);
-                MarcReader reader = (source.equals("sfx")) ? new MarcXmlReader(
-                        in) : new MarcStreamReader(in);
-                while (reader.hasNext()) {
-                    count++;
-                    Record record = reader.next();
-                    files.add(saveMARCToFile(record, count, source));
-                }
-                in.close();
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
-        
-        long endTime = (new java.util.Date()).getTime();
-        long duration = (endTime - startTime) / 1000;
-        logger.info("Finished splitting " + count + " records. source=" + source
-                + ", file=" + file + " in " + duration + " seconds");
-        return files;
-    }
-    
-    private static String saveMARCToFile(Record record, int recnum, String source) throws IOException {
-        // split original catalog.mrc into 4 files catalog0..3.mrc 
-        // each of recordsPerFile records with the last file
-        // (catalog3.mrc) having all remaining records
-        int filenum = recnum / recordsPerFile;
-        if (filenum > 3) {
-            filenum = 3;
-        }
-        String extension = "sfx".equals(source) ? ".xml" : ".mrc";
-        File file = new File("/tmp/" + source + filenum + extension);
-        OutputStream out = new FileOutputStream(file, true);
-        MarcWriter writer = new MarcStreamWriter(out);
-        writer.write(record);
-        writer.close();
-        
-        return file.getAbsolutePath();
-    }
-    
-    private static void deleteISSNs(String source) {
-        logger.info("Deleting ISSNs from " + source);
-        try {
-            Connection db = Utils.connectToDatabase(databaseDSN);
-            PreparedStatement stmt = db.prepareStatement("DELETE FROM issns WHERE source=?");
-            stmt.setString(1, "sfx");
-            stmt.execute();
-            stmt.close();
-            db.close();
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
     }
 
     private void process(Record record, int recnum) throws SQLException, IOException {
@@ -239,5 +194,11 @@ public class PreIndexProcess implements Runnable {
         saveISSNStmt.setString(2, issn);
         saveISSNStmt.setString(3, source);
         saveISSNStmt.execute();
+    }
+    
+    private void deleteISSNs(String source) throws SQLException {
+        logger.info("Deleting ISSNs from " + source);
+        deleteISSNStmt.setString(1, source);
+        deleteISSNStmt.execute();
     }
 }

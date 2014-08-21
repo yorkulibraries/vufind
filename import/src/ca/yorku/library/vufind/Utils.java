@@ -1,9 +1,12 @@
 package ca.yorku.library.vufind;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,6 +17,10 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
+import org.marc4j.MarcReader;
+import org.marc4j.MarcStreamReader;
+import org.marc4j.MarcStreamWriter;
+import org.marc4j.MarcWriter;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
@@ -25,6 +32,8 @@ public class Utils {
 
     static String sirsiCatkeyPrefix = "(Sirsi) a";
 
+    private static Connection database;
+    
     /**
      * Load an ini file.
      * 
@@ -40,6 +49,18 @@ public class Utils {
         ini.load(new FileReader(findConfigFile(filename)));
         return ini;
     }
+    
+    public static synchronized Connection connectToDatabase() {
+        if (database == null) {
+            try {
+                String dsn = Utils.getConfigSetting("config.ini", "Database", "database");
+                database = Utils.connectToDatabase(dsn);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return database;
+    }
 
     /**
      * Connect to the VuFind database.
@@ -52,6 +73,8 @@ public class Utils {
     public static Connection connectToDatabase(String dsn)
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException, SQLException {
+        logger.info("Connecting to database.");
+        
         // Parse key settings from the PHP-style DSN:
         String username = "";
         String password = "";
@@ -242,5 +265,39 @@ public class Utils {
             id = getFirstFieldValue(record, "035a");
         }
         return id;
+    }
+    
+    public static String[] splitMarcFile(String file, int pieces) throws IOException {        
+        // extract directory and original file name
+        File original = new File(file);
+        String dir = original.getParentFile().getAbsolutePath();
+        String filename = original.getName();
+        
+        // build array of file names and corresponding MarcWriter to write to
+        String[] files = new String[pieces];
+        MarcWriter[] writers = new MarcStreamWriter[pieces];
+        for (int i = 0; i < pieces; i++) {
+            files[i] = dir + File.separator + i + filename;
+            writers[i] = new MarcStreamWriter(new FileOutputStream(files[i]));
+        }
+        
+        // read and write records to files
+        int count = 0;
+        InputStream in = new FileInputStream(file);
+        MarcReader reader = new MarcStreamReader(in);
+        while (reader.hasNext()) {
+            int i = count % pieces;
+            Record record = reader.next();
+            writers[i].write(record);
+            count++;
+        }
+        in.close();
+        
+        // close the writers
+        for (MarcWriter writer : writers) {
+            writer.close();
+        }
+
+        return files;
     }
 }
