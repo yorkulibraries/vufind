@@ -12,11 +12,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
+import org.ini4j.Profile.Section;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
 import org.marc4j.MarcStreamWriter;
@@ -33,7 +37,20 @@ public class Utils {
     static String sirsiCatkeyPrefix = "(Sirsi) a";
 
     private static Connection database;
-    
+
+    public static Map<String, String> getUnavailableLocations()
+            throws InvalidFileFormatException, FileNotFoundException,
+            IOException {
+        Map<String,String> map = new TreeMap<String,String>();
+        Ini ini = loadConfigFile("Unicorn.ini");
+        Section section = ini.get("UnavailableLocations");
+        Set<String> locations = section.keySet();
+        for (String location : locations) {
+            map.put(location, section.get(location));
+        }
+        return map;
+    }
+
     /**
      * Load an ini file.
      * 
@@ -49,11 +66,12 @@ public class Utils {
         ini.load(new FileReader(findConfigFile(filename)));
         return ini;
     }
-    
+
     public static synchronized Connection connectToDatabase() {
         if (database == null) {
             try {
-                String dsn = Utils.getConfigSetting("config.ini", "Database", "database");
+                String dsn = Utils.getConfigSetting("config.ini", "Database",
+                        "database");
                 database = Utils.connectToDatabase(dsn);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -74,7 +92,7 @@ public class Utils {
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException, SQLException {
         logger.info("Connecting to database.");
-        
+
         // Parse key settings from the PHP-style DSN:
         String username = "";
         String password = "";
@@ -266,13 +284,14 @@ public class Utils {
         }
         return id;
     }
-    
-    public static String[] splitMarcFile(String file, int pieces) throws IOException {        
+
+    public static String[] splitMarcFile(String file, int pieces)
+            throws IOException {
         // extract directory and original file name
         File original = new File(file);
         String dir = original.getParentFile().getAbsolutePath();
         String filename = original.getName();
-        
+
         // build array of file names and corresponding MarcWriter to write to
         String[] files = new String[pieces];
         MarcWriter[] writers = new MarcStreamWriter[pieces];
@@ -280,7 +299,7 @@ public class Utils {
             files[i] = dir + File.separator + i + filename;
             writers[i] = new MarcStreamWriter(new FileOutputStream(files[i]));
         }
-        
+
         // read and write records to files
         int count = 0;
         InputStream in = new FileInputStream(file);
@@ -292,7 +311,7 @@ public class Utils {
             count++;
         }
         in.close();
-        
+
         // close the writers
         for (MarcWriter writer : writers) {
             writer.close();

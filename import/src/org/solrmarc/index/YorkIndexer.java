@@ -11,12 +11,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
@@ -29,6 +29,9 @@ import org.marc4j.marc.VariableField;
 import ca.yorku.library.vufind.Utils;
 
 public class YorkIndexer extends VuFindIndexer {
+    public static final String AVAILABLE = "Available";
+    public static final String CHECKEDOUT = "Checked out";
+    
     // make these properties public so bsh code can access them
     public static Connection vufindDatabase = null;
     public static Set<String> sfxISSNs = null;
@@ -36,6 +39,8 @@ public class YorkIndexer extends VuFindIndexer {
     public static Set<String> sirsiISSNs = null;
     public static Set<String> resolverIDsInSirsi = null;
     public static Map<String, String> shelvingKeysMap = null;
+    public static Map<String, Set<String>> itemsLocationsMap = null;
+    public static Map<String, String> unavailableLocations;
 
     // Initialize logging category
     static Logger logger = Logger.getLogger(YorkIndexer.class.getName());
@@ -45,9 +50,12 @@ public class YorkIndexer extends VuFindIndexer {
         logger.debug("Start of YorkIndexer static initialization block.");
         try {
             vufindDatabase = Utils.connectToDatabase();
+            unavailableLocations = Utils.getUnavailableLocations();
+            logger.debug("Items in the following locations are considered \"Not available\"" + unavailableLocations);
             loadISSNs();
             loadResolverIDs();
             loadShelvingKeys();
+            loadItemsLocations();
         } catch (Exception e) {
            throw new RuntimeException(e);
         }
@@ -60,6 +68,38 @@ public class YorkIndexer extends VuFindIndexer {
         super(propertiesMapFile, propertyDirs);
     }
 
+    public Set<String> getStatuses(Record record) {
+        Set<String> statuses = new HashSet<String>();
+        String id = Utils.getRecordId(record, "catalog");
+        Set<String> locations = itemsLocationsMap.get(id);
+        if (locations != null) {
+            Set<String> normalLocations = new HashSet<String>();
+            normalLocations.addAll(locations);
+            normalLocations.removeAll(unavailableLocations.keySet());
+            if (normalLocations.isEmpty()) {
+                // Unavailable
+                for (String location : locations) {
+                    statuses.add(unavailableLocations.get(location));
+                }
+                return statuses;
+            }
+            if (normalLocations.contains("CHECKEDOUT")) {
+                // at least one copy checked out
+                normalLocations.remove("CHECKEDOUT");
+                if (normalLocations.isEmpty()) {
+                    // all checked out
+                    statuses.add(CHECKEDOUT);
+                    return statuses;
+                }
+            }
+            if (!normalLocations.isEmpty()) {
+                // available
+                statuses.add(AVAILABLE);
+            }
+        }
+        return statuses;
+    }
+    
     public String getRecordId(Record record, String source) {
         return Utils.getRecordId(record, source);
     }
@@ -156,40 +196,25 @@ public class YorkIndexer extends VuFindIndexer {
     }
 
     public Set<String> getLocation(Record record) {
-        Set<String> locations = new HashSet<String>();
-        List<VariableField> fields = record.getVariableFields("999");
-        for (VariableField f : fields) {
-            DataField field = (DataField) f;
-            String location = "";
-            Subfield sfl = field.getSubfield('l');
-            if (sfl != null) {
-                location = sfl.getData().trim();
-                locations.add(location);
-            }
-            Subfield sfa = field.getSubfield('a');
-            if (sfa != null) {
-                String callnum = sfa.getData().trim();
-                if ("INTERNET".equals(location)
-                        || "E-RESERVES".equals(location)
-                        || "ELECTRONIC".equals(callnum)) {
-                    locations.add("INTERNET");
-                }
-            }
-        }
-        if (!locations.contains("INTERNET")) {
+        String id = Utils.getRecordId(record, "catalog");
+        Set<String> locations = itemsLocationsMap.get(id);
+        
+        // check if item is available online, if so then add INTERNET as a location
+        if (locations != null && !locations.contains("INTERNET")) {
             // check if issn in SFX or MULER
             Set<String> issns = getISSNs(record);
             for (String issn : issns) {
                 if (sfxISSNs.contains(issn) || mulerISSNs.contains(issn)) {
-                    logger.info(issn + " is in MULER or SFX");
                     locations.add("INTERNET");
-                    break;
+                    return locations;
                 }
             }
-
-            Set<String> urls = getFullTextUrls(record);
-            if (!urls.isEmpty()) {
-                locations.add("INTERNET");
+            if (!locations.contains("INTERNET")) {
+                Set<String> urls = getFullTextUrls(record);
+                if (!urls.isEmpty()) {
+                    locations.add("INTERNET");
+                    return locations;
+                }
             }
         }
         return locations;
@@ -760,8 +785,9 @@ public class YorkIndexer extends VuFindIndexer {
     }
 
     private static void loadShelvingKeys() {
-        shelvingKeysMap = new HashMap<String, String>();
+        shelvingKeysMap = new TreeMap<String, String>();
         File tmpFile = new File("/tmp/callnums.txt");
+        logger.info("Loading shelving keys map from " + tmpFile.getAbsolutePath());
         try {
             if (tmpFile.exists() && tmpFile.length() > 0) {
                 BufferedReader reader = new BufferedReader(new FileReader(
@@ -785,6 +811,36 @@ public class YorkIndexer extends VuFindIndexer {
             throw new RuntimeException(e);
         }
         logger.info("Loaded " + shelvingKeysMap.size() + " shelving keys from "
+                + tmpFile.getAbsolutePath());
+    }
+    
+    private static void loadItemsLocations() {
+        itemsLocationsMap = new TreeMap<String, Set<String>>();
+        File tmpFile = new File("/tmp/items.txt");
+        logger.info("Loading items locations map from " + tmpFile.getAbsolutePath());
+        try {
+            if (tmpFile.exists() && tmpFile.length() > 0) {
+                BufferedReader reader = new BufferedReader(new FileReader(
+                        tmpFile));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split("\\|");
+                    if (parts.length > 1) {
+                        String key = parts[0];
+                        Set<String> value = itemsLocationsMap.get(key);
+                        if (value == null) {
+                            value = new TreeSet<String>();
+                        }
+                        value.add(parts[1].trim());
+                        itemsLocationsMap.put(key, value);
+                    }
+                }
+                reader.close();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        logger.info("Loaded " + itemsLocationsMap.size() + " entries from "
                 + tmpFile.getAbsolutePath());
     }
 }
