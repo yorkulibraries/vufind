@@ -79,7 +79,7 @@ public class YorkIndexer extends VuFindIndexer {
             if (normalLocations.isEmpty()) {
                 // Unavailable
                 for (String location : locations) {
-                    statuses.add(unavailableLocations.get(location));
+                    statuses.add(unavailableLocations.get(location).replaceAll("\"", ""));
                 }
                 return statuses;
             }
