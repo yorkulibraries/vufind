@@ -1167,7 +1167,7 @@ class Unicorn implements DriverInterface
         if ($dateRecalled) {
             $recallDue = $dateRecalled
                 + (($recallPeriod + 1) * 24 * 60 * 60) - 60;
-            return ($recallDue < $duedate) ? $recallDue : $duedate;
+            return $recallDue;
         }
         return false;
     }
