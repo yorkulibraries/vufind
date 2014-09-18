@@ -66,7 +66,7 @@ public class PreIndexProcess implements Runnable {
         }
 
         // get thread count from system properties
-        threadCount = Integer.valueOf(System.getProperty("thread_count", "4"));
+        threadCount = Integer.valueOf(System.getProperty("thread_count", "2"));
 
         // split the catalog file
         logger.info("Splitting " + catalog + " into " + threadCount + " pieces.");
