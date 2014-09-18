@@ -46,7 +46,7 @@ public class PreIndexProcess implements Runnable {
     static String muler = "/tmp/muler.mrc";
     static String sfxJournals = "/tmp/sfx-journals.xml";
     
-    static int threadCount = 4;
+    static int threadCount = 2;
     
     public PreIndexProcess(String file, String source) throws SQLException {
         this.file = file;
