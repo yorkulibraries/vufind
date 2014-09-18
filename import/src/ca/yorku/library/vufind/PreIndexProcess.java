@@ -44,7 +44,7 @@ public class PreIndexProcess implements Runnable {
     
     static String catalog = "/tmp/catalog.mrc";
     static String muler = "/tmp/muler.mrc";
-    static String sfx = "/tmp/sfx.xml";
+    static String sfxJournals = "/tmp/sfx-journals.xml";
     
     static int threadCount = 4;
     
@@ -59,7 +59,7 @@ public class PreIndexProcess implements Runnable {
     
     public static void main(String[] args) {
         // make sure we got all the files before doing anything
-        if (!(new File(catalog)).exists() || !(new File(sfx)).exists()
+        if (!(new File(catalog)).exists() || !(new File(sfxJournals)).exists()
                 || !(new File(muler)).exists()) {
             logger.error("Missing required MARC file(s). Abort!");
             System.exit(1);
@@ -97,7 +97,7 @@ public class PreIndexProcess implements Runnable {
             t.start();
             
             // run the pre-index process for the SFX piece
-            t = new Thread(new PreIndexProcess(sfx, "sfx")); 
+            t = new Thread(new PreIndexProcess(sfxJournals, "sfx")); 
             t.start();  
         } catch (Exception e) {
             logger.error(e.getMessage());
