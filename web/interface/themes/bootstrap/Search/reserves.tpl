@@ -23,7 +23,7 @@
                   {$record.course|escape}
                 </a>
               </h3>
-              <p class="reserves-inst-info">{$record.bib_id|@count} {translate text='item(s) reserved by'} {$record.instructor|escape}</p>
+              <p class="reserves-inst-info">{$record.bib_id|@array_unique|@count} {translate text='item(s) reserved by'} {$record.instructor|escape}</p>
             </div>
           </li>
         {/foreach}
