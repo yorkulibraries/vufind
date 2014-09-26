@@ -40,7 +40,6 @@ public class YorkIndexer extends VuFindIndexer {
     public static Set<String> resolverIDsInSirsi = null;
     public static Map<String, String> shelvingKeysMap = null;
     public static Map<String, Set<String>> itemsLocationsMap = null;
-    public static Map<String, String> unavailableLocations;
 
     // Initialize logging category
     static Logger logger = Logger.getLogger(YorkIndexer.class.getName());
@@ -50,8 +49,6 @@ public class YorkIndexer extends VuFindIndexer {
         logger.debug("Start of YorkIndexer static initialization block.");
         try {
             vufindDatabase = Utils.connectToDatabase();
-            unavailableLocations = Utils.getUnavailableLocations();
-            logger.debug("Items in the following locations are considered \"Not available\"" + unavailableLocations);
             loadISSNs();
             loadResolverIDs();
             loadShelvingKeys();
@@ -66,38 +63,6 @@ public class YorkIndexer extends VuFindIndexer {
             final String[] propertyDirs) throws FileNotFoundException,
             IOException, ParseException {
         super(propertiesMapFile, propertyDirs);
-    }
-
-    public Set<String> getStatuses(Record record) {
-        Set<String> statuses = new HashSet<String>();
-        String id = Utils.getRecordId(record, "catalog");
-        Set<String> locations = itemsLocationsMap.get(id);
-        if (locations != null) {
-            Set<String> normalLocations = new HashSet<String>();
-            normalLocations.addAll(locations);
-            normalLocations.removeAll(unavailableLocations.keySet());
-            if (normalLocations.isEmpty()) {
-                // Unavailable
-                for (String location : locations) {
-                    statuses.add(unavailableLocations.get(location).replaceAll("\"", ""));
-                }
-                return statuses;
-            }
-            if (normalLocations.contains("CHECKEDOUT")) {
-                // at least one copy checked out
-                normalLocations.remove("CHECKEDOUT");
-                if (normalLocations.isEmpty()) {
-                    // all checked out
-                    statuses.add(CHECKEDOUT);
-                    return statuses;
-                }
-            }
-            if (!normalLocations.isEmpty()) {
-                // available
-                statuses.add(AVAILABLE);
-            }
-        }
-        return statuses;
     }
     
     public String getRecordId(Record record, String source) {

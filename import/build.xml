@@ -10,9 +10,13 @@
 		</unzip>
 		<copy todir="lib">
 			<fileset dir="build/lib">
+				<exclude name="**/apache-solr-solrj-*.jar" />
+				<exclude name="**/embedded_direct_solr_server.jar" />
 				<include name="**/*.jar" />
 			</fileset>
 			<fileset dir="build/main">
+				<exclude name="**/apache-solr-solrj-*.jar" />
+				<exclude name="**/embedded_direct_solr_server.jar" />
 				<include name="**/*.jar" />
 			</fileset>
 		</copy>
