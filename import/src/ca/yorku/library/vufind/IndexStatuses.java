@@ -22,16 +22,19 @@ public class IndexStatuses {
 	public static final String UNAVAILABLE = "Unvailable";
 	public static final String STATUS_FIELD = "status_str_mv";
 	public static final int BATCH_SIZE = 10000;
-	
+
 	// Initialize logging category
 	static Logger logger = Logger.getLogger(IndexStatuses.class.getName());
+
+	private static Collection<SolrInputDocument> batch = new ArrayList<SolrInputDocument>();
+	private static SolrServer solr = null;
 
 	public static void main(String[] args) throws SolrServerException,
 			IOException {
 		String solrUrl = System.getProperty("solr_url",
 				"http://localhost:8080/solr/biblio");
 		logger.info("Connecting to SOLR server at " + solrUrl);
-		SolrServer solr = new HttpSolrServer(solrUrl);
+		solr = new HttpSolrServer(solrUrl);
 
 		String availableFile = System.getProperty("available_file",
 				"/tmp/available.txt");
@@ -53,55 +56,45 @@ public class IndexStatuses {
 		Set<String> previouslyUnavailable = loadSet(previouslyUnavailableFile);
 		logger.info("Loadded " + previouslyUnavailable.size() + " records");
 
-		// set of docs to post to solr
-		Map<String, SolrInputDocument> docs = new HashMap<String, SolrInputDocument>();
-		
 		// process previously unavailable records
 		for (String id : previouslyUnavailable) {
 			if (available.contains(id)) {
-				SolrInputDocument doc = docs.get(id);
-				if (doc == null) {
-					doc = new SolrInputDocument();
-					doc.addField("id", id);
-					docs.put(id, doc);
-				}
+				SolrInputDocument doc = new SolrInputDocument();
+				doc.addField("id", id);
 				Map<String, String> partialUpdate = new HashMap<String, String>();
 				partialUpdate.put("set", AVAILABLE);
 				doc.addField(STATUS_FIELD, partialUpdate);
+				add(doc);
 			}
 		}
 
 		// process unavailable records
 		for (String id : unavailable) {
-			SolrInputDocument doc = docs.get(id);
-			if (doc == null) {
-				doc = new SolrInputDocument();
-				doc.addField("id", id);
-				docs.put(id, doc);
-			}
+			SolrInputDocument doc = new SolrInputDocument();
+			doc.addField("id", id);
 			Map<String, String> partialUpdate = new HashMap<String, String>();
 			partialUpdate.put("set", UNAVAILABLE);
 			doc.addField(STATUS_FIELD, partialUpdate);
+			add(doc);
 		}
 
-		// send docs to solr
-		Collection<SolrInputDocument> docSet = docs.values();
-		Collection<SolrInputDocument> batch = new ArrayList<SolrInputDocument>();
-		for (SolrInputDocument doc : docSet) {
-			batch.add(doc);
-			if (batch.size() == BATCH_SIZE) {
-				logger.debug("Indexing batch of " + batch.size());
-				solr.add(batch);
-				batch = null;
-				batch = new ArrayList<SolrInputDocument>();
-			}
-		}
 		if (batch.size() > 0) {
-			logger.debug("Indexing final batch of " + batch.size());
+			logger.info("Indexing final batch of " + batch.size());
+			solr.add(batch);
 		}
 
 		// commit
 		solr.commit();
+	}
+
+	private static void add(SolrInputDocument doc) throws SolrServerException,
+			IOException {
+		batch.add(doc);
+		if (batch.size() == BATCH_SIZE) {
+			logger.info("Indexing batch of " + batch.size());
+			solr.add(batch);
+			batch.clear();
+		}
 	}
 
 	private static Set<String> loadSet(String filename) throws IOException {
