@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +21,8 @@ public class IndexStatuses {
 	public static final String AVAILABLE = "Available";
 	public static final String UNAVAILABLE = "Unvailable";
 	public static final String STATUS_FIELD = "status_str_mv";
-
+	public static final int BATCH_SIZE = 10000;
+	
 	// Initialize logging category
 	static Logger logger = Logger.getLogger(IndexStatuses.class.getName());
 
@@ -83,7 +85,19 @@ public class IndexStatuses {
 		}
 
 		// send docs to solr
-		solr.add(docs.values());
+		Collection<SolrInputDocument> docSet = docs.values();
+		Collection<SolrInputDocument> batch = new ArrayList<SolrInputDocument>();
+		for (SolrInputDocument doc : docSet) {
+			batch.add(doc);
+			if (batch.size() == BATCH_SIZE) {
+				logger.debug("Indexing batch of " + batch.size());
+				solr.add(batch);
+				batch.clear();
+			}
+		}
+		if (batch.size() > 0) {
+			logger.debug("Indexing final batch of " + batch.size());
+		}
 
 		// commit
 		solr.commit();
