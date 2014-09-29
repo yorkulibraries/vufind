@@ -83,10 +83,7 @@ public class IndexStatuses {
 		}
 
 		// send docs to solr
-		Collection<SolrInputDocument> docSet = docs.values();
-		for (SolrInputDocument doc : docSet) {
-			solr.add(doc);
-		}
+		solr.add(docs.values());
 
 		// commit
 		solr.commit();
