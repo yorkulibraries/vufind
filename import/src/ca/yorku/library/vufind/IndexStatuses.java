@@ -27,7 +27,7 @@ public class IndexStatuses {
 	public static void main(String[] args) throws SolrServerException,
 			IOException {
 		String solrUrl = System.getProperty("solr_url",
-				"http://localhost:8080/solr");
+				"http://localhost:8080/solr/biblio");
 		logger.info("Connecting to SOLR server at " + solrUrl);
 		SolrServer solr = new HttpSolrServer(solrUrl);
 
