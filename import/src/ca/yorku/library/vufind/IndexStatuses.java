@@ -92,7 +92,8 @@ public class IndexStatuses {
 			if (batch.size() == BATCH_SIZE) {
 				logger.debug("Indexing batch of " + batch.size());
 				solr.add(batch);
-				batch.clear();
+				batch = null;
+				batch = new ArrayList<SolrInputDocument>();
 			}
 		}
 		if (batch.size() > 0) {
