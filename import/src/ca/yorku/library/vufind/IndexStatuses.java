@@ -72,8 +72,10 @@ public class IndexStatuses {
 		Set<String> previouslyLost = loadSet(previouslyLostFile);
 		logger.info("Loadded " + previouslyLost.size() + " records");
 
-		// process previously unavailable records
-		for (String id : previouslyUnavailable) {
+		// process previously unavailable or lost records
+		Set<String> previouslyUnavailableOrLost = new HashSet<String>(previouslyUnavailable);
+		previouslyUnavailableOrLost.addAll(lost);
+		for (String id : previouslyUnavailableOrLost) {
 			if (available.contains(id)) {
 				SolrInputDocument doc = new SolrInputDocument();
 				doc.addField("id", id);
@@ -84,20 +86,10 @@ public class IndexStatuses {
 			}
 		}
 
-		// process previously lost records
-		for (String id : previouslyLost) {
-			if (available.contains(id)) {
-				SolrInputDocument doc = new SolrInputDocument();
-				doc.addField("id", id);
-				Map<String, String> partialUpdate = new HashMap<String, String>();
-				partialUpdate.put("set", AVAILABLE);
-				doc.addField(STATUS_FIELD, partialUpdate);
-				add(doc);
-			}
-		}
-
-		// process unavailable records
-		for (String id : unavailable) {
+		// process unavailable records (but not lost)
+		Set<String> unavailableButNotLost = new HashSet<String>(unavailable);
+		unavailableButNotLost.removeAll(lost);
+		for (String id : unavailableButNotLost) {
 			SolrInputDocument doc = new SolrInputDocument();
 			doc.addField("id", id);
 			Map<String, String> partialUpdate = new HashMap<String, String>();
@@ -107,7 +99,7 @@ public class IndexStatuses {
 		}
 
 		// process lost records
-		for (String id : unavailable) {
+		for (String id : lost) {
 			SolrInputDocument doc = new SolrInputDocument();
 			doc.addField("id", id);
 			Map<String, String> partialUpdate = new HashMap<String, String>();
