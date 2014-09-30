@@ -20,7 +20,8 @@ import org.apache.solr.common.SolrInputDocument;
 public class IndexStatuses {
 	public static final String AVAILABLE = "Available";
 	public static final String UNAVAILABLE = "Unvailable";
-	public static final String STATUS_FIELD = "status_str_mv";
+	public static final String LOST = "Lost";
+	public static final String STATUS_FIELD = "status_str";
 	public static final int BATCH_SIZE = 10000;
 
 	// Initialize logging category
@@ -56,8 +57,32 @@ public class IndexStatuses {
 		Set<String> previouslyUnavailable = loadSet(previouslyUnavailableFile);
 		logger.info("Loadded " + previouslyUnavailable.size() + " records");
 
+		String lostFile = System.getProperty("lost_file", "/tmp/lost.txt");
+		logger.info("Loading lost records from " + lostFile);
+		Set<String> lost = loadSet(lostFile);
+		logger.info("Loadded " + lost.size() + " records");
+
+		String previouslyLostFile = System.getProperty("previously_lost_file",
+				"/tmp/previously_lost.txt");
+		logger.info("Loading previously lost records from "
+				+ previouslyLostFile);
+		Set<String> previouslyLost = loadSet(previouslyLostFile);
+		logger.info("Loadded " + previouslyLost.size() + " records");
+
 		// process previously unavailable records
 		for (String id : previouslyUnavailable) {
+			if (available.contains(id)) {
+				SolrInputDocument doc = new SolrInputDocument();
+				doc.addField("id", id);
+				Map<String, String> partialUpdate = new HashMap<String, String>();
+				partialUpdate.put("set", AVAILABLE);
+				doc.addField(STATUS_FIELD, partialUpdate);
+				add(doc);
+			}
+		}
+
+		// process previously lost records
+		for (String id : previouslyLost) {
 			if (available.contains(id)) {
 				SolrInputDocument doc = new SolrInputDocument();
 				doc.addField("id", id);
@@ -74,6 +99,16 @@ public class IndexStatuses {
 			doc.addField("id", id);
 			Map<String, String> partialUpdate = new HashMap<String, String>();
 			partialUpdate.put("set", UNAVAILABLE);
+			doc.addField(STATUS_FIELD, partialUpdate);
+			add(doc);
+		}
+
+		// process lost records
+		for (String id : unavailable) {
+			SolrInputDocument doc = new SolrInputDocument();
+			doc.addField("id", id);
+			Map<String, String> partialUpdate = new HashMap<String, String>();
+			partialUpdate.put("set", LOST);
 			doc.addField(STATUS_FIELD, partialUpdate);
 			add(doc);
 		}
