@@ -50,7 +50,7 @@ public class IndexStatuses {
 
 		String checkedoutFile = System.getProperty("checkedout_file",
 				"/tmp/checkedout.txt");
-		logger.info("Loading unavailable records from " + checkedoutFile);
+		logger.info("Loading checkedout records from " + checkedoutFile);
 		Set<String> checkedout = loadSet(checkedoutFile);
 		logger.info("Loadded " + checkedout.size() + " records");
 
