@@ -22,7 +22,8 @@ public class IndexStatuses {
 	public static final String UNAVAILABLE = "Unvailable";
 	public static final String LOST = "Lost";
 	public static final String STATUS_FIELD = "status_str";
-	public static final int BATCH_SIZE = 10000;
+
+	private static int batchSize = 10000;
 
 	// Initialize logging category
 	static Logger logger = Logger.getLogger(IndexStatuses.class.getName());
@@ -32,6 +33,8 @@ public class IndexStatuses {
 
 	public static void main(String[] args) throws SolrServerException,
 			IOException {
+		batchSize = Integer.valueOf(System.getProperty("batch_size", "100000"));
+
 		String solrUrl = System.getProperty("solr_url",
 				"http://localhost:8080/solr/biblio");
 		logger.info("Connecting to SOLR server at " + solrUrl);
@@ -125,7 +128,7 @@ public class IndexStatuses {
 	private static void add(SolrInputDocument doc) throws SolrServerException,
 			IOException {
 		batch.add(doc);
-		if (batch.size() == BATCH_SIZE) {
+		if (batch.size() == batchSize) {
 			logger.info("Indexing batch of " + batch.size());
 			solr.add(batch);
 			batch.clear();
