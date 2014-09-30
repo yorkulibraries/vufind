@@ -74,7 +74,7 @@ public class IndexStatuses {
 
 		// process previously unavailable or lost records
 		Set<String> previouslyUnavailableOrLost = new HashSet<String>(previouslyUnavailable);
-		previouslyUnavailableOrLost.addAll(lost);
+		previouslyUnavailableOrLost.addAll(previouslyLost);
 		for (String id : previouslyUnavailableOrLost) {
 			if (available.contains(id)) {
 				SolrInputDocument doc = new SolrInputDocument();
