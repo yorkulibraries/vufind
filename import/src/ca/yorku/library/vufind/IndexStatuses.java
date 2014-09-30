@@ -22,6 +22,7 @@ public class IndexStatuses {
 	public static final String UNAVAILABLE = "Unvailable";
 	public static final String LOST = "Lost";
 	public static final String STATUS_FIELD = "status_str";
+	public static final String SUPPRESSED_FIELD = "suppressed_str";
 
 	private static int batchSize = 10000;
 
@@ -105,6 +106,9 @@ public class IndexStatuses {
 			Map<String, String> partialUpdate = new HashMap<String, String>();
 			partialUpdate.put("set", LOST);
 			doc.addField(STATUS_FIELD, partialUpdate);
+			partialUpdate = new HashMap<String, String>();
+			partialUpdate.put("set", LOST);
+			doc.addField(SUPPRESSED_FIELD, partialUpdate);
 			add(doc);
 		}
 
