@@ -19,8 +19,9 @@ import org.apache.solr.common.SolrInputDocument;
 
 public class IndexStatuses {
 	public static final String AVAILABLE = "Available";
-	public static final String UNAVAILABLE = "Unvailable";
+	public static final String CHECKEDOUT = "Checked out";
 	public static final String LOST = "Lost";
+	public static final String NOT_SUPPRESSED = "no";
 	public static final String STATUS_FIELD = "status_str";
 	public static final String SUPPRESSED_FIELD = "suppressed_str";
 
@@ -47,19 +48,18 @@ public class IndexStatuses {
 		Set<String> available = loadSet(availableFile);
 		logger.info("Loadded " + available.size() + " records");
 
-		String unavailableFile = System.getProperty("unavailable_file",
-				"/tmp/unavailable.txt");
-		logger.info("Loading unavailable records from " + unavailableFile);
-		Set<String> unavailable = loadSet(unavailableFile);
-		logger.info("Loadded " + unavailable.size() + " records");
+		String checkedoutFile = System.getProperty("checkedout_file",
+				"/tmp/checkedout.txt");
+		logger.info("Loading unavailable records from " + checkedoutFile);
+		Set<String> checkedout = loadSet(checkedoutFile);
+		logger.info("Loadded " + checkedout.size() + " records");
 
-		String previouslyUnavailableFile = System.getProperty(
-				"previously_unavailable_file",
-				"/tmp/previously_unavailable.txt");
-		logger.info("Loading previously unavailable records from "
-				+ previouslyUnavailableFile);
-		Set<String> previouslyUnavailable = loadSet(previouslyUnavailableFile);
-		logger.info("Loadded " + previouslyUnavailable.size() + " records");
+		String previouslyCheckedoutFile = System.getProperty(
+				"previously_checkedout_file", "/tmp/previously_checkedout.txt");
+		logger.info("Loading previously checkedout records from "
+				+ previouslyCheckedoutFile);
+		Set<String> previouslyCheckedout = loadSet(previouslyCheckedoutFile);
+		logger.info("Loadded " + previouslyCheckedout.size() + " records");
 
 		String lostFile = System.getProperty("lost_file", "/tmp/lost.txt");
 		logger.info("Loading lost records from " + lostFile);
@@ -73,10 +73,22 @@ public class IndexStatuses {
 		Set<String> previouslyLost = loadSet(previouslyLostFile);
 		logger.info("Loadded " + previouslyLost.size() + " records");
 
-		// process previously unavailable or lost records
-		Set<String> previouslyUnavailableOrLost = new HashSet<String>(previouslyUnavailable);
-		previouslyUnavailableOrLost.addAll(previouslyLost);
-		for (String id : previouslyUnavailableOrLost) {
+		// process previously lost records
+		for (String id : previouslyLost) {
+			if (available.contains(id)) {
+				SolrInputDocument doc = new SolrInputDocument();
+				doc.addField("id", id);
+				Map<String, String> partialUpdate = new HashMap<String, String>();
+				partialUpdate.put("set", AVAILABLE);
+				doc.addField(STATUS_FIELD, partialUpdate);
+				partialUpdate.put("set", NOT_SUPPRESSED);
+				doc.addField(SUPPRESSED_FIELD, partialUpdate);
+				add(doc);
+			}
+		}
+
+		// process previously checkedout records
+		for (String id : previouslyCheckedout) {
 			if (available.contains(id)) {
 				SolrInputDocument doc = new SolrInputDocument();
 				doc.addField("id", id);
@@ -87,14 +99,12 @@ public class IndexStatuses {
 			}
 		}
 
-		// process unavailable records (but not lost)
-		Set<String> unavailableButNotLost = new HashSet<String>(unavailable);
-		unavailableButNotLost.removeAll(lost);
-		for (String id : unavailableButNotLost) {
+		// process checkedout records
+		for (String id : checkedout) {
 			SolrInputDocument doc = new SolrInputDocument();
 			doc.addField("id", id);
 			Map<String, String> partialUpdate = new HashMap<String, String>();
-			partialUpdate.put("set", UNAVAILABLE);
+			partialUpdate.put("set", CHECKEDOUT);
 			doc.addField(STATUS_FIELD, partialUpdate);
 			add(doc);
 		}
