@@ -55,10 +55,10 @@
             <legend>{translate text='adv_search_year'}</legend>
             <div class="adv-search-limit-container">
               <div class="form-group adv-search-date-range">
-                <label class="sr-only" for="{$title|escape}from">{translate text='date_from'}:</label>
-                <input placeholder="{translate text='date_from'}" maxlength="4" class="form-control input-sm" type="number" min="1" name="{$title|escape}from" id="{$title|escape}from" value="{if $dateFacets.$title.0}{$dateFacets.$title.0|escape}{/if}" />
-                <label class="sr-only" for="{$title|escape}to">{translate text='date_to'}:</label>
-                <input placeholder="{translate text='date_to'}" maxlength="4" class="form-control input-sm"  type="number" min="1" name="{$title|escape}to" id="{$title|escape}to" value="{if $dateFacets.$title.1}{$dateFacets.$title.1|escape}{/if}" />
+                <label class="sr-only" for="publishDatefrom">{translate text='date_from'}:</label>
+                <input placeholder="{translate text='date_from'}" maxlength="4" class="form-control input-sm" type="number" min="1" name="publishDatefrom" id="publishDatefrom" value="{if $dateFacets.publishDate.0}{$dateFacets.publishDate.0|escape}{/if}" />
+                <label class="sr-only" for="publishDateto">{translate text='date_to'}:</label>
+                <input placeholder="{translate text='date_to'}" maxlength="4" class="form-control input-sm"  type="number" min="1" name="publishDateto" id="publishDateto" value="{if $dateFacets.publishDate.1}{$dateFacets.publishDate.1|escape}{/if}" />
               </div>
             </div>
           </fieldset>
