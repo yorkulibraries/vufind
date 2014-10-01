@@ -113,6 +113,9 @@ class SearchObject_York extends SearchObject_Solr {
         // Use the default behavior of the parent class
         parent::initFilters();
         
+        // filter suppressed records
+        $this->addFilter('suppressed_str:"no"');
+        
         // force narrow to "Catalogue" if no Source facet is selected
         if (!isset($this->filterList['source_str'])) {
             $this->addFilter('source_str:"Catalogue"');

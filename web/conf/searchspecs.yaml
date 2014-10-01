@@ -155,7 +155,6 @@ ISN:
       - [and, 100]
     - isbn:
       - [and, 100]
-  FilterQuery: "suppressed_str:no"
 
 Subject:
   DismaxFields:
@@ -179,7 +178,6 @@ Subject:
       - [and, 100]
     - era:
       - [and, 100]
-  FilterQuery: "suppressed_str:no"
 
 JournalTitle:
   DismaxFields:
@@ -221,7 +219,7 @@ JournalTitle:
     - series2:
       - [onephrase, 50]
       - [and , ~]
-  FilterQuery: "suppressed_str:no AND (format:Journal OR format:Journal/Periodical OR format:eJournal OR format:Serial OR format:Index/Database OR format:Newspaper OR format:eNewspaper)"
+  FilterQuery: "(format:Journal OR format:Journal/Periodical OR format:eJournal OR format:Serial OR format:Index/Database OR format:Newspaper OR format:eNewspaper)"
 
 Title:
   DismaxFields:
@@ -263,7 +261,6 @@ Title:
     - series2:
       - [onephrase, 50]
       - [and , ~]
-  FilterQuery: "suppressed_str:no"
 
 Series:
   DismaxFields:
@@ -276,7 +273,6 @@ Series:
     - series2:
       - [onephrase, 50]
       - [and, 50]
-  FilterQuery: "suppressed_str:no"
 
 AllFields:
   DismaxFields:
@@ -354,7 +350,6 @@ AllFields:
       - [or, 10]
     allfields:
       - [or, ~]
-  FilterQuery: "suppressed_str:no"
 
 # These are advanced searches that never use Dismax:
 id:
