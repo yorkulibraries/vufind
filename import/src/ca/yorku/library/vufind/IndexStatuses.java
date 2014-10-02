@@ -81,6 +81,7 @@ public class IndexStatuses {
 				Map<String, String> partialUpdate = new HashMap<String, String>();
 				partialUpdate.put("set", AVAILABLE);
 				doc.addField(STATUS_FIELD, partialUpdate);
+				partialUpdate = new HashMap<String, String>();
 				partialUpdate.put("set", NOT_SUPPRESSED);
 				doc.addField(SUPPRESSED_FIELD, partialUpdate);
 				add(doc);
