@@ -32,7 +32,7 @@
   </xsl:template>
 	
   <xsl:template match="//marc:datafield">
-    <xsl:if test="not(@tag='999' or @tag='949')">
+    <xsl:if test="not(@tag='999' or @tag='949' or @tag='992')">
       <tr>
         <th>
           <xsl:value-of select="@tag"/>
