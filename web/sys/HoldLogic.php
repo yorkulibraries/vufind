@@ -184,7 +184,8 @@ class HoldLogic
     protected function driverHoldings($result)
     {
         global $user;
-
+        global $configArray;
+        
         $holdings = array();
 
         // Are holds allows?
@@ -192,7 +193,9 @@ class HoldLogic
 
         if (count($result)) {
             foreach ($result as $copy) {
-                $show = !in_array($copy['location'], $this->hideHoldings) || $copy['item_type'] == 'IN-PROCESS';
+                $show = !in_array($copy['location'], $this->hideHoldings) 
+                    || $copy['item_type'] == 'IN-PROCESS'
+                    || in_array($copy['library'], $configArray['Record']['show_lost_missing_for_libraries']);
                 if ($show) {
                     if ($checkHolds != false) {
                         // Is this copy holdable / linkable

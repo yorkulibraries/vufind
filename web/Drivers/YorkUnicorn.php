@@ -60,7 +60,7 @@ class YorkUnicorn extends Unicorn
         $lost_items = array();
         $other_items = array();
         foreach ($items as $item) {
-            if ($item['location'] == 'Lost') {
+            if ($item['location'] == 'Lost' || $item['location'] == 'Missing') {
                 $lost_items[] = $item;
             } else {
                 $other_items[] = $item;
@@ -110,7 +110,7 @@ class YorkUnicorn extends Unicorn
                 $lost_items = array();
                 $other_items = array();
                 foreach ($sorted_group as $item) {
-                    if ($item['location'] == 'Lost') {
+                    if ($item['location'] == 'Lost' || $item['location'] == 'Missing') {
                         $lost_items[] = $item;
                     } else {
                         $other_items[] = $item;
