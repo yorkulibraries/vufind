@@ -37,7 +37,8 @@
 <div class="alert-container"></div>
 
 <div class="record-container" data-record-id="{$id}">
-  
+  <abbr class="unapi-id" title="{$id}"></abbr>
+  				
   {include file=$coreMetadata}
 
   <ul class="nav nav-tabs responsive record-view-tabs" id="record-tabs">
