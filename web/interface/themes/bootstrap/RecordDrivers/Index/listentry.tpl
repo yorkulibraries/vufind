@@ -47,7 +47,6 @@
       {/if}
     {/if}
     <div class="ajax-availability"></div>
-    {if $listCOinS}<span class="Z3988" title="{$listCOinS|escape}"></span>{/if}
     
     {if $listEditAllowed}
     <div class="alert-container"></div>
@@ -68,4 +67,5 @@
     </div>
     {/if}
   </div>
+  <abbr class="unapi-id" title="{$listId}"></abbr>
 </li>

@@ -10,4 +10,5 @@
     {assign var=type value=$recordType|ucwords}
     {include file="RecordDrivers/$type/result-list-extended.tpl"}
   </div>
+  <abbr class="unapi-id" title="{$summId}"></abbr>
 </li>
