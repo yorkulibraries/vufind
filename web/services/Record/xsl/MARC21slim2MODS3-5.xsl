@@ -322,6 +322,9 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 				<xsl:when test="$leader6='p'">mixed material</xsl:when>
 			</xsl:choose>
 		</typeOfResource>
+		<xsl:if test="$leader7='m'">
+			<genre authority="marcgt">book</genre>
+		</xsl:if>
 		<xsl:if test="substring($controlField008,26,1)='d'">
 			<genre authority="marcgt">globe</genre>
 		</xsl:if>
