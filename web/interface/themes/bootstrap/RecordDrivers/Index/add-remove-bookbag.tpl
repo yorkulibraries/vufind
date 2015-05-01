@@ -21,3 +21,4 @@
       {if in_array($bbId, $cartContent)}{translate text='Remove from book bag'}{else}{translate text='Add to book bag'}{/if}
     </span>
 </a>
+<abbr class="unapi-id" title="{$bbId}"></abbr>

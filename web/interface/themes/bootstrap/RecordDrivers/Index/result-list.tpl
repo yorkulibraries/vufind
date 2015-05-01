@@ -9,6 +9,5 @@
     </h3>
     {assign var=type value=$recordType|ucwords}
     {include file="RecordDrivers/$type/result-list-extended.tpl"}
-    {if $summCOinS}<span class="Z3988" title="{$summCOinS|escape}"></span>{/if}
   </div>
 </li>
