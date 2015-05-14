@@ -467,7 +467,7 @@ function google()
     // Don't bother trying if we can't read JSON:
     if (is_callable('json_decode')) {
         // Construct the request URL:
-        $url = 'http://books.google.com/books?jscmd=viewapi&' .
+        $url = 'https://books.google.com/books?jscmd=viewapi&' .
                'bibkeys=ISBN:' . $_GET['isn'] . '&callback=addTheCover';
 
         // Make the HTTP request:
