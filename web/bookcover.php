@@ -135,19 +135,17 @@ function fetchFromISBN($isn, $size)
     // of brevity.
     $isbn = new ISBN($isn);
     if ($isbn->get13()) {
-        $localFile = 'images/covers/' . $size . '/' . $isbn->get13() . '.jpg';
+        $localFile = 'images/covers/' . $size . '/' . $isbn->get13();
     } else {
         // Invalid ISBN?  Keep it as-is to avoid a bad file path; the error will
         // be caught later down the line anyway.
-        $localFile = 'images/covers/' . $size . '/' . $isn . '.jpg';
+        $localFile = 'images/covers/' . $size . '/' . $isn;
     }
     if (!is_readable($localFile) && $isbn->get10()) {
-        $localFile = 'images/covers/' . $size . '/' . $isbn->get10() . '.jpg';
+        $localFile = 'images/covers/' . $size . '/' . $isbn->get10();
     }
     if (is_readable($localFile)) {
-        // Load local cache if available
-        header('Content-type: image/jpeg');
-        echo readfile($localFile);
+        header('Location: ' . trim(file_get_contents($localFile)));
         return true;
     } else {
         // Fetch from provider
@@ -282,78 +280,15 @@ function dieWithDefaultFailImage()
 }
 
 /**
- * Load image from URL, store in cache if requested, display if possible.
- *
- * @param string $url   URL to load image from
- * @param string $cache Boolean -- should we store in local cache?
- *
- * @return bool         True if image displayed, false on failure.
+ * Cache the image URL, and redirect to it.
  */
 function processImageURL($url, $cache = true)
 {
     global $localFile;  // this was initialized by fetchFromISBN()
 
-    if ($image = @file_get_contents($url)) {
-        // Figure out file paths -- $tempFile will be used to store the downloaded
-        // image for analysis.  $finalFile will be used for long-term storage if
-        // $cache is true or for temporary display purposes if $cache is false.
-        $tempFile = str_replace('.jpg', uniqid(), $localFile);
-        $finalFile = $cache ? $localFile : $tempFile . '.jpg';
-
-        // If some services can't provide an image, they will serve a 1x1 blank
-        // or give us invalid image data.  Let's analyze what came back before
-        // proceeding.
-        if (!@file_put_contents($tempFile, $image)) {
-            die("Unable to write to image directory.");
-        }
-        list($width, $height, $type) = @getimagesize($tempFile);
-
-        // File too small -- delete it and report failure.
-        if ($width < 2 && $height < 2) {
-            @unlink($tempFile);
-            return false;
-        }
-
-        // Conversion needed -- do some normalization for non-JPEG images:
-        if ($type != IMAGETYPE_JPEG) {
-            // We no longer need the temp file:
-            @unlink($tempFile);
-
-            // We can't proceed if we don't have image conversion functions:
-            if (!is_callable('imagecreatefromstring')) {
-                return false;
-            }
-
-            // Try to create a GD image and rewrite as JPEG, fail if we can't:
-            if (!($imageGD = @imagecreatefromstring($image))) {
-                return false;
-            }
-            if (!@imagejpeg($imageGD, $finalFile)) {
-                return false;
-            }
-        } else {
-            // If $tempFile is already a JPEG, let's store it in the cache.
-            @rename($tempFile, $finalFile);
-        }
-
-        // scale image
-        if ($cache) {
-        	scaleImage($finalFile);
-        }
-
-        // Display the image:
-        header('Content-type: image/jpeg');
-        readfile($finalFile);
-
-        // If we don't want to cache the image, delete it now that we're done.
-        if (!$cache) {
-            @unlink($finalFile);
-        }
-
-        return true;
-    } else {
-        return false;
-    }
+    file_put_contents($localFile, trim($url));
+    header('Location: ' . $url);
+    exit();
 }
 
 /**
