@@ -22,23 +22,14 @@ if (typeof window.VuFind_Carousel_createCarousel == 'undefined') {
         preloadImages: 'all',
         slideWidth: 128,
         slideMargin: 10,
-        minSlides: count,
+        minSlides: 1,
         maxSlides: count,
         moveSlides: 1,
-        auto: false,
+        auto: true,
         pager: false,
         pause: 2000,
-        autoHover: true,
-        onSlideAfter: function(jqSlideElement, oldIndex, newIndex) {
-          jQuery('li', jqPlaceHolder).removeClass('selected-slide');
-          var selectedIndex = Math.floor(count/2) - 1;
-          if (selectedIndex >= 0)
-            jqSlideElement.nextAll().eq(selectedIndex).addClass('selected-slide');
-          else
-            jqSlideElement.addClass('selected-slide');
-        }
+        autoHover: true
     });
-    slider.goToNextSlide();
     console.log('Finish creating carousel ' + id + ', ' + count);
   };
 }

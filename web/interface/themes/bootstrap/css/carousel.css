@@ -1,13 +1,8 @@
 /* Custom styles */
 .carousel-container .bx-wrapper img {
-	opacity: .6;
 	width: 128px !important;
 	height: 190px !important;
 	
-}
-.carousel-container .bx-wrapper .selected-slide img {opacity: 1;}
-.carousel-container .bx-wrapper .selected-slide {
-    box-shadow: 0 2px 3px 3px #ffa500;
 }
 .carousel-container .bx-wrapper a {text-decoration: none;}
 .carousel-container h2 {text-align: center;}
