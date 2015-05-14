@@ -1,21 +1,13 @@
 /* Custom styles */
-.carousel-container .bx-wrapper {margin-top: 10px; margin-bottom: 10px;}
 .carousel-container .bx-wrapper img {
 	opacity: .6;
-	width: 128px;
-	height: 190px;
-	margin-left:auto;
-	margin-right:auto;
+	width: 128px !important;
+	height: 190px !important;
+	
 }
-.carousel-container .bx-wrapper .bx-viewport {padding: 5px; border-radius: 4px; height: auto !important;}
 .carousel-container .bx-wrapper .selected-slide img {opacity: 1;}
 .carousel-container .bx-wrapper .selected-slide {
     box-shadow: 0 2px 3px 3px #ffa500;
 }
 .carousel-container .bx-wrapper a {text-decoration: none;}
-.carousel-container .bx-viewport ul, .bx-viewport ol {
-    margin: 0 1.5em 1.5em 0;
-    padding-left: 1.5em;
-}
-.carousel-container {margin-top: 10px; margin-bottom: 10px; min-height: 220px;}
 .carousel-container h2 {text-align: center;}

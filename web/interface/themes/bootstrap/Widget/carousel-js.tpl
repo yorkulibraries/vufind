@@ -19,6 +19,7 @@ if (typeof window.VuFind_Carousel_createCarousel == 'undefined') {
     jqPlaceHolder.append(html);
 
     var slider = jQuery('ul', jqPlaceHolder).bxSlider({
+        preloadImages: 'all',
         slideWidth: 128,
         slideMargin: 10,
         minSlides: count,
