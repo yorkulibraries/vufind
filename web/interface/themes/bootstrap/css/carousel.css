@@ -1,7 +1,8 @@
 /* Custom styles */
 .carousel-container .bx-wrapper { box-sizing: content-box; }
 .carousel-container .bx-wrapper img {
-	height: 190px !important;	
+	height: 190px;
+	border: 1px solid #ccc;	
 }
 .carousel-container .bx-wrapper a {text-decoration: none;}
 .carousel-container h2 {text-align: center;}
