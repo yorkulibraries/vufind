@@ -11,7 +11,6 @@
         {translate text='Options'} <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
-        <li><a role="menuitem" tabindex="-1" href="{$path}/BookBag/Export?style=refworks"><span class="icon-folder-open-alt"></span> {translate text='Export to RefWorks'}</a></li>
         <li><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/BookBag/Email"><span class="icon-envelope-alt"></span> {translate text='Email Items'}</a></li>
         <li><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/BookBag/Save"><span class="icon-save"></span> {translate text='Save to My Account'}</a></li>
         <li class="divider"></li>
