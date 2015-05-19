@@ -594,7 +594,7 @@ function generateImage($id, $size) {
         'size'         => 128,
         'height'       => 190,
         'titleFont'    => 'LiberationSans-Bold.ttf',
-        'authorFont'    => 'LiberationSans-Bold.ttf',
+        'authorFont'   => 'LiberationSans-Bold.ttf',
     ];
 	$generator = new Generator(null, $settings);
 	
