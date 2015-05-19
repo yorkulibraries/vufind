@@ -42,7 +42,7 @@ class Generator
      *
      * @var array
      */
-    protected $settings = [];
+    protected $settings = array();
     /**
      * Reserved color
      */
@@ -58,7 +58,7 @@ class Generator
      * @param \VuFindTheme\ThemeInfo $themeTools For font loading
      * @param array                  $settings   Overwrite styles
      */
-    public function __construct($themeTools, $settings = [])
+    public function __construct($themeTools, $settings = array())
     {
         $this->themeTools = $themeTools;
         $default = array(
