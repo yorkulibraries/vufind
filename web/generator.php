@@ -25,8 +25,6 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/use_of_external_content Wiki
  */
-namespace VuFind\Cover;
-use VuFindCode\ISBN, Zend\Log\LoggerInterface, ZendService\Amazon\Amazon;
 
 /**
  * Dynamic Book Cover Generator
@@ -82,6 +80,9 @@ class Generator
         }
         $default['authorFont'] = $this->fontPath($default['authorFont']);
         $default['titleFont']  = $this->fontPath($default['titleFont']);
+        if (!isset($default['height'])) {
+            $default['height'] = $default['size'];
+        }
         $this->settings = (object) $default;
     }
 
@@ -116,9 +117,9 @@ class Generator
      */
     protected function generateSolid($title, $author, $callnumber)
     {
-        $half = $this->settings->size/2;
+        $half = $this->settings->height/2;
         // Create image
-        if (!($im = imagecreate($this->settings->size, $this->settings->size))) {
+        if (!($im = imagecreate($this->settings->size, $this->settings->height))) {
             throw new \Exception("Cannot Initialize new GD image stream");
         }
         // this->white backdrop
@@ -142,7 +143,7 @@ class Generator
             0,
             0,
             $this->settings->size,
-            $this->settings->size,
+            $this->settings->height,
             $color
         );
 
@@ -182,11 +183,11 @@ class Generator
     protected function generateGrid($title, $author, $callnumber)
     {
         // Set up common variables
-        $half = $this->settings->size/2;
-        $box  = $this->settings->size/8;
+        $half = $this->settings->height/2;
+        $box  = $this->settings->height/8;
 
         // Create image
-        if (!($im = imagecreate($this->settings->size, $this->settings->size))) {
+        if (!($im = imagecreate($this->settings->size, $this->settings->height))) {
             throw new \Exception("Cannot Initialize new GD image stream");
         }
         // this->white backdrop
@@ -382,7 +383,7 @@ class Generator
             $im,
             $author,
             5,
-            $this->settings->size-3,
+            $this->settings->height-3,
             $this->settings->authorFont,
             $fontSize,
             $this->white,
@@ -400,10 +401,7 @@ class Generator
      */
     protected function fontPath($font)
     {
-        // Check all supported image formats:
-        $filenames = ['css/font/' . $font];
-        $fileMatch = $this->themeTools->findContainingTheme($filenames, true);
-        return empty($fileMatch) ? false : $fileMatch;
+        return './fonts/' . $font;
     }
 
     /**
