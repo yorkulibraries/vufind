@@ -61,7 +61,7 @@ class Generator
     public function __construct($themeTools, $settings = [])
     {
         $this->themeTools = $themeTools;
-        $default = [
+        $default = array(
             'mode'         => 'grid',
             'authorFont'   => 'DroidSerif-Bold.ttf',
             'fontSize'     => 7,
@@ -74,7 +74,7 @@ class Generator
             'titleFont'    => 'DroidSerif-Bold.ttf',
             'topPadding'   => 19,
             'wrapWidth'    => 80,
-        ];
+        );
         foreach ($settings as $i => $setting) {
             $default[$i] = $setting;
         }

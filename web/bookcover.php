@@ -588,14 +588,14 @@ function generateImage($id, $size) {
         $author = trim($author, "\n/* :");
     }
 
-	$settings = [
+    $settings = array(
 	    'mode'         => 'grid',
 	    'saturation'   => 100,
 	    'size'         => 128,
 	    'height'       => 190,
 	    'titleFont'    => 'LiberationSans-Bold.ttf',
         'authorFont'   => 'LiberationSans-Bold.ttf'
-    ];
+    );
 	$generator = new Generator(null, $settings);
 	
 	header('Content-type: image/png');
