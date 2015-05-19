@@ -25,7 +25,6 @@
       </ul>
     </div>
     <div class="btn-group">
-      {include file="RecordDrivers/Index/add-remove-bookbag.tpl"}
       {include file="Search/bookbag.tpl"}
     </div>
   </div>
