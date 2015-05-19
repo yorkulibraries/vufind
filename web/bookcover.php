@@ -563,121 +563,45 @@ function scaleImage($file) {
 
 function generateImage($id, $size) {
     require_once 'sys/ConnectionManager.php';
+    require_once 'generator.php';
     
     $record = null;
     $solr = ConnectionManager::connectToIndex();
     if (!($record = $solr->getRecord($id))) {
         return false;
     }
-    
-    $generatedImage = 'images/covers/local/original/' . $id . '.jpg';    
-    $width = 128;
-    $height = 190;
-    
-    $im = imagecreatetruecolor($width, $height);
-    imageantialias($im, true);
-    
-    // Create some colors
-    $white = imagecolorallocate($im, 255, 255, 255);
-    $background = imagecolorallocate($im, mt_rand(0, 150), mt_rand(0, 150), mt_rand(0, 150));
-    $border = imagecolorallocate($im, 242, 232, 123);
-    
-    // paint the background
-    imagefilledrectangle($im, 0, 0, $width, $height, $background);
-    
-    // paint inside border rectangle 
-    imagerectangle($im, 5, 5, $width-5, $height-5, $border);
-    
-    $titleFont = './fonts/Arial Bold.ttf';
-    $titleSize = 11; // pt
-    $authorFont = './fonts/Arial.ttf';
-    $authorSize = 8; // pt
-    
+
     $title = preg_replace('/\[[A-Za-z \(\)]+\]/', '', $record['title_full']);
     list($title, $junk) = explode('/', $title);
     list($title, $junk) = explode('=', $title);
-    $title = trim(truncateText($title, 50), "\n/* :-");
+    $title = trim($title, "\n/* :-");
     if (in_array('Journal/Periodical', $record['format']) || in_array('eJournal', $record['format'])) {
         if (isset($record['issn'][0]) && !empty($record['issn'][0])) {
             $author = preg_replace('/[^0-9x\-]/i', '', $record['issn'][0]);
         }
     } else {
         list($junk, $author) = explode('/', $record['title_full']);
+        $author = trim($author);
         if (empty($author)) {
             $author = $record['author'];
         }
-        $author = trim(truncateText($author, 50), "\n/* :");
+        $author = trim($author, "\n/* :");
     }
-    
-    $y = imageTextWrapped($im, 10, 40, $width-15, $titleFont, $white, $title, $titleSize, 'c');
-    imageTextWrapped($im, 10, $y+20, $width-15, $authorFont, $white, $author, $authorSize, 'c');
-    imagejpeg($im, $generatedImage, 100);
-    imagedestroy($im);
-    
-    @copy($generatedImage, 'images/covers/local/small/' . $id . '.jpg');
-	@copy($generatedImage, 'images/covers/local/medium/' . $id . '.jpg');
-	@copy($generatedImage, 'images/covers/local/large/' . $id . '.jpg');
+
+	$settings = [
+        'mode'         => 'grid',
+        'saturation'   => 100,
+        'size'         => 128,
+        'height'       => 190,
+        'titleFont'    => 'LiberationSans-Bold.ttf',
+        'authorFont'    => 'LiberationSans-Bold.ttf',
+    ];
+	$generator = new Generator(null, $settings);
 	
-	header('Content-type: image/jpeg');
-	echo readfile($generatedImage);
+	header('Content-type: image/png');
+	echo $generator->generate($title, $author);
 	
 	return true;
 }
 
-function imageTextWrapped(&$img, $x, $y, $width, $font, $color, $text, $textSize, $align="l") {
-	//Recalculate X and Y to have the proper top/left coordinates instead of TTF base-point
-	$y += $textSize;
-	$dimensions = imagettfbbox($textSize, 0, $font, " "); //use a custom string to get a fixed height.
-	$x -= $dimensions[4]-$dimensions[0];
-
-	$text = str_replace ("\r", '', $text); //Remove windows line-breaks
-	$srcLines = split ("\n", $text); //Split text into "lines"
-	$dstLines = Array(); // The destination lines array.
-	foreach ($srcLines as $currentL) {
-		$line = '';
-		$words = split (" ", $currentL); //Split line into words.
-		foreach ($words as $word) {
-			$dimensions = imagettfbbox($textSize, 0, $font, $line.$word);
-			$lineWidth = $dimensions[4] - $dimensions[0]; // get the length of this line, if the word is to be included
-			if ($lineWidth > $width && !empty($line) ) { // check if it is too big if the word was added, if so, then move on.
-				$dstLines[] = ' '.trim($line); //Add the line like it was without spaces.
-				$line = '';
-			}
-			$line .= $word.' ';
-		}
-		$dstLines[] =  ' '.trim($line); //Add the line when the line ends.
-	}
-	//Calculate lineheight by common characters.
-	$dimensions = imagettfbbox($textSize, 0, $font, "MXQJPmxqjp123"); //use a custom string to get a fixed height.
-	$lineHeight = $dimensions[1] - $dimensions[5]; // get the heightof this line
-
-	$align = strtolower(substr($align,0,1)); //Takes the first letter and converts to lower string. Support for Left, left and l etc.
-	foreach ($dstLines as $nr => $line) {
-		if ($align != "l") {
-			$dimensions = imagettfbbox($textSize, 0, $font, $line);
-			$lineWidth = $dimensions[4] - $dimensions[0]; // get the length of this line
-			if ($align == "r") { //If the align is Right
-				$locX = $x + $width - $lineWidth;
-			} else { //If the align is Center
-				$locX = $x + ($width/2) - ($lineWidth/2);
-			}
-		} else { //if the align is Left
-			$locX = $x;
-		}
-		$locY = $y + ($nr * $lineHeight);
-		//Print the line.
-		imagettftext($img, $textSize, 0, $locX, $locY, $color, $font, $line);
-	}
-	return $locY;
-}
-
-function truncateText($text, $length) {
-    $text = wordwrap($text, $length, "\n", true);
-    $lines = explode("\n", $text);
-    $result = $lines[0];
-    if (count($lines) > 1) {
-        $result .= ' ...';
-    }
-    return $result;
-}
 ?>
