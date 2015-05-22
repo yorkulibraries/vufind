@@ -238,6 +238,7 @@ public class PreIndexProcess implements Runnable {
 				insertStmt.setString(1, parts[0]);
 				insertStmt.setString(2, parts[1]);
 				insertStmt.setString(3, parts[2]);
+				insertStmt.execute();
 			}
 		}
 		reader.close();
