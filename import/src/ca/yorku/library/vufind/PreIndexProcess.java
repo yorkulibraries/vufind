@@ -225,7 +225,8 @@ public class PreIndexProcess implements Runnable {
 		truncateStmt.execute();
 		truncateStmt.close();
 
-		logger.info("Loading data from file " + callnumBrowse + " to table " + tableName);
+		logger.info("Loading data from file " + callnumBrowse + " to table "
+				+ tableName);
 		String insertSql = "INSERT INTO callnumber_browse_index "
 				+ "(shelving_key, callnum, record_id) VALUES (?, ?, ?)";
 		PreparedStatement insertStmt = db.prepareStatement(insertSql);
@@ -233,13 +234,10 @@ public class PreIndexProcess implements Runnable {
 				new FileReader(callnumBrowse));
 		for (String line; (line = reader.readLine()) != null;) {
 			String[] parts = line.split("|");
-			for (String part : parts) {
-				part = part.trim();
-				insertStmt.setString(1, parts[0]);
-				insertStmt.setString(2, parts[1]);
-				insertStmt.setString(3, parts[2]);
-				insertStmt.execute();
-			}
+			insertStmt.setString(1, parts[0].trim());
+			insertStmt.setString(2, parts[1].trim());
+			insertStmt.setString(3, parts[2].trim());
+			insertStmt.execute();
 		}
 		reader.close();
 		insertStmt.close();
