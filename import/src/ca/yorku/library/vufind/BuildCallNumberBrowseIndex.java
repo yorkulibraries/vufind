@@ -30,7 +30,7 @@ public class BuildCallNumberBrowseIndex {
 		BufferedReader reader = new BufferedReader(
 				new FileReader(callnumBrowse));
 		for (String line; (line = reader.readLine()) != null;) {
-			String[] parts = line.split("|");
+			String[] parts = line.split("\\|");
 			insertStmt.setString(1, parts[0].trim());
 			insertStmt.setString(2, parts[1].trim());
 			insertStmt.setString(3, parts[2].trim());
