@@ -42,9 +42,13 @@ public class PreIndexProcess implements Runnable {
     
     static String deleteISSNSql = "DELETE FROM issns WHERE source=?";
     
+    static String insertCallnumBrowseSql = "INSERT INTO callnumber_browse_index "
+            + "(callnum, shelving_key, record_id) VALUES (?, ?, ?)";
+            
     static String catalog = "/tmp/catalog.mrc";
     static String muler = "/tmp/muler.mrc";
     static String sfxJournals = "/tmp/sfx-journals.xml";
+    static String callnumBrowse = "/tmp/callnum_browser.txt";
     
     static int threadCount = 2;
     
