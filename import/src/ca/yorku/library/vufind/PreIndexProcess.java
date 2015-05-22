@@ -242,6 +242,5 @@ public class PreIndexProcess implements Runnable {
 		}
 		reader.close();
 		insertStmt.close();
-		db.close();
 	}
 }
