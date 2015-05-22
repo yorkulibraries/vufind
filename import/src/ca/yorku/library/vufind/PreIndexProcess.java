@@ -1,9 +1,7 @@
 package ca.yorku.library.vufind;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -47,7 +45,6 @@ public class PreIndexProcess implements Runnable {
 	static String catalog = "/tmp/catalog.mrc";
 	static String muler = "/tmp/muler.mrc";
 	static String sfxJournals = "/tmp/sfx-journals.xml";
-	static String callnumBrowse = "/tmp/callnum_browse.txt";
 
 	static int threadCount = 2;
 
@@ -65,14 +62,6 @@ public class PreIndexProcess implements Runnable {
 		if (!(new File(catalog)).exists() || !(new File(sfxJournals)).exists()
 				|| !(new File(muler)).exists()) {
 			logger.error("Missing required MARC file(s). Abort!");
-			System.exit(1);
-		}
-
-		// Build call number browse index
-		try {
-			buildCallNumberBrowseIndex();
-		} catch (Exception e) {
-			logger.error(e.getMessage());
 			System.exit(1);
 		}
 
@@ -214,32 +203,5 @@ public class PreIndexProcess implements Runnable {
 		logger.info("Deleting ISSNs from " + source);
 		deleteISSNStmt.setString(1, source);
 		deleteISSNStmt.execute();
-	}
-
-	private static void buildCallNumberBrowseIndex() throws Exception {
-		Connection db = Utils.connectToDatabase();
-		String tableName = "callnumber_browse_index";
-		logger.info("truncating table " + tableName);
-		PreparedStatement truncateStmt = db.prepareStatement("TRUNCATE TABLE "
-				+ tableName);
-		truncateStmt.execute();
-		truncateStmt.close();
-
-		logger.info("Loading data from file " + callnumBrowse + " to table "
-				+ tableName);
-		String insertSql = "INSERT INTO callnumber_browse_index "
-				+ "(shelving_key, callnum, record_id) VALUES (?, ?, ?)";
-		PreparedStatement insertStmt = db.prepareStatement(insertSql);
-		BufferedReader reader = new BufferedReader(
-				new FileReader(callnumBrowse));
-		for (String line; (line = reader.readLine()) != null;) {
-			String[] parts = line.split("|");
-			insertStmt.setString(1, parts[0].trim());
-			insertStmt.setString(2, parts[1].trim());
-			insertStmt.setString(3, parts[2].trim());
-			insertStmt.execute();
-		}
-		reader.close();
-		insertStmt.close();
 	}
 }
