@@ -52,8 +52,8 @@ CREATE INDEX resolver_ids_source_index ON resolver_ids(source);
 CREATE TABLE IF NOT EXISTS `callnumber_browse_index` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `record_id` varchar(32) NOT NULL,
-    `callnum` varchar(64) NOT NULL,
-    `shelving_key` varchar(64) NOT NULL,
+    `callnum` varchar(128) NOT NULL,
+    `shelving_key` varchar(128) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 CREATE INDEX callnumber_browse_index_record_id ON callnumber_browse_index(record_id);
