@@ -6,5 +6,6 @@
     <core name="stats" instanceDir="stats"/>
     -->
     <core name="reserves" instanceDir="reserves"/>
+    <core name="shelf" instanceDir="shelf"/>
   </cores>
 </solr>
