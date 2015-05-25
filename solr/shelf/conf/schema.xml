@@ -9,12 +9,13 @@
    <!-- Required by Solr 4.x -->
    <field name="_version_" type="long" indexed="true" stored="true"/>
    <!-- Core Fields  -->
-   <field name="id" type="string" indexed="true" stored="true"/>
-   <field name="before" type="string" indexed="false" stored="true"/>
-   <field name="after" type="string" indexed="false" stored="true"/>
+   <field name="bib_id" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="order" type="long" indexed="true" stored="true" multiValued="false"/>
+   <field name="callnum" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="shelving_key" type="string" indexed="false" stored="true" multiValued="true"/>
  </fields>
- <uniqueKey>id</uniqueKey>
- <defaultSearchField>id</defaultSearchField>
+ <uniqueKey>order</uniqueKey>
+ <defaultSearchField>bib_id</defaultSearchField>
  <!-- Default Boolean Operator -->
  <solrQueryParser defaultOperator="AND"/>
 </schema>
