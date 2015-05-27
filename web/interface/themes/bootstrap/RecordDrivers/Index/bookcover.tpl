@@ -1,4 +1,4 @@
-<div class="pull-{if $coversOnLeft}left{else}right{/if} hidden-xs">
+<div class="media-left hidden-xs">
   {assign var=coverId value=null}
   {if $summId}{assign var=coverId value=$summId}{/if}
   {if $listId}{assign var=coverId value=$listId}{/if}
@@ -12,11 +12,11 @@
   {/if}
   <div class="media-object">
     {if $coreThumbMedium}
-      <img src="{$coreThumbMedium|escape}" alt="{translate text='Cover Image'}"/>
+      <img class="bookcover" src="{$coreThumbMedium|escape}" alt="{translate text='Cover Image'}"/>
     {else}
       {if $coverImage && $coverId}
       <a href="{$path}/Record/{$coverId|escape}">
-        <img src="{$coverImage|escape}" alt="{translate text='Cover Image'}"/>
+        <img class="bookcover" src="{$coverImage|escape}" alt="{translate text='Cover Image'}"/>
       </a>
       {/if}
     {/if}
