@@ -1,4 +1,4 @@
-<div class="media-left hidden-xs">
+<div class="media-left">
   {assign var=coverId value=null}
   {if $summId}{assign var=coverId value=$summId}{/if}
   {if $listId}{assign var=coverId value=$listId}{/if}
@@ -42,7 +42,7 @@
   {if $previewISBN}
   <div class="google-books-preview hidden" data-isbn="{$previewISBN}">
     <a href="#" title="{translate text='Preview from'} Google Books" target="_blank">
-      <img src="//www.google.com/intl/en/googlebooks/images/gbs_preview_button1.png" alt="{translate text='Preview'}"/>
+      <img class="img-responsive" src="//www.google.com/intl/en/googlebooks/images/gbs_preview_button1.png" alt="{translate text='Preview'}"/>
     </a>
   </div>
   {/if}

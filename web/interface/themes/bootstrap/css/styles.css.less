@@ -109,9 +109,6 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
                     font-size: 90%;
                     margin-left: 0;
                     margin-bottom: 7px;
-                    .format {
-                        font-weight: bold;
-                    }
                 }
             }
             dl.checkout-details {
@@ -243,29 +240,19 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
 .checkedout {
     color: #cc0000;
 }
-
+.format {
+    font-weight: bold;
+}
 .record-container {
+    h2 {
+        font-size: 1.2em;
+    }
+    h3 {
+        font-size: 1.4em;
+    }
     .media {
         margin-top: 20px;
         margin-bottom: 20px;
-        h2 {
-            font-size: 1.4em;
-        }
-        dl {
-            dt {
-                font-weight: normal;
-                color: #767676;
-            }
-            a {
-                color: #cc0000;
-            }
-            .subject-line {
-                a.highlight {
-                    text-decoration: underline;
-                    font-weight: bold;
-                }
-            }
-        }
     }
     .tab-pane {
         padding: 10px 0;
@@ -277,6 +264,58 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
         .online-label {
             display: none;
         }
+    }
+    dl {
+        dt {
+            font-weight: normal;
+            color: #767676;
+        }
+        a {
+            color: #cc0000;
+        }
+    }
+    .subject-line {
+        a {
+            color: #cc0000;
+        }
+        a.highlight {
+            text-decoration: underline;
+            font-weight: bold;
+        }
+    }
+    table.holdings {
+        margin-bottom: 5px;
+        th {
+            color: #767676;
+            font-weight: normal;
+        }
+        caption {
+            color: #333;
+            font-size: 1em;
+            font-weight: 500;
+            padding-left: 5px;
+        }
+    }
+    ul.toc {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    .section {
+        padding-left: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+    .section:last-child {
+        border-bottom: none;
+    }
+    dl.brief-details {
+        dt, dd {
+            margin-bottom: 10px;
+        }
+    }
+    .media, .media-body {
+        overflow: visible;
     }
 }
 .pagination-centered {
@@ -445,6 +484,16 @@ a.accordion-toggle, a.accordion-toggle:hover {
     }
     .row-offcanvas-right.active {
         right: 100%; /* 11 xs columns */
+    }
+    .result-container {
+        .bookcover,.google-books-preview {
+            width: 60px;
+        }
+    }
+    .record-container {
+        .bookcover,.google-books-preview {
+            width: 75px;
+        }
     }
 }
 @media screen and (min-width: 321px) and (max-width: 767px) {

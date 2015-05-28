@@ -91,29 +91,34 @@ class YorkMarcRecord extends MarcRecord
         $interface->assign('summUniformTitles', $this->getUniformTitles());
         
         // NEW: The following is to support simplified search result
+        $this->assignBriefDetails();
         
-        // assign highlighted title info
-        $summHighlightedTitleInfo = $this->getHighlightedTitle();
-        $interface->assign('summHighlightedTitleInfo', $summHighlightedTitleInfo);
-        
-        // assign normal title info
-        $summTitleInfo = $this->fields['title_full'];
-        $interface->assign('summTitleInfo', $summTitleInfo);
-        
-        // assign publication info
-        $interface->assign('summPublicationInfo', $this->getFirstFieldValue('260'));
-        
-        // assign author info
-        $summAuthorInfo = trim($this->getFirstFieldValue('245', 'c'));
-        if (empty($summAuthorInfo)) {
-            $summAuthorInfo = trim($this->getFirstFieldValue('100', 'abcd'));
-        }
-        $interface->assign('summAuthorInfo', $summAuthorInfo);
-        
-        // sssign openurls for Journals 
+        // assign openurls for Journals 
         $interface->assign('summJournalOpenURLs', $this->getJournalOpenURLs());
 
         return $template;
+    }
+    
+    private function assignBriefDetails() {
+        global $interface;
+        
+        // assign highlighted title info
+        $highlightedTitleInfo = $this->getHighlightedTitle();
+        $interface->assign('yorkHighlightedTitleInfo', $highlightedTitleInfo);
+        
+        // assign normal title info
+        $titleInfo = $this->fields['title_full'];
+        $interface->assign('yorkTitleInfo', $titleInfo);
+        
+        // assign publication info
+        $interface->assign('yorkPublicationInfo', $this->getFirstFieldValue('260'));
+        
+        // assign author info
+        $authorInfo = trim($this->getFirstFieldValue('245', 'c'));
+        if (empty($authorInfo)) {
+            $authorInfo = trim($this->getFirstFieldValue('100', 'abcd'));
+        }
+        $interface->assign('yorkAuthorInfo', $authorInfo);
     }
     
     public function getListEntry($user, $listId = null, $allowEdit = true)
@@ -182,6 +187,7 @@ class YorkMarcRecord extends MarcRecord
         // we use the prefix "york" so we can tell these variables from the ones
         // assigned by the generic VuFind record drivers
         $interface->assign('fullTitle', $this->fields['title_full']);
+        $interface->assign('yorkFullTitle', $this->getFirstFieldValue('245'));
         $interface->assign('yorkMediumDesignation', $this->getFirstFieldValue('245', 'h'));
         $interface->assign('yorkVaryingFormsOfTitle', $this->getVaryingFormsOfTitle());
         $interface->assign('yorkUniformTitles', $this->getUniformTitles());
@@ -257,6 +263,8 @@ class YorkMarcRecord extends MarcRecord
                 }
             }
         }
+        
+        $this->assignBriefDetails();
 
         return $template;
     }
@@ -663,6 +671,58 @@ class YorkMarcRecord extends MarcRecord
             $parts[] = $key . '=' . urlencode($value);
         }
         return implode('&', $parts);
+    }
+    
+    /**
+     * Get all subject headings associated with this record.  Each heading is
+     * returned as an array of chunks, increasing from least specific to most
+     * specific.
+     *
+     * @return array
+     * @access protected
+     */
+    protected function getAllSubjectHeadings()
+    {
+        // These are the fields that may contain subject headings:
+        $fields = array('600', '610', '630', '650', '651', '655');
+
+        // This is all the collected data:
+        $retval = array();
+
+        // Try each MARC field one at a time:
+        foreach ($fields as $field) {
+            // Do we have any results for the current field?  If not, try the next.
+            $results = $this->marcRecord->getFields($field);
+            if (!$results) {
+                continue;
+            }
+
+            // If we got here, we found results -- let's loop through them.
+            foreach ($results as $result) {
+                // Start an array for holding the chunks of the current heading:
+                $current = array();
+
+                // Get all the chunks and collect them together:
+                $subfields = $result->getSubfields();
+                if ($subfields) {
+                    foreach ($subfields as $subfield) {
+                        // Numeric subfields are for control purposes and should not
+                        // be displayed:
+                        if (!is_numeric($subfield->getCode())) {
+                            $current[] = $subfield->getData();
+                        }
+                    }
+                    // If we found at least one chunk, add a heading to our result:
+                    if (!empty($current)) {
+                        $fieldName = 'marc' . $field;
+                        $retval[$fieldName] = $current;
+                    }
+                }
+            }
+        }
+
+        // Send back everything we collected:
+        return $retval;
     }
 }
 ?>

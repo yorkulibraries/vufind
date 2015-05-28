@@ -157,7 +157,10 @@ class Record extends Action
         $interface->assign('hasTOC', $this->recordDriver->hasTOC());
         $interface->assign('hasMap', $this->recordDriver->hasMap());
         $interface->assign('hasStaffView', $this->recordDriver->getStaffView());
-
+        if ($this->recordDriver->hasTOC()) {
+            $interface->assign('tocTemplate', $this->recordDriver->getTOC());
+        }
+        
         // Assign the next/previous record data:
         $scroller = new ResultScroller();
         $scrollData = $scroller->getScrollData($_REQUEST['id']);

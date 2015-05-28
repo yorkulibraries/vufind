@@ -1,4 +1,9 @@
 <dl class="dl-horizontal">
+  {if !empty($yorkFullTitle)}
+  <dt>{translate text='Title'}:</dt>
+  <dd>{$yorkFullTitle|escape}</dd>
+  {/if}
+  
   {if !empty($coreNextTitles)}
   
     <dt>{translate text='New Title'}:</dt>
@@ -64,7 +69,7 @@
   {/if}
   {* End Corporate/Other Authors *}
   
-  {if !empty($recordFormat)}
+  {if false && !empty($recordFormat)}
   
     <dt>{translate text='Format'}:</dt>
     <dd>
@@ -149,7 +154,8 @@
   
   {/if}
 
-  {if !empty($coreSubjects)}
+  {* moved this to main record details *}
+  {if false && !empty($coreSubjects)}
   
     <dt>{translate text='Subjects'}:</dt>
     <dd>

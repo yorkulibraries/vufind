@@ -1,11 +1,11 @@
 <dl class="dl-horizontal">
-  {if $summAuthorInfo}
+  {if $yorkAuthorInfo}
     <dt class="sr-only">{translate text='Author'}:</dt>
-    <dd class="author-info">{$summAuthorInfo|trim:' *'|escape}</dd>
+    <dd class="author-info">{$yorkAuthorInfo|trim:' *'|escape}</dd>
   {/if}
-  {if $summPublicationInfo}
+  {if $yorkPublicationInfo}
     <dt class="sr-only">{translate text='Publication info'}:</dt>
-    <dd class="publication-info">{$summPublicationInfo|trim:' *,:/'|escape}</dd>
+    <dd class="publication-info">{$yorkPublicationInfo|trim:' *,:/'|escape}</dd>
   {/if}
   {if !empty($summFormats)}
     <dt class="sr-only">{translate text='Format'}:</dt>
@@ -18,7 +18,7 @@
 </dl>
 
 {if !empty($summURLs) || !empty($summJournalOpenURLs)} 
-<div class="online-access-container hidden">
+<div class="online-access-container hidden hidden-xs">
   {if !empty($summURLs)}
   <div class="normal-links-container hidden">
     <ul>
@@ -42,7 +42,7 @@
   {/if}
   
   {if !empty($summJournalOpenURLs)}
-  <div class="openurl-container hidden">
+  <div class="openurl-container hidden hidden-xs">
     {foreach from=$summJournalOpenURLs item=journalOpenURL key=journalISSN}
       <span data-issn="{$journalISSN}" data-openurl="{$journalOpenURL|escape}" class="openurl hidden"></span>
     {/foreach}

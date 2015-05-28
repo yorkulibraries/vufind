@@ -4,7 +4,7 @@
   <div class="media-body result-details">
     <h3 class="media-heading">
       <a href="{$path}/Record/{$summId|escape}">
-        {if !empty($summHighlightedTitleInfo)}{$summHighlightedTitleInfo|highlight|trim:'/.- '}{else}{$summTitleInfo|trim:'/.- '|escape}{/if}
+        {if !empty($yorkHighlightedTitleInfo)}{$yorkHighlightedTitleInfo|highlight|trim:'/.- '}{else}{$yorkTitleInfo|trim:'/.- '|escape}{/if}
       </a>
     </h3>
     {assign var=type value=$recordType|ucwords}

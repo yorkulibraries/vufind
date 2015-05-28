@@ -124,9 +124,6 @@ a.online-access:focus {
   margin-left: 0;
   margin-bottom: 7px;
 }
-.result-list .result-container .result-details dl dd .format {
-  font-weight: bold;
-}
 .result-list .result-container .result-details dl.checkout-details dt {
   width: 135px;
   margin-right: 10px;
@@ -251,23 +248,18 @@ a.online-access:focus {
 .checkedout {
   color: #cc0000;
 }
+.format {
+  font-weight: bold;
+}
+.record-container h2 {
+  font-size: 1.2em;
+}
+.record-container h3 {
+  font-size: 1.4em;
+}
 .record-container .media {
   margin-top: 20px;
   margin-bottom: 20px;
-}
-.record-container .media h2 {
-  font-size: 1.4em;
-}
-.record-container .media dl dt {
-  font-weight: normal;
-  color: #767676;
-}
-.record-container .media dl a {
-  color: #cc0000;
-}
-.record-container .media dl .subject-line a.highlight {
-  text-decoration: underline;
-  font-weight: bold;
 }
 .record-container .tab-pane {
   padding: 10px 0;
@@ -277,6 +269,54 @@ a.online-access:focus {
 }
 .record-container .online-access-container .online-label {
   display: none;
+}
+.record-container dl dt {
+  font-weight: normal;
+  color: #767676;
+}
+.record-container dl a {
+  color: #cc0000;
+}
+.record-container .subject-line a {
+  color: #cc0000;
+}
+.record-container .subject-line a.highlight {
+  text-decoration: underline;
+  font-weight: bold;
+}
+.record-container table.holdings {
+  margin-bottom: 5px;
+}
+.record-container table.holdings th {
+  color: #767676;
+  font-weight: normal;
+}
+.record-container table.holdings caption {
+  color: #333;
+  font-size: 1em;
+  font-weight: 500;
+  padding-left: 5px;
+}
+.record-container ul.toc {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.record-container .section {
+  padding-left: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.record-container .section:last-child {
+  border-bottom: none;
+}
+.record-container dl.brief-details dt,
+.record-container dl.brief-details dd {
+  margin-bottom: 10px;
+}
+.record-container .media,
+.record-container .media-body {
+  overflow: visible;
 }
 .pagination-centered {
   text-align: center;
@@ -453,6 +493,14 @@ a.accordion-toggle:hover {
   }
   .row-offcanvas-right.active {
     right: 100%;
+  }
+  .result-container .bookcover,
+  .result-container .google-books-preview {
+    width: 60px;
+  }
+  .record-container .bookcover,
+  .record-container .google-books-preview {
+    width: 75px;
   }
 }
 @media screen and (min-width: 321px) and (max-width: 767px) {

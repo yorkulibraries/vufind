@@ -35,39 +35,82 @@
 <div class="alert-container"></div>
 
 <div class="record-container" data-record-id="{$id}">
-  <abbr class="unapi-id" title="{$id}"></abbr>
-  				
-  {include file=$coreMetadata}
+  <abbr class="unapi-id hidden" title="{$id}"></abbr>
+  
+  <div class="media">
+    {include file="RecordDrivers/Index/bookcover.tpl"}
+    <div class="media-body">
+      <h2 class="media-heading">
+        {if $fullTitle}
+          {$fullTitle|escape}
+        {else}
+          {$coreShortTitle|escape}
+          {if $coreSubtitle}{$coreSubtitle|escape}{/if}
+          {if $coreTitleSection}{$coreTitleSection|escape}{/if}
+        {/if}
+      </h2>
+      
+      <dl class="brief-details">
+        {if $yorkAuthorInfo}
+          <dt class="sr-only">{translate text='Author'}:</dt>
+          <dd class="author-info">{$yorkAuthorInfo|trim:' *'|escape}</dd>
+        {/if}
+        {if $yorkPublicationInfo}
+          <dt class="sr-only">{translate text='Publication info'}:</dt>
+          <dd class="publication-info">{$yorkPublicationInfo|trim:' *,:/'|escape}</dd>
+        {/if}
+        {if !empty($recordFormat)}
+          <dt class="sr-only">{translate text='Format'}:</dt>
+          <dd class="format-info">
+          {foreach from=$recordFormat item=format name=formats}
+            <span class="format">{translate text=$format}</span>{if !$smarty.foreach.formats.last},{/if}
+          {/foreach}
+          </dd>
+        {/if}
+      </dl>
+      
+      {if $allowICB || $allowInProcess || $allowStorage}
+      <div class="btn-group">
+        <button type="button" class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          {translate text='Request'} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          {if $allowICB}
+          <li><a data-toggle="modal" data-target="#modal" title="{translate text='Inter-Campus Borrowing'}" href="{$path}/Record/{$id}/ICB">{translate text='ICB Request'}</a></li>
+          {/if}
+          {if $allowInProcess}
+          <li><a data-toggle="modal" data-target="#modal" title="{translate text='In-Process/On-Order'}" href="{$path}/Record/{$id}/InProcess">{translate text='InProcess Request'}</a></li>
+          {/if}
+          {if $allowStorage}
+          <li><a data-toggle="modal" data-target="#modal" title="{translate text='Request From Storage'}" href="{$path}/Record/{$id}/Storage">{translate text='Storage Request'}</a></li>
+          {/if}
+        </ul>
+      </div>
+      {/if}
+      
+      {if $allowHold}
+        <div class="btn-group">
+          <a data-toggle="modal" data-target="#modal" class="btn btn-default btn-small" title="{translate text='Hold/Recall'}" href="{$path}/Record/{$id}/Hold">{translate text='Hold Request'}</a>
+        </div>
+      {/if}
+      
+    </div>
+  </div>
 
   <ul class="nav nav-tabs responsive record-view-tabs" id="record-tabs">
     <li {if $tab == 'Holdings'}class="active"{/if}>
-      <a data-toggle="tab" data-target="#Holdings" href="{$path}/Record/{$id}/Holdings">{translate text='Holdings'}</a>
+      <a data-toggle="tab" data-target="#Holdings" href="{$path}/Record/{$id}/Holdings">{translate text='Details'}</a>
     </li>
-    {if $hasTOC}
-    <li {if $tab == 'TOC'}class="active"{/if}>
-      <a data-toggle="tab" data-target="#TOC" href="{$path}/Record/{$id}/TOC">{translate text='Table of Contents'}</a>
-    </li>
+    {if true || $canBrowseShelf}
+      <li>
+        <a data-toggle="tab" data-target="#BrowseShelf" href="{$path}/Record/{$id}/BrowseShelf">{translate text='Related'}</a>
+      </li>
     {/if}
     <li {if $tab == 'UserComments'}class="active"{/if}>
       <a data-toggle="tab" data-target="#UserComments" href="{$path}/Record/{$id}/UserComments">{translate text='Comments'}</a>
     </li>
-    {if $hasReviews}
-    <li {if $tab == 'Reviews'}class="active"{/if}>
-      <a data-toggle="tab" data-target="#Reviews" href="{$path}/Record/{$id}/Reviews">{translate text='Reviews'}</a>
-    </li>
-    {/if}
-    {if $hasExcerpt}
-    <li {if $tab == 'Excerpt'}class="active"{/if}>
-      <a data-toggle="tab" data-target="#Excerpt" href="{$path}/Record/{$id}/Excerpt">{translate text='Excerpt'}</a>
-    </li>
-    {/if}
-    {if $hasMap}
-    <li {if $tab == 'Map'}class="active"{/if}>
-      <a data-toggle="tab" data-target="#Map" href="{$path}/Record/{$id}/Map">{translate text='Map View'}</a>
-    </li>
-    {/if}
     {if $hasStaffView}
-    <li {if $tab == 'Details'}class="active"{/if}>
+    <li class="hidden-xs {if $tab == 'Details'}active{/if}">
       <a data-toggle="tab" data-target="#Details" href="{$path}/Record/{$id}/Details">{translate text='Staff View'}</a>
     </li>
     {/if}
@@ -77,15 +120,43 @@
     <div class="{if $tab == 'Holdings' || $tab == 'Hold'}tab-pane active{/if}" id="Holdings">
     {if $tab == 'Holdings' || $tab == 'Hold'}
       <div id="Holdings-tab-content">
-        {include file="Record/$subTemplate"}
-      </div>
-    {/if}
-    </div>
-    
-    <div class="tab-pane {if $tab == 'TOC'}active{/if}" id="TOC">
-    {if $hasTOC && $tab == 'TOC'}
-      <div id="TOC-tab-content">
-        {include file="Record/$subTemplate"}
+        <h3>{translate text="Holdings"}</h3>
+        <div class="section">
+          {include file="Record/$subTemplate"}
+        </div>
+        
+        {if !empty($coreSubjects)}
+          <h3>{translate text='Subjects'}</h3>
+          <div class="section">
+            <dl class="dl-horizontal">
+              {foreach from=$coreSubjects key=fieldName item=field name=loop}
+              <dt>{translate text=$fieldName}:</dt>
+              <dd>
+              <div class="subject-line">
+                {assign var=subject value=""}
+                {foreach from=$field item=subfield name=subloop}
+                  {if !$smarty.foreach.subloop.first} &raquo; {/if}
+                  {assign var=subject value="$subject $subfield"}
+                  <a title="{$subject|escape}" href="{$url}/Search/Results?lookfor=%22{$subject|escape:'url'}%22&amp;type=Subject">{$subfield|escape}</a>
+                {/foreach}
+              </div>
+              </dd>
+              {/foreach}
+            </dl>
+          </div>
+        {/if}
+        
+        <h3>{translate text="More Details"}</h3>
+        <div class="section">
+        {include file=$coreMetadata}
+        </div>
+        
+        {if $hasTOC && $tocTemplate}
+          <h3>{translate text='Table of Contents'}</h3>
+          <div class="section">
+            {include file=$tocTemplate}
+          </div>
+        {/if}
       </div>
     {/if}
     </div>
@@ -93,30 +164,6 @@
     <div class="tab-pane {if $tab == 'UserComments'}active{/if}" id="UserComments">
     {if $tab == 'UserComments'}
       <div id="UserComments-tab-content">
-        {include file="Record/$subTemplate"}
-      </div>
-    {/if}
-    </div>
-
-    <div class="tab-pane {if $tab == 'Reviews'}active{/if}" id="Reviews">
-    {if $hasReviews && $tab == 'Reviews'}
-      <div id="Reviews-tab-content">
-        {include file="Record/$subTemplate"}
-      </div>
-    {/if}
-    </div>
-    
-    <div class="tab-pane {if $tab == 'Exerpt'}active{/if}" id="Excerpt">
-    {if $hasExcerpt && $tab == 'Excerpt'}
-      <div id="Excerpt-tab-content">
-        {include file="Record/$subTemplate"}
-      </div>
-    {/if}
-    </div>
-    
-    <div class="tab-pane {if $tab == 'Map'}active{/if}" id="Map">
-    {if $hasMap && $tab == 'Map'}
-      <div id="Map-tab-content">
         {include file="Record/$subTemplate"}
       </div>
     {/if}
@@ -131,5 +178,13 @@
     {/if}
     </div>
     {/if}
+    
+    <div class="tab-pane {if $tab == 'BrowseShelf'}active{/if}" id="BrowseShelf">
+    {if $tab == 'BrowseShelf'}
+      <div id="BrowseShelf-tab-content">
+        {include file="Record/$subTemplate"}
+      </div>
+    {/if}
+    </div>
   </div>
 </div>
