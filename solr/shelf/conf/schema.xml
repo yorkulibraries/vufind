@@ -9,10 +9,10 @@
    <!-- Required by Solr 4.x -->
    <field name="_version_" type="long" indexed="true" stored="true"/>
    <!-- Core Fields  -->
-   <field name="bib_id" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="bib_id" type="string" indexed="true" stored="true" multiValued="false"/>
    <field name="order" type="long" indexed="true" stored="true" multiValued="false"/>
-   <field name="callnum" type="string" indexed="true" stored="true" multiValued="true"/>
-   <field name="shelving_key" type="string" indexed="false" stored="true" multiValued="true"/>
+   <field name="callnum" type="string" indexed="true" stored="true" multiValued="false"/>
+   <field name="shelving_key" type="string" indexed="false" stored="true" multiValued="false"/>
  </fields>
  <uniqueKey>order</uniqueKey>
  <defaultSearchField>bib_id</defaultSearchField>
