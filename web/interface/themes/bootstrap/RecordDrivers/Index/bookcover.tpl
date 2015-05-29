@@ -10,7 +10,7 @@
   {elseif $listThumb}
     {assign var=coverImage value=$listThumb}
   {/if}
-  <div class="media-object">
+  <div aria-hidden="true" class="media-object">
     {if $coreThumbMedium}
       <img class="bookcover" src="{$coreThumbMedium|escape}" alt="{translate text='Cover Image'}"/>
     {else}
@@ -23,7 +23,7 @@
   </div>
 
   {if $coverId}
-  <form class="coverupload" action="{$path}/AJAX/UploadCover" method="post" enctype="multipart/form-data">
+  <form aria-hidden="true" class="coverupload" action="{$path}/AJAX/UploadCover" method="post" enctype="multipart/form-data">
     <div class="btn btn-default btn-sm fileinput-button {if !$user || !$user->can_upload_covers}hidden{/if} upload-cover-button">
       <span class="fa fa-upload"></span>
       <span>{translate text='Upload'}</span>

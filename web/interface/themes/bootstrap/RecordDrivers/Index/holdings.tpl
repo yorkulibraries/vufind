@@ -1,4 +1,6 @@
   {if !empty($holdingURLs) || !empty($holdingsJournalOpenURLs)} 
+  <div class="online-access-container hidden">
+    <h4>{translate text='Online Access'}</h4>
         {if !empty($holdingURLs)}
           <div class="normal-links-container hidden">
             {foreach from=$allItemRecords item=row name="summaryloop"}
@@ -39,6 +41,7 @@
             {/foreach}
           </div>
         {/if}
+  </div>
   {/if}
   
   {foreach from=$holdings item=statusItems key=library name="outerloop"}

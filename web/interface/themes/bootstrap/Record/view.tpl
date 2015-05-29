@@ -1,36 +1,4 @@
-<a class="sr-only" href="#record-tabs">{translate text='Skip to holdings'}</a>
-<div class="print-hidden">
-  <div class="pull-left">
-    {if $previousRecord}
-    <div class="btn-group">
-      <a title="{translate text='Prev'}" class="btn btn-default btn-sm" href="{$path}/Record/{$previousRecord}"><span class="fa fa-arrow-left"></span> <span class="hidden-xs">{translate text='Prev'}</span></a>
-    </div>
-    {/if}
-    {if $nextRecord}
-    <div class="btn-group">
-      <a title="{translate text='Next'}" class="btn btn-default btn-sm" href="{$path}/Record/{$nextRecord}"><span class="hidden-xs">{translate text='Next'}</span> <span class="fa fa-arrow-right"></span></a>
-    </div>
-    {/if}
-  </div>
-  <div class="pull-right">
-    <div class="btn-group">
-      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-        <div class="visible-xs"><span class="fa fa-bars"></span> <span class="caret"></span></div><div class="hidden-xs"><span class="hidden-xs">{translate text='Options'}</span> <span class="caret"></span></div>
-      </button>
-      <ul class="dropdown-menu" role="menu">
-        <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/Cite"><span class="fa fa-quote-left"></span> {translate text='Cite this'}</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/SMS"><span class="fa fa-mobile-phone"></span> {translate text='Text this'}</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/Email"><span class="fa fa-envelope-o"></span> {translate text='Email this'}</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" title="{translate text='Save this record permanently in your account'}" href="{$path}/Record/{$id}/Save"><span class="fa fa-save"></span> {translate text='Save'}</a></li>
-      </ul>
-    </div>
-    <div class="btn-group">
-      {include file="Search/bookbag.tpl"}
-    </div>
-  </div>
-  
-  <div class="clearfix"></div>
-</div>
+
 
 <div class="alert-container"></div>
 
@@ -69,35 +37,52 @@
         {/if}
       </dl>
       
-      {if $allowICB || $allowInProcess || $allowStorage}
-      <div class="btn-group">
-        <button type="button" class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-          {translate text='Request'} <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-          {if $allowICB}
-          <li><a data-toggle="modal" data-target="#modal" title="{translate text='Inter-Campus Borrowing'}" href="{$path}/Record/{$id}/ICB">{translate text='ICB Request'}</a></li>
-          {/if}
-          {if $allowInProcess}
-          <li><a data-toggle="modal" data-target="#modal" title="{translate text='In-Process/On-Order'}" href="{$path}/Record/{$id}/InProcess">{translate text='InProcess Request'}</a></li>
-          {/if}
-          {if $allowStorage}
-          <li><a data-toggle="modal" data-target="#modal" title="{translate text='Request From Storage'}" href="{$path}/Record/{$id}/Storage">{translate text='Storage Request'}</a></li>
-          {/if}
-        </ul>
-      </div>
-      {/if}
-      
-      {if $allowHold}
-        <div class="btn-group">
-          <a data-toggle="modal" data-target="#modal" class="btn btn-default btn-small" title="{translate text='Hold/Recall'}" href="{$path}/Record/{$id}/Hold">{translate text='Hold Request'}</a>
-        </div>
-      {/if}
-      
     </div>
   </div>
+  
+  <div class="record-navbar print-hidden">
+    <div class="pull-left">
+      {if $lastsearch}
+      <div class="btn-group">
+      <a title="{translate text='Results'}" class="btn btn-default btn-sm" href="{$lastsearch|escape}"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='Search Results'}</span></a>
+      </div>
+      {else}
+      <div class="btn-group">
+      <a title="{translate text='Search'}" class="btn btn-default btn-sm" href="/"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='Search'}</span></a>
+      </div>
+      {/if}
+      {if $previousRecord}
+      <div class="btn-group">
+        <a title="{translate text='Prev'}" class="btn btn-default btn-sm" href="{$path}/Record/{$previousRecord}"><span class="fa fa-arrow-left"></span> <span class="hidden-xs">{translate text='Prev'}</span></a>
+      </div>
+      {/if}
+      {if $nextRecord}
+      <div class="btn-group">
+        <a title="{translate text='Next'}" class="btn btn-default btn-sm" href="{$path}/Record/{$nextRecord}"><span class="hidden-xs">{translate text='Next'}</span> <span class="fa fa-arrow-right"></span></a>
+      </div>
+      {/if}
+    </div>
+    <div class="pull-right">
+      <div class="btn-group">
+        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+          <div class="visible-xs"><span class="fa fa-bars"></span> <span class="caret"></span></div><div class="hidden-xs"><span class="hidden-xs">{translate text='Options'}</span> <span class="caret"></span></div>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/Cite"><span class="fa fa-quote-left"></span> {translate text='Cite this'}</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/SMS"><span class="fa fa-mobile-phone"></span> {translate text='Text this'}</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/Email"><span class="fa fa-envelope-o"></span> {translate text='Email this'}</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" title="{translate text='Save this record permanently in your account'}" href="{$path}/Record/{$id}/Save"><span class="fa fa-save"></span> {translate text='Save'}</a></li>
+        </ul>
+      </div>
+      <div class="btn-group">
+        {include file="Search/bookbag.tpl"}
+      </div>
+    </div>
 
-  <ul class="nav nav-tabs responsive record-view-tabs" id="record-tabs">
+    <div class="clearfix"></div>
+  </div>
+
+  <ul aria-hidden="true" class="nav nav-tabs responsive record-view-tabs" id="record-tabs">
     <li {if $tab == 'Holdings'}class="active"{/if}>
       <a data-toggle="tab" data-target="#Holdings" href="{$path}/Record/{$id}/Holdings">{translate text='Details'}</a>
     </li>

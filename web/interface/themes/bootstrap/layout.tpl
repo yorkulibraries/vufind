@@ -75,6 +75,9 @@
   </nav>
   
   <div class="container">
+    <!-- $module = {$module}  -->
+    <!-- $action = {$action}  -->
+    <!-- $pageTemplate = {$pageTemplate}  -->
     {if $error}
       <div id="content">
         <div class="alert alert-danger">
@@ -98,7 +101,7 @@
               <a class="sr-only" href="#searchResults">{translate text='Skip to search results'}</a>
             {/if}
             {if !($module == 'Search' && $pageTemplate == 'home.tpl') && !($pageTemplate == 'ezproxy.tpl')}
-              {if $pageTemplate != 'advanced.tpl' && $pageTemplate != 'login.tpl'}
+              {if $pageTemplate != 'advanced.tpl' && $pageTemplate != 'login.tpl' && $module != 'Record'}
                     {include file="Search/searchbox.tpl"}
               {/if}
             {/if}

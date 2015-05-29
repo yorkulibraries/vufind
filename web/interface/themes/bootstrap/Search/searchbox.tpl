@@ -49,9 +49,6 @@
         </div>
       </div>
       <div class="change-search-link">
-        {if $module=='Record' && $pageTemplate=='view.tpl' && $lastsearch}
-        <span class="fa fa-long-arrow-left"></span> <a href="{$lastsearch|escape}">{translate text='Results'}</a>
-        {/if}
         <span class="fa fa-search"></span> <a href="{$path}/Search/Advanced?mylang={$userLang}">{translate text='Advanced Search'}</a>
       </div>
       <input type="hidden" name="mylang" value="{$userLang}" />
