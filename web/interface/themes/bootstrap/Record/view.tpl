@@ -48,7 +48,7 @@
       </div>
       {else}
       <div class="btn-group">
-      <a title="{translate text='Search'}" class="btn btn-default btn-sm" href="/"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='Search'}</span></a>
+      <a title="{translate text='Search'}" class="btn btn-default btn-sm" href="{$path}"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='Search'}</span></a>
       </div>
       {/if}
       {if $previousRecord}
