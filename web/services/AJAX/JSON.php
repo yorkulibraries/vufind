@@ -413,10 +413,13 @@ class JSON extends Action
 
         $filtered = array();
         foreach ($record as $current) {
-            if (!in_array($current['location'], $hideHoldings) 
-                    || $current['item_type'] == 'IN-PROCESS'
-                    || in_array($current['library'], $configArray['Record']['show_lost_missing_for_libraries'])) {
+            if (!in_array($current['location'], $hideHoldings) || $current['item_type'] == 'IN-PROCESS') {
                 $filtered[] = $current;
+            } else {
+                if (in_array($current['location'], array('Lost', 'Missing')) 
+                        && in_array($current['library'], $configArray['Record']['show_lost_missing_for_libraries'])) {
+                    $filtered[] = $current;
+                }
             }
         }
         return $filtered;

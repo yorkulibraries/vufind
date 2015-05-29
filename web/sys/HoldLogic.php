@@ -193,9 +193,16 @@ class HoldLogic
 
         if (count($result)) {
             foreach ($result as $copy) {
-                $show = !in_array($copy['location'], $this->hideHoldings) 
-                    || $copy['item_type'] == 'IN-PROCESS'
-                    || in_array($copy['library'], $configArray['Record']['show_lost_missing_for_libraries']);
+                $show = false;
+                if (!in_array($copy['location'], $this->hideHoldings) || $copy['item_type'] == 'IN-PROCESS') {
+                    $show = true;
+                } else {
+                    if (in_array($copy['location'], array('Lost', 'Missing')) 
+                            && in_array($copy['library'], $configArray['Record']['show_lost_missing_for_libraries'])) {
+                        $show = true;
+                    }
+                }
+                
                 if ($show) {
                     if ($checkHolds != false) {
                         // Is this copy holdable / linkable
