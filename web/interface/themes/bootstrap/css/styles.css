@@ -505,6 +505,9 @@ a.accordion-toggle:hover {
   .record-container .google-books-preview {
     width: 75px;
   }
+  .record-container .record-view-tabs li > a {
+    padding: 10px 10px;
+  }
 }
 @media screen and (min-width: 321px) and (max-width: 767px) {
   .row-offcanvas-right .sidebar-offcanvas {

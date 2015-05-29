@@ -88,7 +88,7 @@
     </li>
     {if true || $canBrowseShelf}
       <li>
-        <a data-toggle="tab" data-target="#BrowseShelf" href="{$path}/Record/{$id}/BrowseShelf">{translate text='Related'}</a>
+        <a data-toggle="tab" data-target="#BrowseShelf" href="{$path}/Record/{$id}/BrowseShelf">{translate text='Browse Shelf'}</a>
       </li>
     {/if}
     <li {if $tab == 'UserComments'}class="active"{/if}>
