@@ -62,6 +62,9 @@ function smarty_function_minifycss($params, &$smarty)
             $localFile = substr($localFile, 0, strlen($localFile)-5);
             $lessc = new lessc;
             try {
+                $lessc->setVariables(array(
+                  "css_url" => "'{$path}/interface/themes/{$theme}/css'"
+                ));
                 $lessc->checkedCompile($less, $localFile);
                 $cssFiles[] = 'css/' . basename($localFile);
             } catch (Exception $e) {
