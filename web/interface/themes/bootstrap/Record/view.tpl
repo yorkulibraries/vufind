@@ -87,7 +87,7 @@
       <a data-toggle="tab" data-target="#Holdings" href="{$path}/Record/{$id}/Holdings">{translate text='Details'}</a>
     </li>
     {if true || $canBrowseShelf}
-      <li>
+      <li {if $tab == 'BrowseShelf'}class="active"{/if}>
         <a data-toggle="tab" data-target="#BrowseShelf" href="{$path}/Record/{$id}/BrowseShelf">{translate text='Browse Shelf'}</a>
       </li>
     {/if}

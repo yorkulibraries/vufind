@@ -38,6 +38,8 @@ $(document).ready(function() {
     
     // setup more/less buttons
     activateMoreLessButtons('.container');
+    
+    activateShelfBrowser();
 });
 
 // handle logged out event
@@ -143,7 +145,9 @@ function handleBootstrapEvents() {
     	var href = $(e.target).attr('href');
     	var content = target + '-tab-content';
     	if($(content).length == 0) {
-    		$(target).load(href + ' ' + content);
+    		$(target).load(href + ' ' + content, function() {
+                onAjaxTabLoaded(target);
+            });
     	}
     });
 }
@@ -593,4 +597,24 @@ function clearBookBagCheckbox(button) {
     $(button).attr('title', $(button).data('off-title'));
     $(button).attr('href', $(this).data('off-href'));
     $(button).children('span.fa:first').removeClass($(button).data('on-icon')).addClass($(button).data('off-icon'));
+}
+
+function onAjaxTabLoaded(target) {
+    console.log(target + ' loaded.');
+    if (target == '#BrowseShelf') {
+        activateShelfBrowser();
+    }
+}
+
+function activateShelfBrowser() {
+    $('.browse-shelf').bxSlider({
+        preloadImages: 'visible',
+        slideWidth: 128,
+        slideMargin: 5,
+        minSlides: 1,
+        maxSlides: 5,
+        moveSlides: 1,
+        auto: false,
+        pager: false,
+    });
 }

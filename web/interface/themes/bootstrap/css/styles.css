@@ -321,6 +321,15 @@ a.online-access:focus {
 .record-container .record-navbar {
   margin-bottom: 20px;
 }
+.record-container .bx-wrapper .bx-loading {
+  background-image: url(/find/interface/themes/bootstrap/css/images/bx_loader.gif);
+}
+.record-container .bx-wrapper .bx-prev {
+  background-image: url(/find/interface/themes/bootstrap/css/images/controls.png);
+}
+.record-container .bx-wrapper .bx-next {
+  background-image: url(/find/interface/themes/bootstrap/css/images/controls.png);
+}
 .pagination-centered {
   text-align: center;
 }
