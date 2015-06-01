@@ -69,12 +69,8 @@ class Related extends Record
         $left = $browser->browseLeft($min);
         $right = $browser->browseRight($max);
         
-        $recordsOnEachSide = 2;
-        
         $recordsToTheLeft = array();
-        $countLeft = count($left);
-        for ($i = $countLeft - $recordsOnEachSide; $i < $countLeft; $i++) {
-            $item = $left[$i];
+        foreach($left as $item) {
             $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
             $recordDriver->getSearchResult();
             $interface->assign('shelfOrder', $item['order']);
@@ -83,8 +79,7 @@ class Related extends Record
         $interface->assign('recordsToTheLeft', $recordsToTheLeft);
         
         $recordsToTheRight = array();
-        for ($i = 0; $i < $recordsOnEachSide; $i++) {
-            $item = $right[$i];
+        foreach ($right as $item) {
             $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
             $recordDriver->getSearchResult();
             $interface->assign('shelfOrder', $item['order']);
@@ -94,7 +89,7 @@ class Related extends Record
         
         $this->recordDriver->getSearchResult();
         $interface->assign('shelfOrder', $min);
-        $interface->assign('isStartingPoint', true);
+        $interface->assign('startIndex', count($recordsToTheLeft));
         $interface->assign('thisRecord', $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl'));
         
         return $interface->fetch('RecordDrivers/Index/browse-shelf-list.tpl');

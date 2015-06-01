@@ -607,34 +607,16 @@ function onAjaxTabLoaded(target) {
 }
 
 function activateShelfBrowser() {
-    var slideWidth = 128;
-    var slideMargin = 5;
-    var minSlides = 1; 
-    var maxSlides = 5;
+    var startSlide = $('.browse-shelf').data('start-index');
     var slider = $('.browse-shelf').bxSlider({
-        preloadImages: 'visible',
-        slideWidth: slideWidth,
-        slideMargin: slideMargin,
-        minSlides: minSlides,
-        maxSlides: maxSlides,
+        slideWidth: 128,
+        slideMargin: 5,
+        minSlides: 1,
+        maxSlides: 5,
         moveSlides: 1,
         auto: false,
         pager: false,
-        infiniteLoop: true,
-        onSlidePrev: function($slide, oldIndex, newIndex) {
-            if (oldIndex == 0) {
-                return false; 
-            }
-            return true;
-        },
-        onSlideNext: function($slide, oldIndex, newIndex) {
-            var slideCount = slider.getSlideCount();
-            var visibleCount = Math.round($slide.closest('.bx-viewport').width() / slideWidth);
-            var hiddenCount = slideCount - visibleCount;
-            if (newIndex + visibleCount > slideCount) {
-                return false; 
-            }
-            return true;
-        }
+        infiniteLoop: false,
+        startSlide: startSlide
     });    
 }

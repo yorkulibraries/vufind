@@ -45,7 +45,7 @@ class ShelfBrowser
     private $maxItemsPerBib = 100;
     
     // max number of bib records
-    private $maxRecords = 2;
+    private $maxRecords = 10;
     
     public function __construct()
     {
