@@ -1,4 +1,3 @@
-
 <ul class="browse-shelf">
   {foreach from=$recordsToTheLeft item=item}
     {$item}

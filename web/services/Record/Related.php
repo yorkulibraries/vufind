@@ -1,6 +1,6 @@
 <?php
 /**
- * BrowseShelf action for Record module
+ * Related action for Record module
  *
  * PHP version 5
  *
@@ -29,7 +29,7 @@ require_once 'Record.php';
 require_once 'sys/ShelfBrowser.php';
 
 /**
- * BrowseShelf action for Record module
+ * Related action for Record module
  *
  * @category VuFind
  * @package  Controller_Record
@@ -37,22 +37,37 @@ require_once 'sys/ShelfBrowser.php';
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
-class BrowseShelf extends Record
+class Related extends Record
 {
     public function __construct() 
     {
         parent::__construct();
-        $this->browser = new ShelfBrowser();
     }
     
     public function launch()
     {
         global $interface;
         
-        list($min, $max) = $this->browser->guessMinMaxOrder($_REQUEST['id']);
+        $interface->assign('browseShelf', $this->browseShelf());
+        $interface->assign('tab', 'Related');
+        $interface->setPageTitle(translate('Related'));
+        $interface->assign('subTemplate', 'view-related.tpl');
+        $interface->setTemplate('view.tpl');
+
+        // Display Page
+        $interface->display('layout.tpl');
+    }
+    
+    private function browseShelf() 
+    {
+        global $interface;
         
-        $left = $this->browser->browseLeft($min);
-        $right = $this->browser->browseRight($max);
+        $browser = new ShelfBrowser();
+        
+        list($min, $max) = $browser->guessMinMaxOrder($_REQUEST['id']);
+        
+        $left = $browser->browseLeft($min);
+        $right = $browser->browseRight($max);
         
         $recordsOnEachSide = 2;
         
@@ -63,7 +78,7 @@ class BrowseShelf extends Record
             $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
             $recordDriver->getSearchResult();
             $interface->assign('shelfOrder', $item['order']);
-            $recordsToTheLeft[] = $interface->fetch('RecordDrivers/Index/shelf-browse-item.tpl');
+            $recordsToTheLeft[] = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
         }
         $interface->assign('recordsToTheLeft', $recordsToTheLeft);
         
@@ -73,21 +88,16 @@ class BrowseShelf extends Record
             $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
             $recordDriver->getSearchResult();
             $interface->assign('shelfOrder', $item['order']);
-            $recordsToTheRight[] = $interface->fetch('RecordDrivers/Index/shelf-browse-item.tpl');
+            $recordsToTheRight[] = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
         }
         $interface->assign('recordsToTheRight', $recordsToTheRight);
         
         $this->recordDriver->getSearchResult();
         $interface->assign('shelfOrder', $min);
-        $interface->assign('thisRecord', $interface->fetch('RecordDrivers/Index/shelf-browse-item.tpl'));
+        $interface->assign('isStartingPoint', true);
+        $interface->assign('thisRecord', $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl'));
         
-        $interface->assign('tab', 'BrowseShelf');
-        $interface->setPageTitle(translate('Browse Shelf'));
-        $interface->assign('subTemplate', 'view-browse-shelf.tpl');
-        $interface->setTemplate('view.tpl');
-
-        // Display Page
-        $interface->display('layout.tpl');
+        return $interface->fetch('RecordDrivers/Index/browse-shelf-list.tpl');
     }
 }
 ?>

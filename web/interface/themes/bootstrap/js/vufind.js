@@ -601,20 +601,40 @@ function clearBookBagCheckbox(button) {
 
 function onAjaxTabLoaded(target) {
     console.log(target + ' loaded.');
-    if (target == '#BrowseShelf') {
+    if (target == '#Related') {
         activateShelfBrowser();
     }
 }
 
 function activateShelfBrowser() {
-    $('.browse-shelf').bxSlider({
+    var slideWidth = 128;
+    var slideMargin = 5;
+    var minSlides = 1; 
+    var maxSlides = 5;
+    var slider = $('.browse-shelf').bxSlider({
         preloadImages: 'visible',
-        slideWidth: 128,
-        slideMargin: 5,
-        minSlides: 1,
-        maxSlides: 5,
+        slideWidth: slideWidth,
+        slideMargin: slideMargin,
+        minSlides: minSlides,
+        maxSlides: maxSlides,
         moveSlides: 1,
         auto: false,
         pager: false,
-    });
+        infiniteLoop: true,
+        onSlidePrev: function($slide, oldIndex, newIndex) {
+            if (oldIndex == 0) {
+                return false; 
+            }
+            return true;
+        },
+        onSlideNext: function($slide, oldIndex, newIndex) {
+            var slideCount = slider.getSlideCount();
+            var visibleCount = Math.round($slide.closest('.bx-viewport').width() / slideWidth);
+            var hiddenCount = slideCount - visibleCount;
+            if (newIndex + visibleCount > slideCount) {
+                return false; 
+            }
+            return true;
+        }
+    });    
 }

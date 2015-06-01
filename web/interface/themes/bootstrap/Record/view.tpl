@@ -86,9 +86,9 @@
     <li {if $tab == 'Holdings'}class="active"{/if}>
       <a data-toggle="tab" data-target="#Holdings" href="{$path}/Record/{$id}/Holdings">{translate text='Details'}</a>
     </li>
-    {if true || $canBrowseShelf}
-      <li {if $tab == 'BrowseShelf'}class="active"{/if}>
-        <a data-toggle="tab" data-target="#BrowseShelf" href="{$path}/Record/{$id}/BrowseShelf">{translate text='Browse Shelf'}</a>
+    {if true || $hasRelated}
+      <li {if $tab == 'Related'}class="active"{/if}>
+        <a data-toggle="tab" data-target="#Related" href="{$path}/Record/{$id}/Related">{translate text='Related'}</a>
       </li>
     {/if}
     <li {if $tab == 'UserComments'}class="active"{/if}>
@@ -164,9 +164,9 @@
     </div>
     {/if}
     
-    <div class="tab-pane {if $tab == 'BrowseShelf'}active{/if}" id="BrowseShelf">
-    {if $tab == 'BrowseShelf'}
-      <div id="BrowseShelf-tab-content">
+    <div class="tab-pane {if $tab == 'Related'}active{/if}" id="Related">
+    {if $tab == 'Related'}
+      <div id="Related-tab-content">
         {include file="Record/$subTemplate"}
       </div>
     {/if}

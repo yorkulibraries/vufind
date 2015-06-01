@@ -307,7 +307,6 @@ a.online-access:focus {
   padding: 0;
 }
 .record-container .section {
-  padding-left: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid #ccc;
 }
@@ -321,6 +320,10 @@ a.online-access:focus {
 .record-container .record-navbar {
   margin-bottom: 20px;
 }
+.record-container .bx-wrapper {
+  margin-left: 0;
+  box-sizing: content-box;
+}
 .record-container .bx-wrapper .bx-loading {
   background-image: url(/find/interface/themes/bootstrap/css/images/bx_loader.gif);
 }
@@ -329,6 +332,10 @@ a.online-access:focus {
 }
 .record-container .bx-wrapper .bx-next {
   background-image: url(/find/interface/themes/bootstrap/css/images/controls.png);
+}
+.record-container .bx-wrapper img {
+  height: 190px;
+  border: 1px solid #ccc;
 }
 .pagination-centered {
   text-align: center;

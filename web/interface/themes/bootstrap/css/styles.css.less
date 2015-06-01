@@ -308,7 +308,6 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
         padding: 0;
     }
     .section {
-        padding-left: 10px;
         padding-bottom: 10px;
         border-bottom: 1px solid #ccc;
     }
@@ -323,14 +322,22 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
     .record-navbar {
         margin-bottom: 20px;
     }
-    .bx-wrapper .bx-loading {
-        background-image: url(@{css_url}/images/bx_loader.gif);
-    }
-    .bx-wrapper .bx-prev {
-        background-image: url(@{css_url}/images/controls.png);
-    }
-    .bx-wrapper .bx-next {
-        background-image: url(@{css_url}/images/controls.png);
+    .bx-wrapper {
+        margin-left: 0;
+        box-sizing: content-box;
+        .bx-loading {
+            background-image: url(@{css_url}/images/bx_loader.gif);
+        }
+        .bx-prev {
+            background-image: url(@{css_url}/images/controls.png);
+        }
+        .bx-next {
+            background-image: url(@{css_url}/images/controls.png);
+        }
+        img {
+        	height: 190px;
+        	border: 1px solid #ccc;	
+        }
     }
 }
 .pagination-centered {
