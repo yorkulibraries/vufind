@@ -86,11 +86,9 @@
     <li {if $tab == 'Holdings'}class="active"{/if}>
       <a data-toggle="tab" data-target="#Holdings" href="{$path}/Record/{$id}/Holdings">{translate text='Details'}</a>
     </li>
-    {if true || $hasRelated}
-      <li {if $tab == 'Related'}class="active"{/if}>
-        <a data-toggle="tab" data-target="#Related" href="{$path}/Record/{$id}/Related">{translate text='Related'}</a>
-      </li>
-    {/if}
+    <li {if $tab == 'Related'}class="active"{/if}>
+      <a data-toggle="tab" data-target="#Related" href="{$path}/Record/{$id}/Related">{translate text='Related'}</a>
+    </li>
     <li {if $tab == 'UserComments'}class="active"{/if}>
       <a data-toggle="tab" data-target="#UserComments" href="{$path}/Record/{$id}/UserComments">{translate text='Comments'}</a>
     </li>

@@ -47,7 +47,8 @@ class Related extends Record
     public function launch()
     {
         global $interface;
-        
+    
+        $interface->assign('similarItems', $this->similarItems());
         $interface->assign('browseShelf', $this->browseShelf());
         $interface->assign('tab', 'Related');
         $interface->setPageTitle(translate('Related'));
@@ -93,6 +94,22 @@ class Related extends Record
         $interface->assign('thisRecord', $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl'));
         
         return $interface->fetch('RecordDrivers/Index/browse-shelf-list.tpl');
+    }
+    
+    private function similarItems() 
+    {
+        global $interface;
+        
+        // yuck!!!
+        $similarRecords = $interface->get_template_vars('similarRecords');
+        
+        $similarItems = array();
+        foreach($similarRecords as $item) {
+            $recordDriver = RecordDriverFactory::initRecordDriver($item);
+            $recordDriver->getSearchResult();
+            $similarItems[] = $interface->fetch('RecordDrivers/Index/carousel-item.tpl');
+        }
+        return $similarItems;
     }
 }
 ?>

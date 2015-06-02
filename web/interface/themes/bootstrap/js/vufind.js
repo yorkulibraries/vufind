@@ -40,6 +40,7 @@ $(document).ready(function() {
     activateMoreLessButtons('.container');
     
     activateShelfBrowser();
+    activateCarousels();
 });
 
 // handle logged out event
@@ -603,7 +604,21 @@ function onAjaxTabLoaded(target) {
     console.log(target + ' loaded.');
     if (target == '#Related') {
         activateShelfBrowser();
+        activateCarousels();
     }
+}
+
+function activateCarousels() {
+    var slider = $('.carousel').bxSlider({
+        slideWidth: 128,
+        slideMargin: 5,
+        minSlides: 1,
+        maxSlides: 5,
+        moveSlides: 1,
+        auto: false,
+        pager: false,
+        infiniteLoop: true
+    });
 }
 
 function activateShelfBrowser() {
