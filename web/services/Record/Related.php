@@ -75,7 +75,10 @@ class Related extends Record
             $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
             $recordDriver->getSearchResult();
             $interface->assign('shelfOrder', $item['order']);
-            $recordsToTheLeft[] = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
+            $html = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
+            if (strlen(trim($html)) > 0) {
+                $recordsToTheLeft[] = $html;    
+            }
         }
         $interface->assign('recordsToTheLeft', $recordsToTheLeft);
         
@@ -84,7 +87,10 @@ class Related extends Record
             $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
             $recordDriver->getSearchResult();
             $interface->assign('shelfOrder', $item['order']);
-            $recordsToTheRight[] = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
+            $html = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
+            if (strlen(trim($html)) > 0) {
+                $recordsToTheRight[] = $html;    
+            }
         }
         $interface->assign('recordsToTheRight', $recordsToTheRight);
         
@@ -107,7 +113,10 @@ class Related extends Record
         foreach($similarRecords as $item) {
             $recordDriver = RecordDriverFactory::initRecordDriver($item);
             $recordDriver->getSearchResult();
-            $similarItems[] = $interface->fetch('RecordDrivers/Index/carousel-item.tpl');
+            $html = $interface->fetch('RecordDrivers/Index/carousel-item.tpl');
+            if (strlen(trim($html)) > 0) {
+                $similarItems[] = $html;    
+            }
         }
         return $similarItems;
     }
