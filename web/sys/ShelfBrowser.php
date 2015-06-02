@@ -77,7 +77,7 @@ class ShelfBrowser
     public function browseLeft($order) {
         $from = ($order > $this->maxItemsPerBib) ? $order - $this->maxItemsPerBib : $order;
         $to = ($order > 1) ? $order - 1 : $order;
-        return $this->browse($from, $to);
+        return $this->browse($from, $to, 'desc');
     }
     
     public function browseRight($order) {
@@ -86,14 +86,23 @@ class ShelfBrowser
         return $this->browse($from, $to);
     }
     
-    private function browse($from, $to) 
+    private function browse($from, $to, $dir='asc') 
     {
         $query = "order:[$from TO $to]";
-        $sort = 'order asc';
+        $sort = "order $dir";
         $limit = $this->maxItemsPerSide;
         $result = $this->shelf->search($query, null, null, 0, $limit, null, '', null, $sort);
-        
-        return $this->merge($result['response']['docs']);
+        $docs = $result['response']['docs'];
+        if ($dir == 'desc') {
+            // need to resort in ascending order
+            usort($docs, function($a, $b) {
+                if ($a['order'] == $b['order']) {
+                    return 0;
+                }
+                return ($a['order'] < $b['order']) ? -1 : 1;
+            });
+        }
+        return $this->merge($docs);
     }
     
     /**
