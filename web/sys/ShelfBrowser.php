@@ -41,10 +41,18 @@ class ShelfBrowser
     // assuming each bib record may have at most this number 
     // of items (callnumbers) attached to it.
     private $maxItemsPerBib = 100;
-        
+    
+    // max number of items on each side of the browse
+    private $maxItemsPerSide = 20;
+    
     public function __construct()
     {
         global $configArray;
+        
+        $this->maxItemsPerBib = isset($configArray['ShelfBrowse']['maxItemsPerBib']) 
+            ? $configArray['ShelfBrowse']['maxItemsPerBib'] : 100;
+        $this->maxItemsPerSide = isset($configArray['ShelfBrowse']['maxItemsPerSide']) 
+            ? $configArray['ShelfBrowse']['maxItemsPerSide'] : 20;
 
         $this->biblio = ConnectionManager::connectToIndex();
         $this->shelf = ConnectionManager::connectToIndex('Solr', 'shelf');
@@ -82,7 +90,7 @@ class ShelfBrowser
     {
         $query = "order:[$from TO $to]";
         $sort = 'order asc';
-        $limit = $this->maxItemsPerBib;
+        $limit = $this->maxItemsPerSide;
         $result = $this->shelf->search($query, null, null, 0, $limit, null, '', null, $sort);
         
         return $this->merge($result['response']['docs']);

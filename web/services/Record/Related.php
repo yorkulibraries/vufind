@@ -67,39 +67,36 @@ class Related extends Record
         
         list($min, $max) = $browser->guessMinMaxOrder($_REQUEST['id']);
         
-        $left = $browser->browseLeft($min);
-        $right = $browser->browseRight($max);
-        
-        $recordsToTheLeft = array();
-        foreach($left as $item) {
-            $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
-            $recordDriver->getSearchResult();
-            $interface->assign('shelfOrder', $item['order']);
-            $html = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
-            if (strlen(trim($html)) > 0) {
-                $recordsToTheLeft[] = $html;    
-            }
-        }
+        $recordsToTheLeft = $this->getHTMLItems($browser->browseLeft($min));
         $interface->assign('recordsToTheLeft', $recordsToTheLeft);
         
-        $recordsToTheRight = array();
-        foreach ($right as $item) {
-            $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
-            $recordDriver->getSearchResult();
-            $interface->assign('shelfOrder', $item['order']);
-            $html = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
-            if (strlen(trim($html)) > 0) {
-                $recordsToTheRight[] = $html;    
-            }
-        }
+        $recordsToTheRight = $this->getHTMLItems($browser->browseRight($max));
         $interface->assign('recordsToTheRight', $recordsToTheRight);
         
+        // generate html for "this" record
         $this->recordDriver->getSearchResult();
         $interface->assign('shelfOrder', $min);
         $interface->assign('startIndex', count($recordsToTheLeft));
         $interface->assign('thisRecord', $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl'));
         
         return $interface->fetch('RecordDrivers/Index/browse-shelf-list.tpl');
+    }
+    
+    private function getHTMLItems($items) 
+    {
+        global $interface;
+        
+        $htmlItems = array();
+        foreach ($items as $item) {
+            $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
+            $recordDriver->getSearchResult();
+            $interface->assign('shelfOrder', $item['order']);
+            $html = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
+            if (strlen(trim($html)) > 0) {
+                $htmlItems[] = $html;    
+            }
+        }
+        return $htmlItems;
     }
     
     private function similarItems() 
