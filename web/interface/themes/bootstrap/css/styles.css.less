@@ -512,40 +512,7 @@ a.accordion-toggle, a.accordion-toggle:hover {
         top: 0;
     }
 }
-/*  xs devices */
-@media screen and (max-width: 320px) {
-    .row-offcanvas-right .sidebar-offcanvas {
-        right: -90%; /* 11 xs columns */
-    }
-    .row-offcanvas-right.active {
-        right: 100%; /* 11 xs columns */
-    }
-    .result-container {
-        .bookcover,.google-books-preview {
-            width: 60px;
-        }
-    }
-    .record-container {
-        .bookcover,.google-books-preview {
-            width: 75px;
-        }
-        .record-view-tabs {
-            li > a {
-                padding: 10px 10px;
-            }
-        }
-        .bx-wrapper {
-            margin-left: 0;
-            margin-right: 0;
-            .bx-controls-direction {
-                display:none;
-            }
-            img {
-            	height: 100px;
-            }
-        }
-    }
-}
+
 @media screen and (min-width: 321px) and (max-width: 767px) {
     .row-offcanvas-right .sidebar-offcanvas {
         right: -58.3%; 
@@ -575,4 +542,47 @@ a.accordion-toggle, a.accordion-toggle:hover {
     .row-offcanvas-right.active {
         right: 33.3%; /* 12 xs columns */
     }
+}
+
+//
+// TODO: consolidate media queries
+//
+
+// Extra small devices (xs) - regardless of orientation - (<768px)
+@media screen and (max-width: 767px) {
+  .record-container {
+    .bx-wrapper {
+      margin-left: 0;
+      margin-right: 0;
+      .bx-controls-direction {
+        display:none;
+      }
+      img {
+      	height: 100px;
+      }
+    }
+    .bookcover,.google-books-preview {
+        width: 75px;
+    }
+    .record-view-tabs {
+      li > a {
+        padding: 10px 10px;
+      }
+    }
+  }
+  .result-container {
+    .bookcover,.google-books-preview {
+      width: 60px;
+    }
+  }
+}
+
+// Extra small devices (xs) - portrait - (max-width: 320px)
+@media screen and (max-width: 320px) {
+    .row-offcanvas-right .sidebar-offcanvas {
+        right: -90%; /* 11 xs columns */
+    }
+    .row-offcanvas-right.active {
+        right: 100%; /* 11 xs columns */
+    }   
 }

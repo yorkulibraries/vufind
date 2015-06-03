@@ -144,7 +144,7 @@
     var _global_path = '{$path}';
     var _global_url = '{$url}';
   </script>
-  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.js,js/jquery.ui.widget.js,js/responsive-tabs.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/jquery.bxslider.min.js,js/bootstrap-toolkit.min.js,js/vufind.js"></script>
+  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/jquery.bxslider.min.js,js/bootstrap-toolkit.min.js,js/vufind.js"></script>
   {if $gaId}  
   <script type="text/javascript">
       {literal}

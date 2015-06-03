@@ -4,10 +4,8 @@ $.ajaxSetup ({
 });
 
 $(document).ready(function() {    
-    //window.VuFind_is_xs = ResponsiveBootstrapToolkit.is('xs');
-    //window.VuFind_is_sm = ResponsiveBootstrapToolkit.is('sm');
-    //window.VuFind_is_md = ResponsiveBootstrapToolkit.is('md');
-    //window.VuFind_is_lg = ResponsiveBootstrapToolkit.is('lg');
+    window.VuFind_is_xs = ResponsiveBootstrapToolkit.is('xs');
+    window.VuFind_is_sm = ResponsiveBootstrapToolkit.is('sm');
     
     // disable repeat submissions when enter is pressed and held down
     preventRepeatedEnters();    
@@ -38,9 +36,6 @@ $(document).ready(function() {
     
     // setup upload cover form
     setupUploadCoverForm();
-    
-    // enable responsive tabs
-    //fakewaffle.responsiveTabs(['xs', 'sm']);
     
     // setup more/less buttons
     activateMoreLessButtons('.container');
