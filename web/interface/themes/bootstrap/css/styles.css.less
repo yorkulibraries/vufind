@@ -325,6 +325,9 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
     .bx-wrapper {
         margin-left: 0;
         box-sizing: content-box;
+        border: medium none;
+        box-shadow: none;
+        margin-bottom: 10px;
         .bx-loading {
             background-image: url(@{css_url}/images/bx_loader.gif);
         }
@@ -337,6 +340,10 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
         img {
         	height: 190px;
         	border: 1px solid #ccc;	
+        }
+        a, a:hover, a:active, a:visited, a:link {
+            color: #555555;
+            text-decoration: none;
         }
     }
 }
