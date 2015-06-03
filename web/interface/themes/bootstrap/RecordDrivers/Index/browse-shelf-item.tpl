@@ -5,7 +5,7 @@
       <img alt="{translate text='Cover Image'}" src="{$summThumb}" title="{$summTitle|escape}" />
     </div>
     <div class="slide-title small">
-      {$summTitle|truncate:35|trim:' /:'|escape}
+      {$summTitle|truncate:30|trim:' /:'|escape}
     </div>
   </a>
 </li>

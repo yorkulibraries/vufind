@@ -328,7 +328,7 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
         box-sizing: content-box;
         border: medium none;
         box-shadow: none;
-        margin-bottom: 10px;
+        margin-bottom: 0;
         .bx-controls-direction a {
             margin-left: -45px;
             margin-right: -45px;
@@ -350,6 +350,7 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
             color: #555555;
             text-decoration: none;
         }
+        .slide-title { overflow: hidden }
     }
 }
 .pagination-centered {
@@ -538,6 +539,9 @@ a.accordion-toggle, a.accordion-toggle:hover {
             margin-right: 0;
             .bx-controls-direction {
                 display:none;
+            }
+            img {
+            	height: 100px;
             }
         }
     }
