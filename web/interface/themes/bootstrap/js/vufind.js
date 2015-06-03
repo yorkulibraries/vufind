@@ -4,10 +4,10 @@ $.ajaxSetup ({
 });
 
 $(document).ready(function() {    
-    window.VuFind_is_xs = ResponsiveBootstrapToolkit.is('xs');
-    window.VuFind_is_sm = ResponsiveBootstrapToolkit.is('sm');
-    window.VuFind_is_md = ResponsiveBootstrapToolkit.is('md');
-    window.VuFind_is_lg = ResponsiveBootstrapToolkit.is('lg');
+    //window.VuFind_is_xs = ResponsiveBootstrapToolkit.is('xs');
+    //window.VuFind_is_sm = ResponsiveBootstrapToolkit.is('sm');
+    //window.VuFind_is_md = ResponsiveBootstrapToolkit.is('md');
+    //window.VuFind_is_lg = ResponsiveBootstrapToolkit.is('lg');
     
     // disable repeat submissions when enter is pressed and held down
     preventRepeatedEnters();    
@@ -616,7 +616,7 @@ function onAjaxTabLoaded(target) {
 
 function activateCarousels() {
     var slider = $('.carousel').bxSlider({
-        slideWidth: window.VuFind_is_xs ? 75 : 128,
+        slideWidth: (window.VuFind_is_xs ? 75 : 128),
         slideMargin: 10,
         minSlides: 1,
         maxSlides: 5,
@@ -630,7 +630,7 @@ function activateCarousels() {
 function activateShelfBrowser() {
     var startSlide = $('.browse-shelf').data('start-index');
     var slider = $('.browse-shelf').bxSlider({
-        slideWidth: window.VuFind_is_xs ? 75 : 128,
+        slideWidth: (window.VuFind_is_xs ? 75 : 128),
         slideMargin: 10,
         minSlides: 1,
         maxSlides: 5,
