@@ -611,7 +611,7 @@ function onAjaxTabLoaded(target) {
 function activateCarousels() {
     var slider = $('.carousel').bxSlider({
         slideWidth: 128,
-        slideMargin: 5,
+        slideMargin: 10,
         minSlides: 1,
         maxSlides: 5,
         moveSlides: 1,
@@ -625,7 +625,7 @@ function activateShelfBrowser() {
     var startSlide = $('.browse-shelf').data('start-index');
     var slider = $('.browse-shelf').bxSlider({
         slideWidth: 128,
-        slideMargin: 5,
+        slideMargin: 10,
         minSlides: 1,
         maxSlides: 5,
         moveSlides: 1,
