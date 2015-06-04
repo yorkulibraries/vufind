@@ -618,8 +618,25 @@ function activateCarousels() {
             },
         ]
     };
+    // normal carousels
+    $('.carousel:not(.slick-slider)').slick(settings); 
     
-    $('.carousel:not(.slick-slider)').slick(settings);
-    $('.browse-shelf:not(.slick-slider)').slick(settings);
+    //  shelf browser carousel
+    $('.browse-shelf:not(.slick-slider)').slick($.extend({
+        infinite: true,
+    }, settings));
+    
+    //$('.browse-shelf').slick('slickGoTo', $('.browse-shelf').data('start-index'));
+    
+    // On before slide change
+    $('.browse-shelf').on('beforeChange', function(event, slick, currentSlide, nextSlide) {
+        var count = $('.slick-slide:not(.slick-cloned)', '.browse-shelf').size();
+        if (currentSlide == 0 && nextSlide > slick.getOption('slidesToScroll')) {
+            alert("reached end on prev, about to go to " + nextSlide);
+        }
+        if (currentSlide >= count - slick.getOption('slidesToScroll') && nextSlide == 0) {
+            alert("reach end on next, about to go to " + nextSlide);
+        }
+    });
 }
 
