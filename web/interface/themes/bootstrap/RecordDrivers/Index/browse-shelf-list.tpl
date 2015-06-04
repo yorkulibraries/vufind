@@ -1,4 +1,4 @@
-<ul class="browse-shelf" data-start-index="{$startIndex}">
+<div class="browse-shelf" data-start-index="{$startIndex}">
   {foreach from=$recordsToTheLeft item=item}
     {$item}
   {/foreach}
@@ -6,4 +6,4 @@
   {foreach from=$recordsToTheRight item=item}
     {$item}
   {/foreach}
-</ul>
+</div>

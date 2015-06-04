@@ -1,5 +1,5 @@
 {if $summId && $summThumb}
-<li data-shelf-order="{$shelfOrder}">
+<div data-shelf-order="{$shelfOrder}">
   <a href="{$path}/Record/{$summId}">
     <div class="slide-image">
       <img alt="{translate text='Cover Image'}" src="{$summThumb}" title="{$summTitle|escape}" />
@@ -8,5 +8,5 @@
       {$summTitle|truncate:30|trim:' /:'|escape}
     </div>
   </a>
-</li>
+</div>
 {/if}

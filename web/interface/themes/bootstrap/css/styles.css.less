@@ -322,35 +322,28 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
     .record-navbar {
         margin-bottom: 20px;
     }
-    .bx-wrapper {
-        margin-left: 45px;
-        margin-right: 45px;
-        box-sizing: content-box;
-        border: medium none;
-        box-shadow: none;
-        margin-bottom: 0;
-        .bx-controls-direction a {
-            margin-left: -45px;
-            margin-right: -45px;
+    .slick-slider {
+      .slick-prev::before, .slick-next::before {
+        color: #c00;
+      }
+      .slick-list {
+        .slick-slide {
+          a, a:hover, a:active, a:visited, a:link {
+              color: #555555;
+              text-decoration: none;
+          }
+          .slide-image {
+            img {
+            	height: 190px;
+            	width: 128px;
+            	border: 1px solid #ccc;	
+            }
+          }
+          .slide-title { 
+            overflow: hidden;
+          }
         }
-        .bx-loading {
-            background-image: url(@{css_url}/images/bx_loader.gif);
-        }
-        .bx-prev {
-            background-image: url(@{css_url}/images/controls.png);
-        }
-        .bx-next {
-            background-image: url(@{css_url}/images/controls.png);
-        }
-        img {
-        	height: 190px;
-        	border: 1px solid #ccc;	
-        }
-        a, a:hover, a:active, a:visited, a:link {
-            color: #555555;
-            text-decoration: none;
-        }
-        .slide-title { overflow: hidden }
+      }  
     }
 }
 .pagination-centered {
@@ -551,16 +544,6 @@ a.accordion-toggle, a.accordion-toggle:hover {
 // Extra small devices (xs) - regardless of orientation - (<768px)
 @media screen and (max-width: 767px) {
   .record-container {
-    .bx-wrapper {
-      margin-left: 0;
-      margin-right: 0;
-      .bx-controls-direction {
-        display:none;
-      }
-      img {
-      	height: 100px;
-      }
-    }
     .bookcover,.google-books-preview {
         width: 75px;
     }
@@ -568,6 +551,29 @@ a.accordion-toggle, a.accordion-toggle:hover {
       li > a {
         padding: 10px 10px;
       }
+    }
+    .slick-slider {
+      .slick-prev::before, .slick-next::before {
+        color: #c00;
+      }
+      .slick-list {
+        .slick-slide {
+          a, a:hover, a:active, a:visited, a:link {
+              color: #555555;
+              text-decoration: none;
+          }
+          .slide-image {
+            img {
+            	height: 80px;
+            	width: 60px;
+            	border: 1px solid #ccc;	
+            }
+          }
+          .slide-title { 
+            overflow: hidden;
+          }
+        }
+      }  
     }
   }
   .result-container {

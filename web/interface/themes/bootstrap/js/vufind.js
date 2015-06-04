@@ -4,9 +4,6 @@ $.ajaxSetup ({
 });
 
 $(document).ready(function() {    
-    window.VuFind_is_xs = ResponsiveBootstrapToolkit.is('xs');
-    window.VuFind_is_sm = ResponsiveBootstrapToolkit.is('sm');
-    
     // disable repeat submissions when enter is pressed and held down
     preventRepeatedEnters();    
     
@@ -610,29 +607,22 @@ function onAjaxTabLoaded(target) {
 }
 
 function activateCarousels() {
-    var slider = $('.carousel').bxSlider({
-        slideWidth: (window.VuFind_is_xs ? 75 : 128),
-        slideMargin: 10,
-        minSlides: 1,
-        maxSlides: 5,
-        moveSlides: 1,
-        auto: false,
-        pager: false,
-        infiniteLoop: true
+    $('.carousel').slick({
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        infinite: true,
+        autoplay: true,
+        autoplaySpeed: 2000
     });
 }
 
 function activateShelfBrowser() {
     var startSlide = $('.browse-shelf').data('start-index');
-    var slider = $('.browse-shelf').bxSlider({
-        slideWidth: (window.VuFind_is_xs ? 75 : 128),
-        slideMargin: 10,
-        minSlides: 1,
-        maxSlides: 5,
-        moveSlides: 1,
-        auto: false,
-        pager: false,
-        infiniteLoop: false,
-        startSlide: startSlide
+    $('.browse-shelf').slick({
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        initialSlide: startSlide,
+        autoplay: true,
+        autoplaySpeed: 2000
     });    
 }
