@@ -618,7 +618,8 @@ function activateCarousels() {
         moveSlides: 1,
         auto: false,
         pager: false,
-        infiniteLoop: true
+        infiniteLoop: true,
+        useCSS: false
     });
 }
 
@@ -633,6 +634,7 @@ function activateShelfBrowser() {
         auto: false,
         pager: false,
         infiniteLoop: false,
-        startSlide: startSlide
+        startSlide: startSlide,
+        useCSS: false
     });    
 }
