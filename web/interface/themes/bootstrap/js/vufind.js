@@ -37,7 +37,6 @@ $(document).ready(function() {
     // setup more/less buttons
     activateMoreLessButtons('.container');
     
-    activateShelfBrowser();
     activateCarousels();
 });
 
@@ -601,28 +600,26 @@ function clearBookBagCheckbox(button) {
 function onAjaxTabLoaded(target) {
     console.log(target + ' loaded.');
     if (target == '#Related') {
-        activateShelfBrowser();
         activateCarousels();
     }
 }
 
 function activateCarousels() {
-    $('.carousel').slick({
-        slidesToShow: 4,
-        slidesToScroll: 1,
-        infinite: true,
-        autoplay: true,
-        autoplaySpeed: 2000
-    });
+    var settings = {
+        slidesToShow: 5,
+        slidesToScroll: 5,
+        responsive: [
+            {
+              breakpoint: 321,
+              settings: {
+                slidesToShow: 3,
+                slidesToScroll: 3
+              }
+            },
+        ]
+    };
+    
+    $('.carousel:not(.slick-slider)').slick(settings);
+    $('.browse-shelf:not(.slick-slider)').slick(settings);
 }
 
-function activateShelfBrowser() {
-    var startSlide = $('.browse-shelf').data('start-index');
-    $('.browse-shelf').slick({
-        slidesToShow: 5,
-        slidesToScroll: 1,
-        initialSlide: startSlide,
-        autoplay: true,
-        autoplaySpeed: 2000
-    });    
-}
