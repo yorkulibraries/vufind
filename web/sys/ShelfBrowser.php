@@ -86,6 +86,23 @@ class ShelfBrowser
         return $this->browse($from, $to);
     }
     
+    public function getHTMLItems($items) 
+    {
+        global $interface;
+        
+        $htmlItems = array();
+        foreach ($items as $item) {
+            $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
+            $recordDriver->getSearchResult();
+            $interface->assign('shelfOrder', $item['order']);
+            $html = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
+            if (strlen(trim($html)) > 0) {
+                $htmlItems[] = $html;    
+            }
+        }
+        return $htmlItems;
+    }
+    
     private function browse($from, $to, $dir='asc') 
     {
         $query = "order:[$from TO $to]";
