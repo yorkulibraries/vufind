@@ -911,7 +911,7 @@ class Solr implements IndexEngine
     public function search($query, $handler = null, $filter = null, $start = 0,
         $limit = 20, $facet = null, $spell = '', $dictionary = null,
         $sort = null, $fields = null,
-        $method = HTTP_REQUEST_METHOD_POST, $returnSolrError = false
+        $method = HTTP_REQUEST_METHOD_POST, $returnSolrError = false, $otherOptions = null
     ) {
         // Query String Parameters
         $options = array(
@@ -1077,6 +1077,14 @@ class Solr implements IndexEngine
             echo "</pre>\n";
         }
 
+        if (is_array($otherOptions)) {
+            foreach ($otherOptions as $k => $v) {
+                if (!isset($options[$k])) {
+                    $options[$k] = $v;
+                }
+            }
+        }
+        
         $result = $this->_select($method, $options, $returnSolrError);
         if (PEAR::isError($result)) {
             PEAR::raiseError($result);
