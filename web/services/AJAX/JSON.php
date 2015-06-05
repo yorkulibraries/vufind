@@ -80,8 +80,13 @@ class JSON extends Action
         
         global $interface;
         
-        $items = array();
-        return $this->output($items, JSON::STATUS_OK);
+        $browser = new ShelfBrowser();
+        $offset = intval($_REQUEST['offset']);
+        $items = ('left' == $_REQUEST['direction']) 
+            ? $browser->browseLeft($offset)
+            : $browser->browseRight($offset);
+        $htmlItems = $browser->getHTMLItems($items);     
+        return $this->output($htmlItems, JSON::STATUS_OK);
     }
     
     /**

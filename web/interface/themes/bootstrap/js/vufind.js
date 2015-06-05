@@ -636,47 +636,39 @@ $('.browse-shelf').on('afterChange', function(event, slick, currentSlide) {
     var lhs = currentSlide;
     var rhs = slick.slideCount - currentSlide - slidesToShow;
     
+    var $lastItem = null;
+    var direction = null;
     if (lhs <= slidesToShow) {
-        var $leftMostSlide = $('.browse-shelf-item:first-child()', '.browse-shelf');
-        var offset = $leftMostSlide.data('shelf-order');
-        var isLast = $leftMostSlide.data('is-last');
-        if (offset > 0 && !isLast) {
-            var slidesToAdd = shelfBrowseMore('left', offset);
-            if (slidesToAdd.length == 0) {
-                $leftMostSlide.data('is-last', true);
-            }
-            for (i = 0; i < slidesToAdd.length; i++) {
-                slick.currentSlide++;
-                slick.addSlide(slidesToAdd[i], true);                
-            }
-        }   
+        $lastItem = $('.browse-shelf-item:first-child()', '.browse-shelf');
+        direction = 'left';
+    } else if (rhs < slidesToShow) {
+        $lastItem = $('.browse-shelf-item:last-child()', '.browse-shelf');
+        direction = 'right';
     }
-    if (rhs < slidesToShow) {
-        var $rightMostSlide = $('.browse-shelf-item:last-child()', '.browse-shelf');
-        var offset = $rightMostSlide.data('shelf-order');
-        var isLast = $rightMostSlide.data('is-last');
+    
+    if ($lastItem != null) {
+        var offset = $lastItem.data('shelf-order');
+        var isLast = $lastItem.data('is-last');
         if (offset > 0 && !isLast) {
-            var slidesToAdd = shelfBrowseMore('right', offset);
-            if (slidesToAdd.length == 0) {
-                $rightMostSlide.data('is-last', true);
-            }
-            for (i = 0; i < slidesToAdd.length; i++) {
-                slick.addSlide(slidesToAdd[i]);                
-            }
+            $.ajax({
+                url: _global_path + '/AJAX/JSON?method=shelfBrowseMore',
+                dataType: 'json',
+                data: {direction: direction, offset: offset},
+                success: function(response) {
+                    if(response.status == 'OK') {
+                        var slidesToAdd = response.data;
+                        $lastItem.data('is-last', (slidesToAdd.length == 0));
+                        for (i = 0; i < slidesToAdd.length; i++) {
+                            if ('left' == direction) {
+                                slick.currentSlide++;
+                                slick.addSlide(slidesToAdd[i], true);
+                            } else {
+                                slick.addSlide(slidesToAdd[i]);
+                            }           
+                        }
+                    }
+                }
+            });
         }
     }
 });
-
-function shelfBrowseMore(direction, offset) {
-    $.ajax({
-        url: _global_path + '/AJAX/JSON?method=shelfBrowseMore',
-        dataType: 'json',
-        data: {direction: direction, offset: offset},
-        success: function(response) {
-            if(response.status == 'OK') {
-                return response.data;
-            }
-        }
-    });
-    return [];
-}
