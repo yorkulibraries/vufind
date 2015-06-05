@@ -73,14 +73,17 @@ class ShelfBrowser
     }
 
     public function browseLeft($order) {
-        $from = ($order > $this->maxItemsPerBib) ? $order - $this->maxItemsPerBib : $order;
-        $to = ($order > 1) ? $order - 1 : $order;
+        $from = $order - $this->maxItemsPerBib * $this->maxItemsPerSide;
+        if ($from < 0) {
+            $from = $order;   
+        }
+        $to = ($order > 1) ? $order - 1 : 1;        
         return $this->browse($from, $to, 'desc');
     }
     
     public function browseRight($order) {
         $from = $order + 1;
-        $to = $order + $this->maxItemsPerBib;
+        $to = $order + $this->maxItemsPerBib * $this->maxItemsPerSide;
         return $this->browse($from, $to);
     }
     
@@ -106,8 +109,27 @@ class ShelfBrowser
         $query = "order:[$from TO $to]";
         $sort = "order $dir";
         $limit = $this->maxItemsPerSide;
-        $result = $this->shelf->search($query, null, null, 0, $limit, null, '', null, $sort);
-        $docs = $result['response']['docs'];
+        $fields = 'bib_id,callnum,order';
+        $method = HTTP_REQUEST_METHOD_POST;
+        $returnSolrError = false;
+        $options = array(
+            'group' => 'true',
+            'group.field' => 'bib_id',
+            'group.limit' => '1'
+        );
+        $result = $this->shelf->search(
+            $query, null, null, 0, $limit, null, '', null, $sort, $fields,
+            $method, $returnSolrError, $options
+        );
+        
+        // extract the docs
+        $docs = array();
+        foreach ($result['grouped']['bib_id']['groups'] as $g) {
+            if (isset($g['doclist']['docs'][0])) {
+                $docs[] = $g['doclist']['docs'][0];
+            }
+        }
+
         if ($dir == 'desc') {
             // need to resort in ascending order
             usort($docs, function($a, $b) {
