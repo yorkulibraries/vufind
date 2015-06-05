@@ -1,5 +1,5 @@
 <div class="carousel-container">
-  <div class="browse-shelf" data-start-index="{$startIndex}">
+  <div class="carousel browse-shelf" data-start-index="{$startIndex}">
     {foreach from=$recordsToTheLeft item=item}
       {$item}
     {/foreach}

@@ -9,7 +9,7 @@
 <div class="section">
   <h4>{translate text="Similar Items"}</h4>
   <div class="carousel-container">
-    <div class="carousel">
+    <div class="carousel" data-start-index="0">
     {foreach from=$similarItems item=item}
       {$item}
     {/foreach}
