@@ -153,7 +153,6 @@ class ShelfBrowser
                 $seen[$doc['bib_id']] = array(
                     'order' => $doc['order'],
                     'callnum' => $doc['callnum'],
-                    'shelving_key' => $doc['shelving_key'],
                     'bib_id' => $doc['bib_id']
                 );
             }
