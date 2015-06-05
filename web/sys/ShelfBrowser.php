@@ -60,17 +60,15 @@ class ShelfBrowser
     
     public function guessMinMaxOrder($recordId)
     {
-        // find the order numbers of the given record
+        // find the min/max order numbers of the given record
         $query = "bib_id:$recordId";
-        $sort = 'order asc';
-        $limit = $this->maxItemsPerBib;
-        $result = $this->shelf->search($query, null, null, 0, $limit, null, '', null, $sort);
         
-        $min = $max = -1;
-        if ($result['response']['numFound'] > 0) {
-            $min = $result['response']['docs'][0]['order'];
-            $max = $result['response']['docs'][count($result['response']['docs'])-1]['order'];
-        }
+        $result = $this->shelf->search($query, null, null, 0, 1, null, '', null, 'order asc');
+        $min = $result['response']['numFound'] > 0 ? $result['response']['docs'][0]['order'] : -1;
+        
+        $result = $this->shelf->search($query, null, null, 0, 1, null, '', null, 'order desc');
+        $max = $result['response']['numFound'] > 0 ? $result['response']['docs'][0]['order'] : -1;
+        
         return array($min, $max);
     }
 
