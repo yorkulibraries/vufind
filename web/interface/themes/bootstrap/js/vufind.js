@@ -658,13 +658,14 @@ $(document).on('afterChange', '.browse-shelf', function(event, slick, currentSli
                     if(response.status == 'OK') {
                         var slidesToAdd = response.data;
                         $lastItem.data('is-last', (slidesToAdd.length == 0));
-                        for (i = 0; i < slidesToAdd.length; i++) {
+                        if (slidesToAdd.length > 0) {
                             if ('left' == direction) {
-                                slick.currentSlide++;
-                                slick.addSlide(slidesToAdd[i], true);
+                                slick.currentSlide += slidesToAdd.length;
+                                slick.addSlide(slidesToAdd.join(), true);
                             } else {
-                                slick.addSlide(slidesToAdd[i]);
-                            }           
+                                slick.addSlide(slidesToAdd.join());
+                            }
+                            console.info("slideCount=" + slick.slideCount);
                         }
                     }
                 }
