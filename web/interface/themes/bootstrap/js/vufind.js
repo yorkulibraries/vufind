@@ -630,20 +630,34 @@ function activateCarousels() {
     });
 }
 
-// Browse shelf carousel: catch after slide change event
+// Browse shelf carousel: catch before/after slide change events
+$(document).on('beforeChange', '.browse-shelf', function(event, slick, currentSlide, nextSlide) {
+    if (nextSlide > currentSlide) {
+        slick.slidingDirection = 'right';
+    } else {
+        slick.slidingDirection = 'left';
+    }
+});
+
 $(document).on('afterChange', '.browse-shelf', function(event, slick, currentSlide) {
+    if (!(slick.slidingDirection == 'left' || slick.slidingDirection == 'right')) {
+        return;
+    }
+    
     var slidesToShow = slick.getOption('slidesToShow');
     var lhs = currentSlide;
     var rhs = slick.slideCount - currentSlide - slidesToShow;
-    
+
     var $lastItem = null;
-    var direction = null;
-    if (lhs <= slidesToShow) {
-        $lastItem = $('.browse-shelf-item:first-child()', '.browse-shelf');
-        direction = 'left';
-    } else if (rhs < slidesToShow) {
-        $lastItem = $('.browse-shelf-item:last-child()', '.browse-shelf');
-        direction = 'right';
+    var direction = slick.slidingDirection;
+    if ('left' == direction) {
+        if (lhs <= slidesToShow) {
+            $lastItem = $('.browse-shelf-item:first-child()', '.browse-shelf');
+        }
+    } else {
+        if (rhs <= slidesToShow) {
+            $lastItem = $('.browse-shelf-item:last-child()', '.browse-shelf');
+        }
     }
     
     if ($lastItem != null) {
@@ -672,4 +686,5 @@ $(document).on('afterChange', '.browse-shelf', function(event, slick, currentSli
             });
         }
     }
+    delete slick.slidingDirection;
 });
