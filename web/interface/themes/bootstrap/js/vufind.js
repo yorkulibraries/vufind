@@ -659,13 +659,13 @@ $(document).on('afterChange', '.browse-shelf', function(event, slick, currentSli
                         var slidesToAdd = response.data;
                         $lastItem.data('is-last', (slidesToAdd.length == 0));
                         if (slidesToAdd.length > 0) {
+                            var html = slidesToAdd.join('');
                             if ('left' == direction) {
                                 slick.currentSlide += slidesToAdd.length;
-                                slick.addSlide(slidesToAdd.join(), true);
+                                slick.addSlide(html, true);
                             } else {
-                                slick.addSlide(slidesToAdd.join());
+                                slick.addSlide(html);
                             }
-                            console.info("slideCount=" + slick.slideCount);
                         }
                     }
                 }
