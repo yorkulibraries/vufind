@@ -631,7 +631,7 @@ function activateCarousels() {
 }
 
 // Browse shelf carousel: catch after slide change event
-$('.browse-shelf').on('afterChange', function(event, slick, currentSlide) {
+$(document).on('afterChange', '.browse-shelf', function(event, slick, currentSlide) {
     var slidesToShow = slick.getOption('slidesToShow');
     var lhs = currentSlide;
     var rhs = slick.slideCount - currentSlide - slidesToShow;
