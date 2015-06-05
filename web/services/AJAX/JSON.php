@@ -74,6 +74,16 @@ class JSON extends Action
         }
     }
     
+    public function shelfBrowseMore()
+    {
+        require_once 'sys/ShelfBrowser.php';
+        
+        global $interface;
+        
+        $items = array();
+        return $this->output($items, JSON::STATUS_OK);
+    }
+    
     /**
      * Email Book Bag.
      *
