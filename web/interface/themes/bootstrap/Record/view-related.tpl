@@ -8,10 +8,12 @@
 {if !empty($similarItems)}
 <div class="section">
   <h4>{translate text="Similar Items"}</h4>
-  <ul class="carousel similar-items">
-  {foreach from=$similarItems item=item}
-    {$item}
-  {/foreach}
-  </ul>
+  <div class="carousel-container">
+    <div class="carousel" data-start-index="0">
+    {foreach from=$similarItems item=item}
+      {$item}
+    {/foreach}
+    </div>
+  </div>
 </div>
 {/if}

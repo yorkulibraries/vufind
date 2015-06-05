@@ -4,9 +4,6 @@ $.ajaxSetup ({
 });
 
 $(document).ready(function() {    
-    window.VuFind_is_xs = ResponsiveBootstrapToolkit.is('xs');
-    window.VuFind_is_sm = ResponsiveBootstrapToolkit.is('sm');
-    
     // disable repeat submissions when enter is pressed and held down
     preventRepeatedEnters();    
     
@@ -40,7 +37,6 @@ $(document).ready(function() {
     // setup more/less buttons
     activateMoreLessButtons('.container');
     
-    activateShelfBrowser();
     activateCarousels();
 });
 
@@ -604,37 +600,75 @@ function clearBookBagCheckbox(button) {
 function onAjaxTabLoaded(target) {
     console.log(target + ' loaded.');
     if (target == '#Related') {
-        activateShelfBrowser();
         activateCarousels();
     }
 }
 
 function activateCarousels() {
-    var slider = $('.carousel').bxSlider({
-        slideWidth: (window.VuFind_is_xs ? 75 : 128),
-        slideMargin: 10,
-        minSlides: 1,
-        maxSlides: 5,
-        moveSlides: 1,
-        auto: false,
-        pager: false,
-        infiniteLoop: true,
-        useCSS: false
+    var settings = {
+        slidesToShow: 5,
+        slidesToScroll: 5,
+        infinite: false,
+        responsive: [
+            {
+              breakpoint: 321,
+              settings: {
+                slidesToShow: 3,
+                slidesToScroll: 3
+              }
+            },
+        ]
+    };
+    
+    // normal carousels
+    $('.carousel:not(.slick-slider)').slick(settings); 
+    $('.carousel').each(function(index) {
+        var startIndex = $(this).data('start-index');
+        if(startIndex > 0) {
+            $(this).slick('slickGoTo', startIndex);
+        }
     });
 }
 
-function activateShelfBrowser() {
-    var startSlide = $('.browse-shelf').data('start-index');
-    var slider = $('.browse-shelf').bxSlider({
-        slideWidth: (window.VuFind_is_xs ? 75 : 128),
-        slideMargin: 10,
-        minSlides: 1,
-        maxSlides: 5,
-        moveSlides: 1,
-        auto: false,
-        pager: false,
-        infiniteLoop: false,
-        startSlide: startSlide,
-        useCSS: false
-    });    
-}
+// Browse shelf carousel: catch after slide change event
+$(document).on('afterChange', '.browse-shelf', function(event, slick, currentSlide) {
+    var slidesToShow = slick.getOption('slidesToShow');
+    var lhs = currentSlide;
+    var rhs = slick.slideCount - currentSlide - slidesToShow;
+    
+    var $lastItem = null;
+    var direction = null;
+    if (lhs <= slidesToShow) {
+        $lastItem = $('.browse-shelf-item:first-child()', '.browse-shelf');
+        direction = 'left';
+    } else if (rhs < slidesToShow) {
+        $lastItem = $('.browse-shelf-item:last-child()', '.browse-shelf');
+        direction = 'right';
+    }
+    
+    if ($lastItem != null) {
+        var offset = $lastItem.data('shelf-order');
+        var isLast = $lastItem.data('is-last');
+        if (offset > 0 && !isLast) {
+            $.ajax({
+                url: _global_path + '/AJAX/JSON?method=shelfBrowseMore',
+                dataType: 'json',
+                data: {direction: direction, offset: offset},
+                success: function(response) {
+                    if(response.status == 'OK') {
+                        var slidesToAdd = response.data;
+                        $lastItem.data('is-last', (slidesToAdd.length == 0));
+                        for (i = 0; i < slidesToAdd.length; i++) {
+                            if ('left' == direction) {
+                                slick.currentSlide++;
+                                slick.addSlide(slidesToAdd[i], true);
+                            } else {
+                                slick.addSlide(slidesToAdd[i]);
+                            }           
+                        }
+                    }
+                }
+            });
+        }
+    }
+});

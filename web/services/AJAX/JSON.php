@@ -74,6 +74,21 @@ class JSON extends Action
         }
     }
     
+    public function shelfBrowseMore()
+    {
+        require_once 'sys/ShelfBrowser.php';
+        
+        global $interface;
+        
+        $browser = new ShelfBrowser();
+        $offset = intval($_REQUEST['offset']);
+        $items = ('left' == $_REQUEST['direction']) 
+            ? $browser->browseLeft($offset)
+            : $browser->browseRight($offset);
+        $htmlItems = $browser->getHTMLItems($items);     
+        return $this->output($htmlItems, JSON::STATUS_OK);
+    }
+    
     /**
      * Email Book Bag.
      *

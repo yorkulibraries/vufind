@@ -69,3 +69,4 @@ nohup.out
 import/translation_maps/callnumber_shelving_key_map.properties
 web/interface/themes/bootstrap/css/styles.css
 web/interface/themes/bootstrap/css/print.css
+web/interface/themes/bootstrap/css/slick-theme.css
