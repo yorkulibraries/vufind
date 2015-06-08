@@ -119,6 +119,27 @@ class YorkMarcRecord extends MarcRecord
             $authorInfo = trim($this->getFirstFieldValue('100', 'abcd'));
         }
         $interface->assign('yorkAuthorInfo', $authorInfo);
+        
+        $interface->assign('yorkTitleWithoutMedium', $this->getTitleWithoutMedium());
+    }
+    
+    private function getTitleWithoutMedium()
+    {
+        $title = '';
+        $f245 = $this->marcRecord->getField('245');
+        if ($f245) {
+            $subFields = $f245->getSubfields();
+            foreach ($subFields as $sf) {
+                if ($sf->getCode() == 'h') {
+                    if (strpos($sf->getData(), ':') !== false ) {
+                        $title .= ': ';
+                    }
+                } else {
+                    $title .= $sf->getData() . ' ';
+                }
+            }
+        }
+        return $title;
     }
     
     public function getListEntry($user, $listId = null, $allowEdit = true)
