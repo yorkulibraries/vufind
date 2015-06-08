@@ -67,18 +67,13 @@ class Related extends Record
         
         list($min, $max) = $browser->guessMinMaxOrder($_REQUEST['id']);
         
-        $recordsToTheLeft = $browser->getHTMLItems($browser->browseLeft($min));
+        $recordsToTheLeft = $browser->getHTMLItems($browser->browseLeft($min, false));
         $interface->assign('recordsToTheLeft', $recordsToTheLeft);
         
-        $recordsToTheRight = $browser->getHTMLItems($browser->browseRight($max));
+        $recordsToTheRight = $browser->getHTMLItems($browser->browseRight($max, true));
         $interface->assign('recordsToTheRight', $recordsToTheRight);
         
-        // generate html for "this" record
-        $this->recordDriver->getSearchResult();
-        $interface->assign('shelfOrder', $min);
         $interface->assign('startIndex', count($recordsToTheLeft));
-        $interface->assign('thisRecord', $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl'));
-        
         return $interface->fetch('RecordDrivers/Index/browse-shelf-list.tpl');
     }
     

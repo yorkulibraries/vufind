@@ -72,17 +72,17 @@ class ShelfBrowser
         return array($min, $max);
     }
 
-    public function browseLeft($order) {
+    public function browseLeft($order, $inclusive=false) {
         $from = $order - $this->maxItemsPerBib * $this->maxItemsPerSide;
         if ($from < 0) {
-            $from = $order;   
+            $from = 0;   
         }
-        $to = ($order > 1) ? $order - 1 : 1;        
+        $to = $inclusive ? $order : $order - 1;
         return $this->browse($from, $to, 'desc');
     }
     
-    public function browseRight($order) {
-        $from = $order + 1;
+    public function browseRight($order, $inclusive=false) {
+        $from = $inclusive ? $order : $order + 1;
         $to = $order + $this->maxItemsPerBib * $this->maxItemsPerSide;
         return $this->browse($from, $to);
     }
@@ -96,6 +96,7 @@ class ShelfBrowser
             $recordDriver = RecordDriverFactory::initRecordDriver($item['record']);
             $recordDriver->getSearchResult();
             $interface->assign('shelfOrder', $item['order']);
+            $interface->assign('callnum', $item['callnum']);
             $html = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
             if (strlen(trim($html)) > 0) {
                 $htmlItems[] = $html;    
