@@ -27,7 +27,7 @@
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
 require_once 'Record.php';
-require_once 'sys/ShelfBrowser.php';
+
 /**
  * Holdings action for Record module
  *
@@ -40,6 +40,14 @@ require_once 'sys/ShelfBrowser.php';
  */
 class Holdings extends Record
 {
+    public function __construct() 
+    {
+        global $interface;
+        $interface->assign('browseShelf', $this->browseShelf());
+        
+        parent::__construct();
+    }
+    
     /**
      * Process incoming parameters and display the page.
      *
@@ -69,8 +77,6 @@ class Holdings extends Record
         $this->_assignRequestStatus($patron);
         $interface->assign('subTemplate', 'view-holdings.tpl');
         $interface->setTemplate('view.tpl');
-        
-        $interface->assign('browseShelf', $this->browseShelf());
 
         // Set Messages
         $interface->assign('infoMsg', $this->infoMsg);
@@ -117,6 +123,8 @@ class Holdings extends Record
     
     private function browseShelf() 
     {
+        require_once 'sys/ShelfBrowser.php';
+        
         global $interface;
         
         $browser = new ShelfBrowser();
