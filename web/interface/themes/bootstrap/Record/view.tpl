@@ -108,6 +108,13 @@
           {include file="Record/$subTemplate"}
         </div>
         
+        {if !empty($browseShelf)}
+        <div class="section">
+          <h3>{translate text="On the Shelf"}</h3>
+          {$browseShelf}
+        </div>
+        {/if}
+        
         {if !empty($coreSubjects)}
           <h3>{translate text='Subjects'}</h3>
           <div class="section">
