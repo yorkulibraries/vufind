@@ -37,7 +37,7 @@ $(document).ready(function() {
     // setup more/less buttons
     activateMoreLessButtons('.container');
     
-    activateCarousels();
+    activateCarousels('.tab-pane');
 });
 
 // handle logged out event
@@ -598,10 +598,10 @@ function clearBookBagCheckbox(button) {
 }
 
 function onAjaxTabLoaded(target) {
-    activateCarousels();
+    activateCarousels('.tab-pane');
 }
 
-function activateCarousels() {
+function activateCarousels(target) {
     var settings = {
         slidesToShow: 5,
         slidesToScroll: 5,
@@ -618,8 +618,8 @@ function activateCarousels() {
     };
     
     // normal carousels
-    $('.carousel').slick(settings); 
-    $('.carousel').each(function(index) {
+    $('.carousel', target).slick(settings); 
+    $('.carousel', target).each(function(index) {
         var startIndex = $(this).data('start-index');
         if(startIndex > 0) {
             $(this).slick('slickGoTo', startIndex);
