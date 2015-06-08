@@ -40,7 +40,7 @@ class ShelfBrowser
 {   
     // assuming each bib record may have at most this number 
     // of items (callnumbers) attached to it.
-    private $maxItemsPerBib = 100;
+    private $maxItemsPerBib = 2000;
     
     // max number of items on each side of the browse
     private $maxItemsPerSide = 20;
@@ -115,7 +115,8 @@ class ShelfBrowser
         $options = array(
             'group' => 'true',
             'group.field' => 'bib_id',
-            'group.limit' => '1'
+            'group.limit' => '1',
+            'group.sort' => $sort
         );
         $result = $this->shelf->search(
             $query, null, null, 0, $limit, null, '', null, $sort, $fields,
