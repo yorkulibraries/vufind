@@ -1,3 +1,4 @@
+{if !empty($recordsToTheLeft) || !empty($recordsToTheRight)}
 <div class="carousel-container">
   <div class="carousel browse-shelf" data-start-index="{$startIndex}">
     {foreach from=$recordsToTheLeft item=item}
@@ -8,3 +9,4 @@
     {/foreach}
   </div>
 </div>
+{/if}
