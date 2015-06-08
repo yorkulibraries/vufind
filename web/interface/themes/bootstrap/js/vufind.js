@@ -598,10 +598,7 @@ function clearBookBagCheckbox(button) {
 }
 
 function onAjaxTabLoaded(target) {
-    console.log(target + ' loaded.');
-    if (target == '#Related') {
-        activateCarousels();
-    }
+    activateCarousels();
 }
 
 function activateCarousels() {
@@ -621,7 +618,7 @@ function activateCarousels() {
     };
     
     // normal carousels
-    $('.carousel:not(.slick-slider)').slick(settings); 
+    $('.carousel').slick(settings); 
     $('.carousel').each(function(index) {
         var startIndex = $(this).data('start-index');
         if(startIndex > 0) {

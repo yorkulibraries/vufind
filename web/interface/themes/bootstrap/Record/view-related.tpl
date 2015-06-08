@@ -1,4 +1,4 @@
-{if !empty($browseShelf)}
+{if false && !empty($browseShelf)}
 <div class="section">
   <h4>{translate text="On the Shelf"}</h4>
   {$browseShelf}
