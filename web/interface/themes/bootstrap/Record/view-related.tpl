@@ -1,4 +1,4 @@
-{if $browseShelf}
+{if strlen(trim($browseShelf) > 0)}
 <div class="section">
   <h4>{translate text="On the Shelf"}</h4>
   {$browseShelf}

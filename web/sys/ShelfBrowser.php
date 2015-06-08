@@ -73,6 +73,9 @@ class ShelfBrowser
     }
 
     public function browseLeft($order, $inclusive=false) {
+        if ($order < 0) {
+            return array();
+        }
         $from = $order - $this->maxItemsPerBib * $this->maxItemsPerSide;
         if ($from < 0) {
             $from = 0;   
@@ -82,6 +85,9 @@ class ShelfBrowser
     }
     
     public function browseRight($order, $inclusive=false) {
+        if ($order < 0) {
+            return array();
+        }
         $from = $inclusive ? $order : $order + 1;
         $to = $order + $this->maxItemsPerBib * $this->maxItemsPerSide;
         return $this->browse($from, $to);
