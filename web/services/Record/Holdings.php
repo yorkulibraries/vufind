@@ -39,15 +39,7 @@ require_once 'Record.php';
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
 class Holdings extends Record
-{
-    public function __construct() 
-    {
-        global $interface;
-        $interface->assign('browseShelf', $this->browseShelf());
-        
-        parent::__construct();
-    }
-    
+{   
     /**
      * Process incoming parameters and display the page.
      *
@@ -119,26 +111,6 @@ class Holdings extends Record
     		$interface->assign('allowStorage', true);
     		$interface->assign('storageItems', $result['items']);
     	}    
-    }
-    
-    private function browseShelf() 
-    {
-        require_once 'sys/ShelfBrowser.php';
-        
-        global $interface;
-        
-        $browser = new ShelfBrowser();
-        
-        list($min, $max) = $browser->guessMinMaxOrder($_REQUEST['id']);
-        
-        $recordsToTheLeft = $browser->getHTMLItems($browser->browseLeft($min, false));
-        $interface->assign('recordsToTheLeft', $recordsToTheLeft);
-        
-        $recordsToTheRight = $browser->getHTMLItems($browser->browseRight($max, true));
-        $interface->assign('recordsToTheRight', $recordsToTheRight);
-        
-        $interface->assign('startIndex', count($recordsToTheLeft));
-        return $interface->fetch('RecordDrivers/Index/browse-shelf-list.tpl');
     }
 }
 

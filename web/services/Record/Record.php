@@ -105,6 +105,10 @@ class Record extends Action
         if (!($record = $this->db->getRecord($_REQUEST['id']))) {
             PEAR::raiseError(new PEAR_Error('Record Does Not Exist'));
         }
+        
+        // build the shelf browser before we do anything else.
+        $interface->assign('browseShelf', $this->browseShelf());
+        
         $this->recordDriver = RecordDriverFactory::initRecordDriver($record);
 
         if ($this->recordDriver->hasRDF()) {
@@ -246,6 +250,26 @@ class Record extends Action
             $solrStats->saveRecordView($this->recordDriver->getUniqueID());
             unset($solrStats);
         }
+    }
+    
+    private function browseShelf() 
+    {
+        require_once 'sys/ShelfBrowser.php';
+        
+        global $interface;
+        
+        $browser = new ShelfBrowser();
+        
+        list($min, $max) = $browser->guessMinMaxOrder($_REQUEST['id']);
+        
+        $recordsToTheLeft = $browser->getHTMLItems($browser->browseLeft($min, false));
+        $interface->assign('recordsToTheLeft', $recordsToTheLeft);
+        
+        $recordsToTheRight = $browser->getHTMLItems($browser->browseRight($max, true));
+        $interface->assign('recordsToTheRight', $recordsToTheRight);
+        
+        $interface->assign('startIndex', count($recordsToTheLeft));
+        return $interface->fetch('RecordDrivers/Index/browse-shelf-list.tpl');
     }
 }
 
