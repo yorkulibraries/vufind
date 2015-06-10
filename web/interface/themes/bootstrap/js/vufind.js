@@ -35,9 +35,7 @@ $(document).ready(function() {
     setupUploadCoverForm();
     
     // setup more/less buttons
-    activateMoreLessButtons('.container');
-    
-    activateCarousels();
+    activateMoreLessButtons('.container');    
 });
 
 // handle logged out event
@@ -598,32 +596,9 @@ function clearBookBagCheckbox(button) {
 }
 
 function onAjaxTabLoaded(target) {
-    activateCarousels(target);
-}
-
-function activateCarousels(target) {
-    var settings = {
-        slidesToShow: 5,
-        slidesToScroll: 5,
-        infinite: false,
-        responsive: [
-            {
-              breakpoint: 321,
-              settings: {
-                slidesToShow: 3,
-                slidesToScroll: 3
-              }
-            },
-        ]
-    };
-    
-    $('.carousel', target).each(function(index) {
-        $(this).slick(settings)
-        var startIndex = $(this).data('start-index');
-        if(startIndex > 0) {
-            $(this).slick('slickGoTo', startIndex);
-        }
-    });
+    if (typeof activateCarousels === 'function') {
+        activateCarousels();
+    }
 }
 
 // Browse shelf carousel: catch before/after slide change events

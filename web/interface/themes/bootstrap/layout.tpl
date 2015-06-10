@@ -29,7 +29,7 @@
   <link rel="unapi-server" type="application/xml" title="unAPI" href="{$url}/unAPI/Server"/>
   	
   <!-- our stylesheets -->
-  {minifycss media="all" files="font-awesome.min.css,bootstrap.min.css,bootstrap-theme.min.css,datepicker.css,pretify.css,jquery.fileupload.css,slick.css,slick-theme.css.less,styles.css.less"}
+  {minifycss media="all" files="font-awesome.min.css,bootstrap.min.css,bootstrap-theme.min.css,datepicker.css,pretify.css,jquery.fileupload.css,slick.css,slick-theme.css.less,carousel.css,styles.css.less"}
   {minifycss media="print" files="print.css.less"}
 </head>
 <body>
@@ -144,7 +144,7 @@
     var _global_path = '{$path}';
     var _global_url = '{$url}';
   </script>
-  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/slick.js,js/bootstrap-toolkit.min.js,js/vufind.js"></script>
+  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/slick.js,js/carousel.js,js/vufind.js"></script>
   {if $gaId}  
   <script type="text/javascript">
       {literal}

@@ -1,9 +1,7 @@
-<ul>
-  {foreach from=$items item=item key=index}
-    <li>
-      <a title="{$item.title_full|trim:'/.- '|escape}" href="{$url}/Record/{$item.id}">
-      <img alt="{$item.title_full|trim:'/.- '|escape}" src="{$url}/bookcover.php?isn={if !empty($item.isbn)}{$item.isbn|@implode:','|escape}{else}{$item.issn|@implode:','|escape}{/if}&id={$item.id}&size=large" />
-      </a>
-    </li>
+<div class="carousel-container">
+  <div id="{$id}" class="carousel" data-start-index="0">
+  {foreach from=$carouselItems item=item}
+    {$item}
   {/foreach}
-</ul>
+  </div>
+</div>
