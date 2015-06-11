@@ -29,7 +29,7 @@
   <link rel="unapi-server" type="application/xml" title="unAPI" href="{$url}/unAPI/Server"/>
   	
   <!-- our stylesheets -->
-  {minifycss media="all" files="font-awesome.min.css,bootstrap.min.css,bootstrap-theme.min.css,datepicker.css,pretify.css,jquery.fileupload.css,slick.css,slick-theme.css.less,carousel.css,styles.css.less"}
+  {minifycss media="all" files="font-awesome.min.css,bootstrap.min.css,bootstrap-theme.min.css,datepicker.css,pretify.css,jquery.fileupload.css,slick.css,slick-theme.css.less,carousel.css.less,styles.css.less"}
   {minifycss media="print" files="print.css.less"}
 </head>
 <body>

@@ -106,22 +106,31 @@ class Carousel extends Action
         
         $js = '';
         if (!file_exists($cacheFile) || (time() - filemtime($cacheFile) > $cacheExpiry)) {
+            $items = null;
             if (isset($_GET['list']) && is_numeric($_GET['list'])) {
                 $list = User_list::staticGet($_GET['list']);
                 if ($list) {
                     if ($list->public || ($user && $user->id == $list->user_id)) {
-                	    $interface->assign('items', $this->getItemsFromUserList($list));
+                	    $items = $this->getItemsFromUserList($list);
                     }
                 }
             } else {
-                $interface->assign('items', $this->getItemsFromSearchParams());
+                $items = $this->getItemsFromSearchParams();
             }
             
+            $carouselItems = array();
+            foreach($items as $item) {
+                $recordDriver = RecordDriverFactory::initRecordDriver($item);
+                $recordDriver->getSearchResult();
+                $html = $interface->fetch('RecordDrivers/Index/carousel-item.tpl');
+                if (strlen(trim($html)) > 0) {
+                    $carouselItems[] = $html;    
+                }
+            }
             $interface->assign('id', $_GET['id']);
+            $interface->assign('carouselItems', $carouselItems);
             $carousel = $interface->fetch('Widget/carousel.tpl');
-            $interface->assign('count', $_GET['count']);
-            $interface->assign('offset', 0);
-            $interface->assign('carousel', $carousel);
+            $interface->assign('carousel', $interface->fetch('Widget/carousel.tpl'));
             $js = $interface->fetch('Widget/carousel-js.tpl');
             
             // save cache
