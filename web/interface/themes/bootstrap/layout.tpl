@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="{$userLang}">
 <head>
+  <!-- our javascript -->
+  <script type="text/javascript">
+    var _global_path = '{$path}';
+    var _global_url = '{$url}';
+  </script>
+  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/slick.js,js/carousel.js,js/vufind.js"></script>
+  
   <title>
   {if $error}
     {translate text="An error has occurred"}
@@ -139,12 +146,6 @@
   <script src="//oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
   <![endif]-->
   
-  <!-- our javascript -->
-  <script type="text/javascript">
-    var _global_path = '{$path}';
-    var _global_url = '{$url}';
-  </script>
-  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/slick.js,js/carousel.js,js/vufind.js"></script>
   {if $gaId}  
   <script type="text/javascript">
       {literal}
