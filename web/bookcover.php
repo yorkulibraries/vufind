@@ -589,7 +589,7 @@ function generateImage($id, $size) {
     }
 
     $settings = array(
-	    'mode'         => 'grid',
+	    'mode'         => 'solid',
 	    'saturation'   => 100,
 	    'size'         => 128,
 	    'height'       => 190,

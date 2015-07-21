@@ -118,6 +118,8 @@ class Generator
     protected function generateSolid($title, $author, $callnumber)
     {
         $half = $this->settings->height/2;
+        $box  = $this->settings->height/8;
+        
         // Create image
         if (!($im = imagecreate($this->settings->size, $this->settings->height))) {
             throw new \Exception("Cannot Initialize new GD image stream");
@@ -147,17 +149,12 @@ class Generator
             $color
         );
 
-        $this->drawText(
-            $im,
-            strtoupper($title[0]),
-            $half,
-            $half+28,
-            $this->settings->titleFont,
-            60,
-            $this->white,
-            false,
-            'center'
-        );
+        if (null !== $title) {
+            $this->drawTitle($im, $title, $box);
+        }
+        if (null !== $author) {
+            $this->drawAuthor($im, $author);
+        }
 
         // Output png CHECK THE PARAM
         ob_start();
