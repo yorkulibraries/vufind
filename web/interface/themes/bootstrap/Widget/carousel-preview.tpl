@@ -6,9 +6,7 @@
 </div>
 <div class="carousel-code">
   <pre>
-    <code class="language-html" data-lang="html">
-      {$carouselCode|escape}
-    </code>
+    <code class="language-html" data-lang="html">{$carouselCode|escape}</code>
   </pre>
 </div>
 
