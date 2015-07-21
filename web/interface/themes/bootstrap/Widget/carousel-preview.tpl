@@ -6,7 +6,8 @@
 </div>
 <div class="carousel-code">
   <pre>
-    <code class="language-html" data-lang="html">{$carouselCode|escape}</code>
+    <code class="prettyprint lang-html">{$carouselCode|escape}</code>
   </pre>
 </div>
 
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
