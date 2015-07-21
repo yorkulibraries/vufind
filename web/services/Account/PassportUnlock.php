@@ -53,7 +53,7 @@ class PassportUnlock extends Action
         
         if (isset($_SERVER['HTTP_PYORK_USER']) && !empty($_SERVER['HTTP_PYORK_USER'])) {
             $failedLogins = new FailedLogins();
-            $failedLogins->username = $_SERVER['HTTP_PYORK_USERNAME'];
+            $failedLogins->username = $_SERVER['HTTP_PYORK_USER'];
             if ($failedLogins->find(true)) {
                 $failedLogins->delete();
             }
