@@ -35,7 +35,9 @@ $(document).ready(function() {
     setupUploadCoverForm();
     
     // setup more/less buttons
-    activateMoreLessButtons('.container');    
+    activateMoreLessButtons('.container');   
+    
+    setupZeroClipboard() 
 });
 
 // handle logged out event
@@ -659,3 +661,16 @@ $(document).on('afterChange', '.browse-shelf', function(event, slick, currentSli
     }
     delete slick.slidingDirection;
 });
+
+
+function setupZeroClipboard() {
+    ZeroClipboard.config( { swfPath: _global_path + "/interface/themes/bootstrap/js/ZeroClipboard.swf" } );
+    $('.btn-clipboard').hover(
+      function() {
+        $( this ).addClass( "btn-clipboard-hover" );
+      }, function() {
+        $( this ).removeClass( "btn-clipboard-hover" );
+      }
+    );
+    var client = new ZeroClipboard($('.btn-clipboard'));
+}

@@ -6,8 +6,6 @@
     var _global_path = '{$path}';
     var _global_url = '{$url}';
   </script>
-  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/slick.js,js/carousel.js,js/vufind.js"></script>
-  
   <title>
   {if $error}
     {translate text="An error has occurred"}
@@ -138,7 +136,9 @@
       </div>
     </div>
   </div> <!--/.container -->
-    
+  
+  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/slick.js,js/carousel.js,js/ZeroClipboard.min.js,js/vufind.js"></script>
+  
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>

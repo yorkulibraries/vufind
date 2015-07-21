@@ -1,20 +1,14 @@
-<script type="text/javascript" src="{$url|replace:'https:':''|replace:'http:':''}/Widget/Carousel?id=t{$time}&amp;{$searchUrlParams|escape}"></script>
-<div id="t{$time}"></div>
-
-<p>Add the following HTML code into your web page.</p>
-
+{$carouselCode}
+  
+<p>{translate text='Copy the following HTML code'}:</p>
 <div class="zero-clipboard">
-  <span class="btn-clipboard">Copy</span>
+  <span class="btn-clipboard" data-clipboard-text="{$carouselCode|escape}">{translate text='Copy'}</span>
 </div>
-<div class="highlight">
+<div class="carousel-code">
   <pre>
-  &lt;script type=&quot;text/javascript&quot; src=&quot;{$url|replace:'https:':''|replace:'http:':''}/Widget/Carousel?id=t{$time}&amp;{$searchUrlParams|escape}&quot;&gt;&lt;/script&gt;
-  &lt;div id=&quot;t{$time}&quot;&gt;&lt;/div&gt;
+    <code class="language-html" data-lang="html">
+      {$carouselCode|escape}
+    </code>
   </pre>
 </div>
 
-<script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/ZeroClipboard.min.js"></script>
-<script type="text/javascript">
-ZeroClipboard.config( {literal}{{/literal} swfPath: "{$path}/interface/themes/bootstrap/js/ZeroClipboard.swf" {literal}}{/literal} );
-var client = new ZeroClipboard($(".copy-button"));
-</script>

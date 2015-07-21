@@ -59,24 +59,8 @@ class Carousel extends Action
         global $configArray;
         global $interface;
         global $user;
-        $interface->assign('time', time());
         if (isset($_GET['preview'])) {
-            if (isset($_GET['list']) && is_numeric($_GET['list'])) {
-                $list = User_list::staticGet($_GET['list']);
-                if ($list) {
-                	if ($list->public || ($user && $user->id == $list->user_id)) {
-                        $interface->assign('carouselTitle', $list->title);
-                	}
-                }
-                $interface->assign('searchUrlParams', 'list=' . $_GET['list']);
-            } else {
-                $this->searchObject->processSearch(false, true);
-                $interface->assign('carouselTitle', translate("Search Results"));
-                $interface->assign('searchUrlParams', $this->searchObject->renderSearchUrlParams());
-                $interface->assign('lookfor', $this->searchObject->displayQuery());
-                $interface->assign('searchType', $this->searchObject->getSearchType());
-                $interface->assign('searchIndex', $this->searchObject->getSearchIndex());
-            }
+            $interface->assign('carouselCode', $this->getCarouselCode());
             $interface->setPageTitle(translate('Carousel Preview'));
             $interface->setTemplate('carousel-preview.tpl');
             $interface->display('layout.tpl');
@@ -161,6 +145,31 @@ class Carousel extends Action
     {
         $result = $this->searchObject->processSearch(false, false);
         return $result['response']['docs'];
+    }
+    
+    private function getCarouselCode()
+    {
+        global $configArray;
+
+        $title = translate("Search Results");
+        if (isset($_GET['list']) && is_numeric($_GET['list'])) {
+            $list = User_list::staticGet($_GET['list']);
+            if ($list) {
+            	if ($list->public || ($user && $user->id == $list->user_id)) {
+                    $title = $list->title;
+            	}
+            }
+            $searchUrlParams = 'list=' . $_GET['list'];
+        } else {
+            $this->searchObject->processSearch(false, true);
+            $searchUrlParams = $this->searchObject->renderSearchUrlParams();
+        }
+        
+        $widgetUrl = preg_replace('/http:|https:/i', '', $configArray['Site']['url']) . '/Widget';
+        $widgetId = 't' . time();
+        $code = '<script type="text/javascript" src="' . $widgetUrl . '/Carousel?id=' . $widgetId . '&' . $searchUrlParams . '"></script>';
+        $code .= "\n" . '<div id="' . $widgetId . '"></div>';
+        return $code;
     }
 }
 ?>
