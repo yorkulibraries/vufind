@@ -51,7 +51,7 @@ class PassportUnlock extends Action
         global $interface;
         global $configArray;
         
-        if (isset($_SERVER['HTTP_PYORK_USERNAME']) && !empty($_SERVER['HTTP_PYORK_USERNAME'])) {
+        if (isset($_SERVER['HTTP_PYORK_USER']) && !empty($_SERVER['HTTP_PYORK_USER'])) {
             $failedLogins = new FailedLogins();
             $failedLogins->username = $_SERVER['HTTP_PYORK_USERNAME'];
             if ($failedLogins->find(true)) {
