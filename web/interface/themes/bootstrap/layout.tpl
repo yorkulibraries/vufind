@@ -100,6 +100,10 @@
       <div id="content">
         {include file="$module/$pageTemplate"}
       </div>
+    {elseif $module=='Help'}
+      <div id="content">
+        {include file="$pageTemplate"}
+      </div>
     {else}
       <div class="row row-offcanvas row-offcanvas-right">
         <div class="col-xs-12 col-md-8 col-lg-9 left-column print-full">

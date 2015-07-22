@@ -78,7 +78,8 @@ class Home extends Action
             // Error -- help isn't available at all!
             PEAR::raiseError(new PEAR_Error('Unknown Help Page'));
         }
-
+        
+        $interface->setPageTitle('Help');
         $interface->display('Help/help.tpl');
     }
 }

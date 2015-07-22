@@ -42,3 +42,6 @@
 {if !$modal}
 </div>
 {/if}
+
+<p class="login-question"><a href="{$path}/Help/Home?topic=login">{translate text='Locked account'}?</a></p>
+<p class="login-question"><a href="{$path}/Help/Home?topic=login">{translate text='Forgot your password'}?</a></p>
