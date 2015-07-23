@@ -22,6 +22,7 @@ web/images/covers/local/large/*
 web/images/covers/local/medium/*
 web/images/covers/local/original/*
 web/images/covers/local/small/*
+web/images/covers/by-id/*
 
 # Compiled source #                                                                                   
 ###################

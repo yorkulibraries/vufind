@@ -80,6 +80,7 @@ if (!sanitizeParameters()) {
 } else if (!fetchFromId($_GET['id'], $_GET['size'])
     && !fetchFromISBN($_GET['isn'], $_GET['size'])
     && !fetchFromContentType($_GET['contenttype'], $_GET['size'])
+    && !fetchFromTMDB($_GET['id'], $_GET['size'])
     && !generateImage($_GET['id'], $_GET['size'])
 ) {
     dieWithFailImage();
@@ -524,10 +525,10 @@ function fetchFromId($id, $size)
 	if (empty($id) || empty($size)) {
 		return false;
 	}
-	$finalFile = 'images/covers/local/' . $size . '/' . $id . '.jpg';
-	if (is_readable($finalFile)) {
+	$jpgFile = 'images/covers/local/' . $size . '/' . $id . '.jpg';
+	if (is_readable($jpgFile)) {
 		header('Content-type: image/jpeg');
-		echo readfile($finalFile);
+		echo readfile($jpgFile);
 		return true;
 	} else {
 	    // if there is a local original image,
@@ -539,6 +540,11 @@ function fetchFromId($id, $size)
 	        echo readfile($finalFile);
 	        return true;
 	    }
+	}
+	$urlTextFile = 'images/covers/by-id/' . $id;
+	if (is_readable($urlTextFile)) {
+	    header('Location: ' . trim(file_get_contents($urlTextFile)));
+        return true;
 	}
 	return false;
 }
@@ -602,6 +608,45 @@ function generateImage($id, $size) {
 	echo $generator->generate($title, $author);
 	
 	return true;
+}
+
+function fetchFromTMDB($id, $size) {
+    require_once 'sys/ConnectionManager.php';
+    require_once '../vendor/autoload.php';
+        
+    $record = null;
+    $solr = ConnectionManager::connectToIndex();
+    if (!($record = $solr->getRecord($id))) {
+        return false;
+    }
+
+    if (in_array('VHS', $record['format']) || in_array('DVD', $record['format']) || in_array('Blu-Ray', $record['format'])) {
+        global $configArray;
+        global $localFile;
+
+        $localFile = 'images/covers/by-id/' . $id;
+
+        $token  = new \Tmdb\ApiToken($configArray['TMDB']['apikey']);
+        $client = new \Tmdb\Client($token);
+        $configRepo = new \Tmdb\Repository\ConfigurationRepository($client);        
+        $imageHelper = new \Tmdb\Helper\ImageHelper($configRepo->load());
+        $searchRepo = new \Tmdb\Repository\SearchRepository($client);     
+        $query = new \Tmdb\Model\Search\SearchQuery\MovieSearchQuery();
+        $query->page(1);
+        list($title, $variant) = explode(' = ', $record['title_full']);
+        $title = preg_replace('/\[videorecording\]/i', '', $title);
+        //var_dump($title);die;
+        $movies = $searchRepo->searchMovie($title, $query);
+        foreach($movies as $movie) {
+            $image = $movie->getPosterPath();
+            if ($image) {
+                $url = $imageHelper->getUrl($image, 'w185');
+                return processImageUrl($url);
+            }
+        }
+    }
+    
+    return false;
 }
 
 ?>
