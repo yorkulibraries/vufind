@@ -578,21 +578,26 @@ function scaleImage($file) {
 function generateImage($id, $size) {
     require_once 'sys/ConnectionManager.php';
     require_once 'generator.php';
-    
+
     $record = null;
     $solr = ConnectionManager::connectToIndex();
     if (!($record = $solr->getRecord($id))) {
         return false;
     }
 
+    // clean title
     $title = preg_replace('/\[[A-Za-z \(\)]+\]/', '', $record['title_full']);
     list($title, $junk) = explode('/', $title);
-    list($title, $junk) = explode('=', $title);
+    list($title, $junk) = explode(' = ', $title);
     $title = trim($title, "\n/* :-");
-    if (in_array('Journal/Periodical', $record['format']) || in_array('eJournal', $record['format'])) {
-        if (isset($record['issn'][0]) && !empty($record['issn'][0])) {
-            $author = preg_replace('/[^0-9x\-]/i', '', $record['issn'][0]);
-        }
+
+    // truncate title to 100 chars
+    if (strlen($title) > 100) {
+        $title = substr($title , 0, strrpos(substr($title, 0, 100), ' ' ));
+    }
+    
+    if (isset($record['issn'][0]) && !empty($record['issn'][0])) {
+        $author = preg_replace('/[^0-9x\-]/i', '', $record['issn'][0]);
     } else {
         list($junk, $author) = explode('/', $record['title_full']);
         $author = trim($author);
@@ -600,8 +605,17 @@ function generateImage($id, $size) {
             $author = $record['author'];
         }
         $author = trim($author, "\n/* :");
+        // truncate author to 40 chars
+        if (strlen($author) > 40) {
+            $author = substr($author , 0, strrpos(substr($author, 0, 40), ' ' ));
+        }
     }
-
+    
+    // don't draw author for Video records
+    if (in_array('Video', $record['format'])) {
+        $author = null;
+    }
+    
     $settings = array(
 	    'mode'         => 'solid',
 	    'saturation'   => 100,
@@ -611,10 +625,8 @@ function generateImage($id, $size) {
         'authorFont'   => 'LiberationSans-Bold.ttf'
     );
 	$generator = new Generator(null, $settings);
-	
 	header('Content-type: image/png');
 	echo $generator->generate($title, $author);
-	
 	return true;
 }
 
@@ -627,7 +639,7 @@ function fetchFromTMDB($id, $size) {
     if (!($record = $solr->getRecord($id))) {
         return false;
     }
-
+    
     if (!in_array('Sound Recording', $record['format']) && 
         (in_array('VHS', $record['format']) || in_array('DVD', $record['format']) || in_array('Blu-Ray', $record['format']))
     ) {
@@ -657,7 +669,6 @@ function fetchFromTMDB($id, $size) {
         $title = preg_replace('/\[videorecording\]|\(Blu\-ray\)/i', '', $title);
         $title = trim($title, ' /');
 
-        
         // search movie with title and year
         $movies = $searchRepo->searchMovie($title, $query);
         
