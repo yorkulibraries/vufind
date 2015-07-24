@@ -640,14 +640,55 @@ function fetchFromTMDB($id, $size) {
         $client = new \Tmdb\Client($token);
         $configRepo = new \Tmdb\Repository\ConfigurationRepository($client);        
         $imageHelper = new \Tmdb\Helper\ImageHelper($configRepo->load());
-        $searchRepo = new \Tmdb\Repository\SearchRepository($client);     
+        $searchRepo = new \Tmdb\Repository\SearchRepository($client);
+        $movieRepo = new \Tmdb\Repository\MovieRepository($client);  
+        
         $query = new \Tmdb\Model\Search\SearchQuery\MovieSearchQuery();
         $query->page(1);
-        //$query->year(1975);
+        $publishDate = (strlen($record['publishDate'][0]) >= 4) ? $record['publishDate'][0] : null;
+        $originalReleaseDate = (strlen($record['video_release_date_str']) >= 4) ? $record['video_release_date_str'] : null;
+        if ($originalReleaseDate) {
+            $query->year($originalReleaseDate);
+        } else if ($publishDate){
+            $query->year($publishDate);
+        }
+
         list($title, $variant) = explode(' = ', $record['title_full']);
         $title = preg_replace('/\[videorecording\]|\(Blu\-ray\)/i', '', $title);
+        $title = trim($title, ' /');
+
+        
+        // search movie with title and year
         $movies = $searchRepo->searchMovie($title, $query);
+        
+        // if nothing found, then search with just the title
+        if ($movies->getTotalResults() == 0) {
+            $query->year(null);
+            $movies = $searchRepo->searchMovie($title, $query);
+        }
+        
+        // check crew if more than 1 results found
+        $checkCrew = ($movies->getTotalResults() > 1); 
+        $foundCrew = false;
+        $directors = $record['video_director_str_mv'];
+        
         foreach($movies as $movie) {
+            if ($checkCrew && !empty($directors)) {
+                $movie = $movieRepo->load($movie->getId());
+                $crew = $movie->getCredits()->getCrew();
+                foreach ($crew as $person) {
+                    foreach ($directors as $director) {
+                        // if it quacks like a duck
+                        if (soundex($director) == soundex($person->getName())) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!$found) {
+                    continue;
+                }
+            }
             $image = $movie->getPosterPath();
             if ($image) {
                 $url = $imageHelper->getUrl($image, 'w185');
@@ -655,7 +696,6 @@ function fetchFromTMDB($id, $size) {
             }
         }
     }
-    
     return false;
 }
 
