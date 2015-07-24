@@ -672,42 +672,46 @@ function fetchFromTMDB($id, $size) {
         // search movie with title and year
         $movies = $searchRepo->searchMovie($title, $query);
         
-        // if nothing found, then search with just the title
-        if ($movies->getTotalResults() == 0) {
-            $query->year(null);
-            $movies = $searchRepo->searchMovie($title, $query);
-        }
-        
-        // check crew if more than 1 results found
-        $checkCrew = ($movies->getTotalResults() > 1); 
-        $foundCrew = false;
         $directors = $record['video_director_str_mv'];
         
-        foreach($movies as $movie) {
-            if ($checkCrew && !empty($directors)) {
-                $movie = $movieRepo->load($movie->getId());
-                $crew = $movie->getCredits()->getCrew();
-                foreach ($crew as $person) {
-                    foreach ($directors as $director) {
-                        // if it quacks like a duck
-                        if (soundex($director) == soundex($person->getName())) {
-                            $found = true;
-                            break;
-                        }
-                    }
-                }
-                if (!$found) {
-                    continue;
-                }
-            }
-            $image = $movie->getPosterPath();
-            if ($image) {
-                $url = $imageHelper->getUrl($image, 'w185');
-                return processImageUrl($url);
-            }
+        // if nothing found, then search again with just the title
+        if (!processMovieMatches($movies, $directors, $movieRepo, $imageHelper)) {
+            $query->year(null);
+            $movies = $searchRepo->searchMovie($title, $query);
+            return processMovieMatches($movies, $directors, $movieRepo, $imageHelper);
         }
     }
     return false;
 }
 
+function processMovieMatches($movies, $directors, $movieRepo, $imageHelper) {
+    // check crew if more than 1 results found
+    $checkCrew = ($movies->getTotalResults() > 1); 
+    $foundCrew = false;
+    
+    foreach($movies as $movie) {
+        if ($checkCrew && !empty($directors)) {
+            $movie = $movieRepo->load($movie->getId());
+            $crew = $movie->getCredits()->getCrew();
+            foreach ($crew as $person) {
+                foreach ($directors as $director) {
+                    // if it quacks like a duck
+                    if (soundex($director) == soundex($person->getName())) {
+                        $found = true;
+                        break;
+                    }
+                }
+            }
+            if (!$found) {
+                continue;
+            }
+        }
+        $image = $movie->getPosterPath();
+        if ($image) {
+            $url = $imageHelper->getUrl($image, 'w185');
+            return processImageUrl($url);
+        }
+    }
+    return false;
+}
 ?>
