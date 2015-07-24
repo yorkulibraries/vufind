@@ -620,7 +620,7 @@ function generateImage($id, $size) {
 
 function fetchFromTMDB($id, $size) {
     require_once 'sys/ConnectionManager.php';
-    require_once '../vendor/autoload.php';
+    require_once 'vendor/autoload.php';
         
     $record = null;
     $solr = ConnectionManager::connectToIndex();
