@@ -628,7 +628,9 @@ function fetchFromTMDB($id, $size) {
         return false;
     }
 
-    if (in_array('VHS', $record['format']) || in_array('DVD', $record['format']) || in_array('Blu-Ray', $record['format'])) {
+    if (!in_array('Sound Recording', $record['format']) && 
+        (in_array('VHS', $record['format']) || in_array('DVD', $record['format']) || in_array('Blu-Ray', $record['format']))
+    ) {
         global $configArray;
         global $localFile;
 
@@ -641,9 +643,9 @@ function fetchFromTMDB($id, $size) {
         $searchRepo = new \Tmdb\Repository\SearchRepository($client);     
         $query = new \Tmdb\Model\Search\SearchQuery\MovieSearchQuery();
         $query->page(1);
+        //$query->year(1975);
         list($title, $variant) = explode(' = ', $record['title_full']);
         $title = preg_replace('/\[videorecording\]|\(Blu\-ray\)/i', '', $title);
-        //var_dump($title);die;
         $movies = $searchRepo->searchMovie($title, $query);
         foreach($movies as $movie) {
             $image = $movie->getPosterPath();
