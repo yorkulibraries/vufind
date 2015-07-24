@@ -35,6 +35,14 @@ require_once 'sys/ISBN.php';
 $configArray = readConfig();
 $logger = new Logger();
 
+// Try to set the locale to UTF-8, but fail back to the exact string from the config
+// file if this doesn't work -- different systems may vary in their behavior here.
+setlocale(
+    LC_MONETARY, array($configArray['Site']['locale'] . ".UTF-8",
+    $configArray['Site']['locale'])
+);
+date_default_timezone_set($configArray['Site']['timezone']);
+
 // Setup memcached interface if configured
 global $memcache;
 if (isset($configArray['Caching'])) {
@@ -634,7 +642,7 @@ function fetchFromTMDB($id, $size) {
         $query = new \Tmdb\Model\Search\SearchQuery\MovieSearchQuery();
         $query->page(1);
         list($title, $variant) = explode(' = ', $record['title_full']);
-        $title = preg_replace('/\[videorecording\]/i', '', $title);
+        $title = preg_replace('/\[videorecording\]|\(Blu\-ray\)/i', '', $title);
         //var_dump($title);die;
         $movies = $searchRepo->searchMovie($title, $query);
         foreach($movies as $movie) {

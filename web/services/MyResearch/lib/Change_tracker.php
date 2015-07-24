@@ -50,7 +50,7 @@ class Change_tracker extends DB_DataObject
     public $deleted;                         // datetime(19)  binary
 
     /* Static get */
-    function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('Change_tracker',$k,$v); }
+    static function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('Change_tracker',$k,$v); }
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE

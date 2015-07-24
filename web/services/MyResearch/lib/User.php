@@ -64,7 +64,7 @@ class User extends DB_DataObject
     public $can_upload_covers;               // int(11) default 0
 
     /* Static get */
-    function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('User',$k,$v); }
+    static function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('User',$k,$v); }
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE

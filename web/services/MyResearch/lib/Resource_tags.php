@@ -50,7 +50,7 @@ class Resource_tags extends DB_DataObject
     public $posted;                          // timestamp(19)  not_null unsigned zerofill binary timestamp
 
     /* Static get */
-    function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('Resource_tags',$k,$v); }
+    static function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('Resource_tags',$k,$v); }
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE

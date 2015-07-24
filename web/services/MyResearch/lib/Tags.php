@@ -47,7 +47,7 @@ class Tags extends DB_DataObject
     public $tag;                             // string(25)  not_null
 
     /* Static get */
-    function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('Tags',$k,$v); }
+    static function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('Tags',$k,$v); }
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE

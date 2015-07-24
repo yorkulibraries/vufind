@@ -56,7 +56,7 @@ class Requests extends DB_DataObject
     public $ils_hold_created;                // smallint
 
     /* Static get */
-    function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('Requests',$k,$v); }
+    static function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('Requests',$k,$v); }
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE

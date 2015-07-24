@@ -47,7 +47,7 @@ class Oai_resumption extends DB_DataObject
     public $expires;                         // datetime(19)  not_null binary
 
     /* Static get */
-    function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('Oai_resumption',$k,$v); }
+    static function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('Oai_resumption',$k,$v); }
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE
