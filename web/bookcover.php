@@ -674,44 +674,64 @@ function fetchFromTMDB($id, $size) {
         
         $directors = $record['video_director_str_mv'];
         
-        // if nothing found, then search again with just the title
-        if (!processMovieMatches($movies, $directors, $movieRepo, $imageHelper)) {
+        // if nothing found, then try without the year
+        if (!processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelper)) {
             $query->year(null);
             $movies = $searchRepo->searchMovie($title, $query);
-            return processMovieMatches($movies, $directors, $movieRepo, $imageHelper);
+            if (!processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelper)) {
+                // if nothing found, then try shorter title
+                $movies = $searchRepo->searchMovie($record['title'], $query);
+                if (!processMovieMatches($record['title'], $movies, $directors, $movieRepo, $imageHelper)) {
+                    $movies = $searchRepo->searchMovie($record['title_short'], $query);
+                    return processMovieMatches($record['title_short'], $movies, $directors, $movieRepo, $imageHelper);
+                }
+            }
         }
     }
+    
     return false;
 }
 
-function processMovieMatches($movies, $directors, $movieRepo, $imageHelper) {
-    // check crew if more than 1 results found
-    $checkCrew = ($movies->getTotalResults() > 1); 
-    $foundCrew = false;
+function processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelper) {
+    $match = null;
     
     foreach($movies as $movie) {
-        if ($checkCrew && !empty($directors)) {
+        if ($movies->getTotalResults() == 1) {
+            $match = $movie;
+            break;
+        }
+        
+        $similarity = 0;
+        $title = preg_replace('/[^\da-z]/i', '', strtolower($title));
+        $otherTitle = preg_replace('/[^\da-z]/i', '', strtolower($movie->getTitle()));
+        similar_text($title, $otherTitle, $similarity);
+
+        // don't bother checking directors if the title doesn't quite match
+        if ($similarity > 80 && !empty($directors) && $movies->getTotalResults() > 1) {
             $movie = $movieRepo->load($movie->getId());
             $crew = $movie->getCredits()->getCrew();
             foreach ($crew as $person) {
                 foreach ($directors as $director) {
-                    // if it quacks like a duck
-                    if (soundex($director) == soundex($person->getName())) {
-                        $found = true;
+                    $name1 = preg_replace('/[^\da-z]/i', '', strtolower($director));
+                    $name2 = preg_replace('/[^\da-z]/i', '', strtolower($person->getName()));
+                    $diff = levenshtein($name1, $name2);
+                    if ($diff < 2) {
+                        $match = $movie;
                         break;
                     }
                 }
             }
-            if (!$found) {
-                continue;
-            }
         }
-        $image = $movie->getPosterPath();
+    }
+    
+    if ($match) {
+        $image = $match->getPosterPath();
         if ($image) {
             $url = $imageHelper->getUrl($image, 'w185');
             return processImageUrl($url);
         }
     }
+    
     return false;
 }
 ?>
