@@ -646,46 +646,50 @@ function fetchFromTMDB($id, $size) {
         global $configArray;
         global $localFile;
 
-        $localFile = 'images/covers/by-id/' . $id;
+        try {
+            $localFile = 'images/covers/by-id/' . $id;
 
-        $token  = new \Tmdb\ApiToken($configArray['TMDB']['apikey']);
-        $client = new \Tmdb\Client($token);
-        $configRepo = new \Tmdb\Repository\ConfigurationRepository($client);        
-        $imageHelper = new \Tmdb\Helper\ImageHelper($configRepo->load());
-        $searchRepo = new \Tmdb\Repository\SearchRepository($client);
-        $movieRepo = new \Tmdb\Repository\MovieRepository($client);  
+            $token  = new \Tmdb\ApiToken($configArray['TMDB']['apikey']);
+            $client = new \Tmdb\Client($token);
+            $configRepo = new \Tmdb\Repository\ConfigurationRepository($client);        
+            $imageHelper = new \Tmdb\Helper\ImageHelper($configRepo->load());
+            $searchRepo = new \Tmdb\Repository\SearchRepository($client);
+            $movieRepo = new \Tmdb\Repository\MovieRepository($client);  
         
-        $query = new \Tmdb\Model\Search\SearchQuery\MovieSearchQuery();
-        $query->page(1);
-        $publishDate = (strlen($record['publishDate'][0]) >= 4) ? $record['publishDate'][0] : null;
-        $originalReleaseDate = (strlen($record['video_release_date_str']) >= 4) ? $record['video_release_date_str'] : null;
-        if ($originalReleaseDate) {
-            $query->year($originalReleaseDate);
-        } else if ($publishDate){
-            $query->year($publishDate);
-        }
+            $query = new \Tmdb\Model\Search\SearchQuery\MovieSearchQuery();
+            $query->page(1);
+            $publishDate = (strlen($record['publishDate'][0]) >= 4) ? $record['publishDate'][0] : null;
+            $originalReleaseDate = (strlen($record['video_release_date_str']) >= 4) ? $record['video_release_date_str'] : null;
+            if ($originalReleaseDate) {
+                $query->year($originalReleaseDate);
+            } else if ($publishDate){
+                $query->year($publishDate);
+            }
 
-        list($title, $variant) = explode(' = ', $record['title_full']);
-        $title = preg_replace('/\[videorecording\]|\(Blu\-ray\)/i', '', $title);
-        $title = trim($title, ' /');
+            list($title, $variant) = explode(' = ', $record['title_full']);
+            $title = preg_replace('/\[videorecording\]|\(Blu\-ray\)/i', '', $title);
+            $title = trim($title, ' /');
 
-        // search movie with title and year
-        $movies = $searchRepo->searchMovie($title, $query);
-        
-        $directors = $record['video_director_str_mv'];
-        
-        // if nothing found, then try without the year
-        if (!processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelper)) {
-            $query->year(null);
+            // search movie with title and year
             $movies = $searchRepo->searchMovie($title, $query);
+        
+            $directors = $record['video_director_str_mv'];
+        
+            // if nothing found, then try without the year
             if (!processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelper)) {
-                // if nothing found, then try shorter title
-                $movies = $searchRepo->searchMovie($record['title'], $query);
-                if (!processMovieMatches($record['title'], $movies, $directors, $movieRepo, $imageHelper)) {
-                    $movies = $searchRepo->searchMovie($record['title_short'], $query);
-                    return processMovieMatches($record['title_short'], $movies, $directors, $movieRepo, $imageHelper);
+                $query->year(null);
+                $movies = $searchRepo->searchMovie($title, $query);
+                if (!processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelper)) {
+                    // if nothing found, then try shorter title
+                    $movies = $searchRepo->searchMovie($record['title'], $query);
+                    if (!processMovieMatches($record['title'], $movies, $directors, $movieRepo, $imageHelper)) {
+                        $movies = $searchRepo->searchMovie($record['title_short'], $query);
+                        return processMovieMatches($record['title_short'], $movies, $directors, $movieRepo, $imageHelper);
+                    }
                 }
             }
+        } catch (Exception $e) {
+            return false;
         }
     }
     
