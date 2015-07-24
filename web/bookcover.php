@@ -667,7 +667,7 @@ function fetchFromTMDB($id, $size) {
             }
 
             list($title, $variant) = explode(' = ', $record['title_full']);
-            $title = preg_replace('/\[videorecording\]|\(Blu\-ray\)/i', '', $title);
+            $title = preg_replace('/\[videorecording\]|\(Blu\-ray\)|\[videorecording \(BLU\-RAY\)\]/i', '', $title);
             $title = trim($title, ' /');
 
             // search movie with title and year
