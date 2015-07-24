@@ -641,7 +641,7 @@ function fetchFromTMDB($id, $size) {
     }
     
     if (!in_array('Sound Recording', $record['format']) && 
-        (in_array('VHS', $record['format']) || in_array('DVD', $record['format']) || in_array('Blu-Ray', $record['format']))
+        (in_array('Video', $record['format']))
     ) {
         global $configArray;
         global $localFile;
@@ -696,16 +696,17 @@ function processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelp
     $match = null;
     
     foreach($movies as $movie) {
-        if ($movies->getTotalResults() == 1) {
+        $title = preg_replace('/[^\da-z]/i', '', strtolower($title));
+        $otherTitle = preg_replace('/[^\da-z]/i', '', strtolower($movie->getTitle()));
+        $similarity = 0;
+        similar_text($title, $otherTitle, $similarity);
+
+        // if only 1 match, then check the title similarity, if more than 70%, then take it.
+        if ($movies->getTotalResults() == 1 && $similarity > 70) {
             $match = $movie;
             break;
         }
         
-        $similarity = 0;
-        $title = preg_replace('/[^\da-z]/i', '', strtolower($title));
-        $otherTitle = preg_replace('/[^\da-z]/i', '', strtolower($movie->getTitle()));
-        similar_text($title, $otherTitle, $similarity);
-
         // don't bother checking directors if the title doesn't quite match
         if ($similarity > 80 && !empty($directors) && $movies->getTotalResults() > 1) {
             $movie = $movieRepo->load($movie->getId());
