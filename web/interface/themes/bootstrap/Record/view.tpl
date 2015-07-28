@@ -42,25 +42,19 @@
   
   <div class="record-navbar print-hidden">
     <div class="pull-left">
+      <div class="btn-group">
       {if $lastsearch}
-      <div class="btn-group">
-      <a title="{translate text='Go back to search results'}" class="btn btn-link btn-sm" href="{$lastsearch|escape}"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='Search Results'}</span></a>
-      </div>
+        <a title="{translate text='Go back to search results'}" class="btn btn-link btn-sm" href="{$lastsearch|escape}"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='Search Results'}</span></a>
       {else}
-      <div class="btn-group">
-      <a title="{translate text='New search'}" class="btn btn-link btn-sm" href="{$path}"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='New Search'}</span></a>
-      </div>
+        <a title="{translate text='New search'}" class="btn btn-link btn-sm" href="{$path}"><span class="fa fa-search"></span> {translate text='New Search'}</a>
       {/if}
       {if $previousRecord}
-      <div class="btn-group">
-        <a title="{translate text='Go to previous result'}" class="btn btn-link btn-sm" href="{$path}/Record/{$previousRecord}"><span class="fa fa-arrow-left"></span> <span class="hidden-xs">{translate text='Prev'}</span></a>
-      </div>
+        <a title="{translate text='Go to previous result'}" class="btn btn-link btn-sm" href="{$path}/Record/{$previousRecord}"><span class="fa fa-arrow-left"></span> {translate text='Prev'}</a>
       {/if}
       {if $nextRecord}
-      <div class="btn-group">
-        <a title="{translate text='Go to next result'}" class="btn btn-link btn-sm" href="{$path}/Record/{$nextRecord}"><span class="hidden-xs">{translate text='Next'}</span> <span class="fa fa-arrow-right"></span></a>
-      </div>
+        <a title="{translate text='Go to next result'}" class="btn btn-link btn-sm" href="{$path}/Record/{$nextRecord}">{translate text='Next'} <span class="fa fa-arrow-right"></span></a>
       {/if}
+      </div>
     </div>
     <div class="pull-right">
       <div class="btn-group">
