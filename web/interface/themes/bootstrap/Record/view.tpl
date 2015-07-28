@@ -86,9 +86,6 @@
     <li {if $tab == 'Holdings'}class="active"{/if}>
       <a data-toggle="tab" data-target="#Holdings" href="{$path}/Record/{$id}/Holdings">{translate text='Details'}</a>
     </li>
-    <li {if $tab == 'Related'}class="active"{/if}>
-      <a data-toggle="tab" data-target="#Related" href="{$path}/Record/{$id}/Related">{translate text='Related'}</a>
-    </li>
     <li {if $tab == 'UserComments'}class="active"{/if}>
       <a data-toggle="tab" data-target="#UserComments" href="{$path}/Record/{$id}/UserComments">{translate text='Comments'}</a>
     </li>
@@ -168,13 +165,5 @@
     {/if}
     </div>
     {/if}
-    
-    <div class="tab-pane {if $tab == 'Related'}active{/if}" id="Related">
-    {if $tab == 'Related'}
-      <div id="Related-tab-content">
-        {include file="Record/$subTemplate"}
-      </div>
-    {/if}
-    </div>
   </div>
 </div>
