@@ -44,21 +44,21 @@
     <div class="pull-left">
       {if $lastsearch}
       <div class="btn-group">
-      <a title="{translate text='Search Results'}" class="btn btn-default btn-sm" href="{$lastsearch|escape}"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='Search Results'}</span></a>
+      <a title="{translate text='Go back to search results'}" class="btn btn-link btn-sm" href="{$lastsearch|escape}"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='Search Results'}</span></a>
       </div>
       {else}
       <div class="btn-group">
-      <a title="{translate text='Search'}" class="btn btn-default btn-sm" href="{$path}"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='Search'}</span></a>
+      <a title="{translate text='New search'}" class="btn btn-link btn-sm" href="{$path}"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='New Search'}</span></a>
       </div>
       {/if}
       {if $previousRecord}
       <div class="btn-group">
-        <a title="{translate text='Prev'}" class="btn btn-default btn-sm" href="{$path}/Record/{$previousRecord}"><span class="fa fa-arrow-left"></span> <span class="hidden-xs">{translate text='Prev'}</span></a>
+        <a title="{translate text='Go to previous result'}" class="btn btn-link btn-sm" href="{$path}/Record/{$previousRecord}"><span class="fa fa-arrow-left"></span> <span class="hidden-xs">{translate text='Prev'}</span></a>
       </div>
       {/if}
       {if $nextRecord}
       <div class="btn-group">
-        <a title="{translate text='Next'}" class="btn btn-default btn-sm" href="{$path}/Record/{$nextRecord}"><span class="hidden-xs">{translate text='Next'}</span> <span class="fa fa-arrow-right"></span></a>
+        <a title="{translate text='Go to next result'}" class="btn btn-link btn-sm" href="{$path}/Record/{$nextRecord}"><span class="hidden-xs">{translate text='Next'}</span> <span class="fa fa-arrow-right"></span></a>
       </div>
       {/if}
     </div>
