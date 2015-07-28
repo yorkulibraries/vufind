@@ -41,7 +41,7 @@
   </div>
   
   <div class="record-navbar print-hidden">
-    <div class="pull-left">
+    <div class="pull-left hidden-xs">
       <div class="btn-group">
       {if $lastsearch}
         <a title="{translate text='Go back to search results'}" class="btn btn-link btn-sm" href="{$lastsearch|escape}"><span class="fa fa-search"></span> {translate text='Search Results'}</a>
@@ -49,10 +49,10 @@
         <a title="{translate text='New search'}" class="btn btn-link btn-sm" href="{$path}"><span class="fa fa-search"></span> {translate text='New Search'}</a>
       {/if}
       {if $previousRecord}
-        <a title="{translate text='Go to previous result'}" class="btn btn-link btn-sm hidden-xs" href="{$path}/Record/{$previousRecord}"><span class="fa fa-arrow-left"></span> {translate text='Prev'}</a>
+        <a title="{translate text='Go to previous result'}" class="btn btn-link btn-sm" href="{$path}/Record/{$previousRecord}"><span class="fa fa-arrow-left"></span> {translate text='Prev'}</a>
       {/if}
       {if $nextRecord}
-        <a title="{translate text='Go to next result'}" class="btn btn-link btn-sm hidden-xs" href="{$path}/Record/{$nextRecord}">{translate text='Next'} <span class="fa fa-arrow-right"></span></a>
+        <a title="{translate text='Go to next result'}" class="btn btn-link btn-sm" href="{$path}/Record/{$nextRecord}">{translate text='Next'} <span class="fa fa-arrow-right"></span></a>
       {/if}
       </div>
     </div>
