@@ -44,7 +44,7 @@
     <div class="pull-left">
       <div class="btn-group">
       {if $lastsearch}
-        <a title="{translate text='Go back to search results'}" class="btn btn-link btn-sm" href="{$lastsearch|escape}"><span class="fa fa-search"></span> <span class="hidden-xs">{translate text='Search Results'}</span></a>
+        <a title="{translate text='Go back to search results'}" class="btn btn-link btn-sm" href="{$lastsearch|escape}"><span class="fa fa-search"></span> {translate text='Search Results'}</a>
       {else}
         <a title="{translate text='New search'}" class="btn btn-link btn-sm" href="{$path}"><span class="fa fa-search"></span> {translate text='New Search'}</a>
       {/if}
