@@ -94,7 +94,25 @@
     <div class="{if $tab == 'Holdings' || $tab == 'Hold'}tab-pane active{/if}" id="Holdings">
     {if $tab == 'Holdings' || $tab == 'Hold'}
       <div id="Holdings-tab-content">
-        <h3>{translate text="Holdings"}</h3>
+        <h3 class="pull-left">{translate text="Holdings"}</h3>
+        <div class="pull-right">
+          <div class="btn-group">
+            <a href="{$path}/Record/{$id}/Hold" class="btn btn-primary btn-lg btn-toggle" data-toggle="modal" data-target="#modal">{translate text='Place Hold'}</a>
+          </div>
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown">
+              {translate text='Request'} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/ICB">{translate text='Inter-campus Borrowing'}</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/InProcess">{translate text='In-Process/On-Order'}</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/Storage">{translate text='Storage/Special Collections'}</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="clearfix"></div>
+        
         <div class="section">
           {include file="Record/$subTemplate"}
         </div>
