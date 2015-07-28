@@ -95,7 +95,21 @@ class Holds extends MyResearch
                     if ($this->cancelHolds != false) {
                         $recordList = $this->_addCancelDetails($recordList);
                     }
+                    
+                    $html = array();
+                    $interface->assign('recordStart', 1);
+                    for ($x = 0; $x < count($recordList); $x++) {
+                        // send the record to RecordDriver to generate bib info HTML
+                        $record = RecordDriverFactory::initRecordDriver($recordList[$x]);
+                        $interface->assign('listItemIndex', $x);
+                        $interface->assign('ilsDetails', $recordList[$x]['ils_details']);
+                        $record->getSearchResult();
+                        $html[] = $interface->fetch('MyResearch/hold-list-entry.tpl');
+                    }
+                    $interface->assign('recordListHTML', $html);
+                    
                     $interface->assign('recordList', $recordList);
+                    
                     $interface->assign('cancelable', $cancelable);
                 } else {
                     $interface->assign('recordList', false);
