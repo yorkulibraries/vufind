@@ -79,18 +79,29 @@ class Location extends Record
                     // check designated locations
                     $locations = array_map('trim', explode(',', $area['locations']));
                     if (in_array($location, $locations)) {
-                        return $area['map'];
+                        return $this->pickMap($area);
                     }
                     
                     // check call number range
                     list($alpha, $rest) = explode(' ', $callnumber);
                     if ($alpha >= $area['start'] && $alpha <= $area['end']) {
-                        return $area['map'];
+                        return $this->pickMap($area);
                     }
                 }
             }
         }
         return false;
+    }
+    
+    private function pickMap($area) 
+    {
+        if (isset($area['map'])) {
+            return $area['map'];
+        }
+        if (isset($area['googleMap'])) {
+            return $area['googleMap'];
+        }
+        return null;    
     }
 }
 
