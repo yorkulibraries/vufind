@@ -31,7 +31,9 @@ SMARTYFILE="Smarty-$SMARTYVER"
 
 if [ ! -d $SMARTYDIR ]
 then
-    wget http://www.smarty.net/files/$SMARTYFILE.tar.gz -O $SMARTYFILE.tar.gz
+    [ -x /usr/bin/wget ] && /usr/bin/wget http://www.smarty.net/files/$SMARTYFILE.tar.gz -O $SMARTYFILE.tar.gz
+    [ -x /usr/bin/curl ] && /usr/bin/curl http://www.smarty.net/files/$SMARTYFILE.tar.gz -o $SMARTYFILE.tar.gz
+    
     if [ ! -f $SMARTYFILE.tar.gz ]
     then
         echo "Unable to download Smarty templates (file=$SMARTYFILE.tar.gz)."
