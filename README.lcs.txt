@@ -9,6 +9,7 @@ cp httpd-vufind.conf /etc/httpd/conf.d/
 
 * copy /usr/local/vufind/web/conf/config.ini from dev/prod server to web/conf/config.ini
 * copy /usr/local/vufind/web/conf/Unicorn.ini from dev/prod server to web/conf/Unicorn.ini
+* dump mysql database from prod/dev server and import into your db
 
 
 VuFind needs to be mounted on /find/, if you mount it on a different prefix, then you need to make 
