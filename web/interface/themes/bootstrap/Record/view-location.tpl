@@ -16,8 +16,12 @@
     <dd>{$location|escape}</dd>
   </dl>
   
+  {if $map}
   <div class="map">
     <img class="img-responsive" src="{$path}/images/maps/{$map}" alt="Map"/>
   </div>
+  {else}
+    <p>{translate text='No map available'}.</p>
+  {/if}
 </div>
 
