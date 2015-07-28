@@ -71,7 +71,7 @@
               {foreach from=$facetList.$label item="value" key="display" name="loop"}
               <div class="radio">
                 <input name="filter[]" value="{$value.filter|escape}" id="format_{$display|lower|regex_replace:'/[^a-z0-9]/':''}" type="radio" {if $value.selected}checked="checked"{/if}/>
-                <label for="format_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|escape}</label>
+                <label for="format_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|translate|escape}</label>
               </div>
               {/foreach}
             </div>
@@ -85,7 +85,7 @@
             {foreach from=$facetList.$label item="value" key="display" name="loop"}
             <div class="checkbox">
               <input name="filter[]" value="{$value.filter|escape}" id="source_{$display|lower|regex_replace:'/[^a-z0-9]/':''}" type="checkbox" {if $value.selected}checked="checked"{/if}/>
-              <label for="source_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|escape}</label>
+              <label for="source_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|translate|escape}</label>
             </div>
             {/foreach}
           </div>
@@ -102,7 +102,7 @@
               {if ($display == 'Online Access')}
               <div class="checkbox">
                 <input name="filter[]" value="{$value.filter|escape}" id="location_{$display|lower|regex_replace:'/[^a-z0-9]/':''}" type="checkbox" {if $value.selected}checked="checked"{/if}/>
-                <label for="location_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|escape}</label>
+                <label for="location_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|translate|escape}</label>
               </div>
               {/if}
             {/foreach}
@@ -110,7 +110,7 @@
               {if !($display == 'Online Access')}
               <div class="checkbox">
                 <input name="filter[]" value="{$value.filter|escape}" id="location_{$display|lower|regex_replace:'/[^a-z0-9]/':''}" type="checkbox" {if $value.selected}checked="checked"{/if}/>
-                <label for="location_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|escape}</label>
+                <label for="location_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|translate|escape}</label>
               </div>
               {/if}
             {/foreach}
@@ -128,7 +128,7 @@
               {if ($display == 'English' or $display == 'French' or $display == 'German' or $display == 'Italian' or $display == 'Spanish')}
                 <div class="checkbox">
                   <input name="filter[]" value="{$value.filter|escape}" id="language_{$display|lower|regex_replace:'/[^a-z0-9]/':''}" type="checkbox" {if $value.selected}checked="checked"{/if}/>
-                  <label for="language_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|escape}</label>
+                  <label for="language_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|translate|escape}</label>
                 </div>
               {/if}
             {/foreach}
@@ -136,7 +136,7 @@
               {if !($display == 'English' or $display == 'French' or $display == 'German' or $display == 'Italian' or $display == 'Spanish')}
                 <div class="checkbox">
                   <input name="filter[]" value="{$value.filter|escape}" id="language_{$display|lower|regex_replace:'/[^a-z0-9]/':''}" type="checkbox" {if $value.selected}checked="checked"{/if}/>
-                  <label for="language_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|escape}</label>
+                  <label for="language_{$display|lower|regex_replace:'/[^a-z0-9]/':''}">{$display|translate|escape}</label>
                 </div>
               {/if}
             {/foreach}
