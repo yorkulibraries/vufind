@@ -59,7 +59,7 @@
     <div class="pull-right">
       <div class="btn-group">
         <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-          <div class="visible-xs"><span class="fa fa-bars"></span> <span class="caret"></span></div><div class="hidden-xs"><span class="hidden-xs">{translate text='Options'}</span> <span class="caret"></span></div>
+          {translate text='Options'} <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
           <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/Cite"><span class="fa fa-quote-left"></span> {translate text='Cite this'}</a></li>
