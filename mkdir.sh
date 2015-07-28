@@ -41,6 +41,12 @@ if [ ! -d $VUFIND_HOME/web/images/covers/local ]; then
   mkdir -p $VUFIND_HOME/web/images/covers/local/large
   mkdir -p $VUFIND_HOME/web/images/covers/local/original
 fi
+
+if [ ! -d $VUFIND_HOME/web/images/covers/by-id ]; then
+  echo $VUFIND_HOME/web/images/covers/by-id does not exist, creating it...
+  mkdir -p $VUFIND_HOME/web/images/covers/by-id
+fi
+
 chmod -R a+rw $VUFIND_HOME/web/images/covers
 
 if [ ! -d $VUFIND_HOME/openurl_cache ]; then
