@@ -34,7 +34,7 @@
   <link rel="unapi-server" type="application/xml" title="unAPI" href="{$url}/unAPI/Server"/>
   	
   <!-- our stylesheets -->
-  {minifycss media="all" files="font-awesome.min.css,bootstrap.min.css,bootstrap-theme.min.css,datepicker.css,pretify.css,jquery.fileupload.css,slick.css,slick-theme.css.less,carousel.css.less,styles.css.less"}
+  {minifycss media="all" files="font-awesome.min.css,bootstrap.min.css,bootstrap-theme.min.css,bootstrap-datepicker.min.css,pretify.css,jquery.fileupload.css,slick.css,slick-theme.css.less,carousel.css.less,styles.css.less"}
   {minifycss media="print" files="print.css.less"}
 </head>
 <body>
@@ -141,7 +141,7 @@
     </div>
   </div> <!--/.container -->
   
-  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/slick.js,js/carousel.js,js/ZeroClipboard.min.js,js/vufind.js"></script>
+  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.min.js,js/bootstrap-datepicker.fr.min.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/slick.js,js/carousel.js,js/ZeroClipboard.min.js,js/vufind.js"></script>
   
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

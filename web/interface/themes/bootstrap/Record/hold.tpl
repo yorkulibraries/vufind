@@ -42,7 +42,12 @@
       <div class="form-group">
         <label class="col-sm-3 control-label" for="requiredBy">{translate text='hold_required_by'}</label>
         <div class="col-sm-9">
-          <input data-provide="datepicker" data-date-format="mm/dd/yyyy" data-date-start-date="+1d" data-date-end-date="+100d" data-date-autoclose="true" class="form-control" type="date" id="requiredBy" name="requiredBy" value="{if $requiredBy}{$requiredBy|escape}{/if}" />
+          <div class="input-group">
+            <span class="input-group-addon">
+                <span class="fa fa-calendar"></span>
+            </span>
+            <input data-date-language="{$userLang}" data-date-disable-touch-keyboard="true" data-provide="datepicker" placeholder="mm/dd/yyyy" data-date-format="mm/dd/yyyy" data-date-start-date="+1d" data-date-end-date="+100d" data-date-autoclose="true" class="form-control" type="text" id="requiredBy" name="requiredBy" value="{if $requiredBy}{$requiredBy|escape}{/if}" />
+          </div>
         </div>
       </div>
 
