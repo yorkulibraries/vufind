@@ -57,16 +57,15 @@ class Fines extends MyResearch
                 PEAR::raiseError($patron);
             }
             $result = $this->catalog->getMyFines($patron);
+            $totalBalance = 0.00;
             if (!PEAR::isError($result)) {
-                // assign the "raw" fines data to the template
-                // NOTE: could use foreach($result as &$row) here but it only works
-                // with PHP5
                 for ($i = 0; $i < count($result); $i++) {
-                    $row = &$result[$i];
-                    $record = $this->db->getRecord($row['id']);
-                    $row['title'] = $record ? $record['title_short'] : null;
+                    $record = $this->db->getRecord($result[$i]['id']);
+                    $result[$i]['title'] = $record ? $record['title'] : null;
+                    $totalBalance += $result[$i]['balance'];
                 }
                 $interface->assign('rawFinesData', $result);
+                $interface->assign('totalBalance', $totalBalance);
             }
         }
 

@@ -107,10 +107,9 @@ class Holds extends MyResearch
                         $html[] = $interface->fetch('MyResearch/hold-list-entry.tpl');
                     }
                     $interface->assign('recordListHTML', $html);
-                    
                     $interface->assign('recordList', $recordList);
-                    
                     $interface->assign('cancelable', $cancelable);
+                    $interface->assign('recordCount', count($recordList));
                 } else {
                     $interface->assign('recordList', false);
                 }

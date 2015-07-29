@@ -15,7 +15,10 @@
     </div>
   {/if}    
 
-  <h1>{translate text='Checkouts'}: {$recordList|@count}</h1>
+  <h1>{translate text='Checkouts'}</h1>
+  
+  <p>{translate text='You have ###NUMBER### item(s) checked out'|replace:'###NUMBER###':$recordCount}.</p>
+  
   {if !empty($recordList)}
     <form class="renewal-form" role="form" action="{$path}/MyResearch/CheckedOut" method="post">
       <div class="btn-group renew-selected-items">
