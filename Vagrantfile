@@ -109,15 +109,16 @@ Vagrant.configure(2) do |config|
 
     cp /usr/local/vufind/httpd-vufind-vagrant.conf /etc/httpd/conf.d/httpd-vufind-vagrant.conf
 
-
+    cd /usr/local/vufind && ./install-libraries.sh && ./mkdir.sh
 
     mysql -u root -e 'create database if not exists vufind'
     mysql -u root -e "grant all privileges on vufind.* to vufind@localhost identified by 'vufind'"
-    mysql -u vufind -pvufind vufind < mysql.sql
+    mysql -u vufind -pvufind vufind < /usr/local/vufind/mysql.sql
+    mysql -u vufind -pvufind vufind < /usr/local/vufind/york.sql
 
     /etc/init.d/httpd restart
 
   SHELL
 
-    #cd /usr/local/vufind && ./install-libraries.sh && ./mkdir.sh
+
 end
