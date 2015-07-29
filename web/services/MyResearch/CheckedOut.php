@@ -66,38 +66,32 @@ class CheckedOut extends MyResearch
                 PEAR::raiseError($result);
             }
 
-            $interface->assign('recordStart', 1);
-            $interface->assign('recordCount', count($data));
+            $recordList = array();
+            foreach ($result as $row) {
+                $record = $this->db->getRecord($row['id']);
+                $record['ils_details'] = $row;
+                $recordList[] = $record;
+            }
             
-            $transList = array();
-            foreach ($result as $index => $data) {
-                $interface->assign('listItemIndex', $index);
-                $current = array('ils_details' => $data);
-                if ($record = $this->db->getRecord($data['id'])) {
-                    $driver = RecordDriverFactory::initRecordDriver($record);
-                    $driver->getSearchResult();
-                    $interface->assign('ils_details', $data);
-                    $interface->assign('renew_details', $this->catalog->getRenewDetails($data));
-                    $current['html'] = $interface->fetch('RecordDrivers/Index/checkedout.tpl');
-                    $current += array(
-                        'id' => $record['id'],
-                        'isbn' => isset($record['isbn']) ? $record['isbn'] : null,
-                        'author' =>
-                            isset($record['author']) ? $record['author'] : null,
-                        'title' =>
-                            isset($record['title']) ? $record['title'] : null,
-                        'format' =>
-                            isset($record['format']) ? $record['format'] : null,
-                    );
-                }
-                $transList[] = $current;
-            }
-
             if ($this->checkRenew) {
-                $transList = $this->_addRenewDetails($transList);
+                $recordList = $this->_addRenewDetails($recordList);
             }
+                        
+            $html = array();
+            $interface->assign('recordStart', 1);
+            for ($x = 0; $x < count($recordList); $x++) {
+                // send the record to RecordDriver to generate bib info HTML
+                $record = RecordDriverFactory::initRecordDriver($recordList[$x]);
+                $interface->assign('listItemIndex', $x);
+                $interface->assign('ilsDetails', $recordList[$x]['ils_details']);
+                $interface->assign('renewKey', $recordList[$x]['ils_details']['renew_details']);
+                $record->getSearchResult();
+                $html[] = $interface->fetch('MyResearch/checkedout-list-entry.tpl');
+            }
+            $interface->assign('recordListHTML', $html);
+            $interface->assign('recordList', $recordList);
         }
-        $interface->assign('transList', $transList);
+        
         $interface->setTemplate('checkedout.tpl');
         $interface->setPageTitle('Your Checkouts');
         $interface->display('layout.tpl');
