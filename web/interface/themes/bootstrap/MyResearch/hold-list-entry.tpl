@@ -36,35 +36,38 @@
       {/if}
     </dl>
     
-    <table class="table table-condensed table-responsive holdings">
-      <caption class="sr-only">{translate text='Hold Details'}</caption>
-    <thead>
-    <tr>
-      <th>{translate text='Status'}</th>
-      <th>{translate text='Note'}</th>
-      <th>{translate text='Created'}</th>
-      <th>{translate text='Expires'}</th>
-    </tr>
-    </thead>
-    <tbody>
+    <div class="table-responsive">
+      <table class="table table-condensed holdings">
+        <caption class="sr-only">{translate text='Hold Details'}</caption>
+      <thead>
       <tr>
-        <td>
-          {if $ilsDetails.available}
-          <span class="available">{translate text='hold_available'}</span>
-            {if $ilsDetails.date_available_expires}
-              {$ilsDetails.date_available_expires}
-            {/if}
-          {else}
-            <span class="checkedout">{translate text='Not Available'}</span>
-          {/if}
-        </td>
-        <td>{$ilsDetails.comment|replace:'VuFind - Pickup:':'Pick up @'|escape}</td>
-        <td>{$ilsDetails.create|escape}</td>
-        <td>{$ilsDetails.expire|escape}</td>
+        <th>{translate text='Status'}</th>
+        <th>{translate text='Note'}</th>
+        <th>{translate text='Created'}</th>
+        <th>{translate text='Expires'}</th>
       </tr>
-    </tbody>
-    </table>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            {if $ilsDetails.available}
+            <span class="available">{translate text='hold_available'}</span>
+              {if $ilsDetails.date_available_expires}
+                {$ilsDetails.date_available_expires}
+              {/if}
+            {else}
+              <span class="checkedout">{translate text='Not Available'}</span>
+            {/if}
+          </td>
+          <td>{$ilsDetails.comment|replace:'VuFind - Pickup:':'Pick up @'|escape}</td>
+          <td>{$ilsDetails.create|escape}</td>
+          <td>{$ilsDetails.expire|escape}</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
   </div>
+  
   <abbr class="unapi-id" title="{$summId}"></abbr>
   
   {if $ilsDetails.cancel_details && !$ilsDetails.available}
