@@ -7,12 +7,12 @@
       <strong>{translate text='You owe ###NUMBER### in bills/fines'|replace:'###NUMBER###':$sTotalBalance}.</strong>
     </div>
   {else}
-    <p class="text-success">{translate text='You have no outstanding fines'}.</p>
+    <div class="alert alert-success" role="alert">
+      <strong>{translate text='You do not have any outstanding bills/fines'}.</strong>
+    </div>
   {/if}
   
-  {if empty($rawFinesData)}
-    <p>{translate text='You do not have any fines'}.</p>
-  {else}
+  {if !empty($rawFinesData)}
   <div class="table-responsive">
     <table class="table table-condensed">
     <caption class="sr-only">{translate text='Bills'}</caption>
