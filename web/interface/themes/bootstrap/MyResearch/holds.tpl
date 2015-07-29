@@ -1,8 +1,6 @@
 {if $user->cat_username}
   <h1>{translate text='Holds'}</h1>
   
-  <p>{translate text='You have ###NUMBER### hold request(s)'|replace:'###NUMBER###':$recordCount}.</p>
-  
   {if $holdResults.success}
       <div class="alert alert-success alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -24,7 +22,9 @@
       </div>
   {/if}
 
-  {if is_array($recordList)}
+  {if is_array($recordList) && !empty($recordList)}
+    <p>{translate text='You have ###NUMBER### hold request(s)'|replace:'###NUMBER###':$recordCount}.</p>
+  
     <form class="cancel-hold-form" role="form" action="{$path}/MyResearch/Holds" method="post">
       {if $cancelable}
       <div class="btn-group cancel-selected-holds">
