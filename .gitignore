@@ -23,6 +23,8 @@ web/images/covers/local/medium/*
 web/images/covers/local/original/*
 web/images/covers/local/small/*
 web/images/covers/by-id/*
+web/conf/config.ini
+web/conf/Unicorn.ini
 
 # Compiled source #                                                                                   
 ###################
