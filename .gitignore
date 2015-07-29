@@ -26,7 +26,7 @@ web/images/covers/by-id/*
 web/conf/config.ini
 web/conf/Unicorn.ini
 
-# Compiled source #                                                                                   
+# Compiled source #
 ###################
 *.com
 *.class
@@ -74,3 +74,5 @@ web/interface/themes/bootstrap/css/styles.css
 web/interface/themes/bootstrap/css/print.css
 web/interface/themes/bootstrap/css/slick-theme.css
 web/interface/themes/bootstrap/css/carousel.css
+
+.vagrant

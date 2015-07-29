@@ -62,5 +62,5 @@ if [ ! -d $VUFIND_HOME/log ]; then
 fi
 chmod -R a+rw $VUFIND_HOME/log
 
-chmod -R a+rw $VUFIND_HOME/web/interface/themes/bootstrap/css
-chmod -R a+rw $VUFIND_HOME/web/interface/themes/bootstrap/js
+chmod a+rw $VUFIND_HOME/web/interface/themes/bootstrap/css
+chmod a+rw $VUFIND_HOME/web/interface/themes/bootstrap/js
