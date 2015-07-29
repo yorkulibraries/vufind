@@ -21,19 +21,6 @@
       {/if}
     {/if}
   </div>
-
-  {if $coverId}
-  <form aria-hidden="true" class="coverupload" action="{$path}/AJAX/UploadCover" method="post" enctype="multipart/form-data">
-    <div class="btn btn-default btn-sm fileinput-button {if !$user || !$user->can_upload_covers}hidden{/if} upload-cover-button">
-      <span class="fa fa-upload"></span>
-      <span>{translate text='Upload'}</span>
-      <label class="sr-only" for="coverupload_{$coverId}_files">{translate text='Select image file'}</label>
-      <input id="coverupload_{$coverId}_files" type="file" name="files[]" />
-      <input type="hidden" name="id" value="{$coverId}" />
-      <input type="submit" class="sr-only" name="submit" value="{translate text='Upload'}"/>
-    </div>
-  </form>
-  {/if}
   
   {assign var=previewISBN value=null}
   {if $summISBN}{assign var=previewISBN value=$summISBN}{/if}
