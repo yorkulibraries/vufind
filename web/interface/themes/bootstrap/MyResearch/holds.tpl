@@ -23,7 +23,7 @@
   {/if}
 
   {if is_array($recordList)}
-    <form role="form" action="{$path}/MyResearch/Holds" method="post">
+    <form class="cancel-hold-form" role="form" action="{$path}/MyResearch/Holds" method="post">
       {if $cancelable}
       <div class="btn-group cancel-selected-holds">
         <input class="btn btn-default btn-sm cancel-hold-button" type="submit" name="cancelSelected" value="{translate text='hold_cancel_selected'}" />
