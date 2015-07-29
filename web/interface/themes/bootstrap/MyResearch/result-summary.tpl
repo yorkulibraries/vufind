@@ -12,15 +12,10 @@
       </button>
       <ul class="dropdown-menu" role="menu">
       {if $recordCount}
-        {if $list->public}
-        <li><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/MyResearch/ShareList/{$list->id}"><span class="fa fa-link"></span> {translate text='Share'}</a></li>
-        <li><a target="_blank" role="menuitem" tabindex="-1" href="{$path}/MyResearch/ExportList/{$list->id}?style=refworks"><span class="fa fa-folder-open-o"></span> {translate text='RefWorks'}</a></li>
-        {/if}
-        <li><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/MyResearch/EmailList/{$list->id}"><span class="fa fa-envelope-o"></span> {translate text='Email'}</a></li>
-        {if $list->public}
-          <li><a role="menuitem" tabindex="-1" href="{$path}/MyResearch/MyList/{$list->id}?view=rss"><span class="fa fa-rss"></span> {translate text='Get RSS Feed'}</a></li>
-          <li><a role="menuitem" tabindex="-1" href="{$path}/Widget/Carousel?list={$list->id}&preview=1"><span class="fa fa-rss"></span> {translate text='Get Carousel'}</a></li>
-        {/if}
+        <li{if !$list->public} class="disabled"{/if}><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/MyResearch/ShareList/{$list->id}"><span class="fa fa-link"></span> {translate text='Share'}</a></li>
+          <li{if !$list->public} class="disabled"{/if}><a role="menuitem" tabindex="-1" href="{$path}/MyResearch/MyList/{$list->id}?view=rss"><span class="fa fa-rss"></span> {translate text='Get RSS Feed'}</a></li>
+          <li{if !$list->public} class="disabled"{/if}><a role="menuitem" tabindex="-1" href="{$path}/Widget/Carousel?list={$list->id}&preview=1"><span class="fa fa-rss"></span> {translate text='Get Carousel'}</a></li>
+          <li><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/MyResearch/EmailList/{$list->id}"><span class="fa fa-envelope-o"></span> {translate text='Email'}</a></li>
       {/if}
       {if $user && $user->id == $list->user_id}
         {if $pageTemplate != "favorites.tpl" && $action != 'Favorites'}
