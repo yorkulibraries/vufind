@@ -112,24 +112,6 @@ a.online-access, a.online-access:active, a.online-access:hover, a.online-access:
                     margin-bottom: 7px;
                 }
             }
-            dl.checkout-details {
-                dt {
-                    width: 135px;
-                    margin-right: 10px;
-                }
-                dd {
-                    font-size: 100%;
-                }
-            }
-            .due-date {
-              font-size: 150%;
-              font-weight: bold;
-              color: #444;
-              .previous-due-date {
-                font-size: 14px;
-                font-weight: normal;
-              }
-            }
         }
     }
 }
@@ -520,6 +502,31 @@ table.holdings {
 }
 a.btn-link,a.btn-link:hover,a.btn-link:active,a.btn-link:visited {
   color: #333;
+}
+
+.my-account-list {
+  dl.dl-horizontal.hold-details, dl.dl-horizontal.checkout-details {
+    dt {
+        font-weight: normal;
+        font-size: 1em;
+        padding-right: 10px;
+    }
+    dd {
+        font-size: 1em;
+        padding-left: 10px;
+        font-weight: bold;
+    }
+  }
+  dl.dl-horizontal.hold-details {
+    dt {
+      width: 100px;
+    }
+  }
+  dl.dl-horizontal.checkout-details {
+    dt {
+      width: 110px;
+    }
+  }
 }
 
 /* hide the sidebar for devices less than 1024px wide */

@@ -49,41 +49,33 @@
       </div>
     {/if}
     
-    <div class="table-responsive">
-      <table class="table table-condensed holdings">
-        <caption class="sr-only">{translate text='Checkout Details'}</caption>
-      <thead>
-      <tr>
-        <th>{translate text='Call Number'}</th>
-        <th>{translate text='Due Date'}</th>
-        <th>{translate text='Checkout Date'}</th>
-        <th>{translate text='Renewals'}</th>
-      </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{$ilsDetails.callnum|escape}</td>
-          <td>
-            {if !empty($ilsDetails.recall_duedate)}
-              {$ilsDetails.recall_duedate|escape}
-              {if !empty($ilsDetails.original_duedate)}
+    <dl class="dl-horizontal checkout-details">
+      <dt>{translate text='Call Number'}:</dt>
+        <dd>
+          {$ilsDetails.callnum|escape}
+        </dd>
+        <dt>{translate text='Due Date'}:</dt>
+        <dd>
+          {if !empty($ilsDetails.recall_duedate)}
+            {$ilsDetails.recall_duedate|escape}
+            {if !empty($ilsDetails.original_duedate)}
+              <span class="previous-due-date">({translate text='Original'}: {$ilsDetails.original_duedate|escape})</span>
+            {/if}
+          {else}
+            {if !empty($ilsDetails.duedate)}
+              {$ilsDetails.duedate|escape} {if $ilsDetails.dueTime}{$ilsDetails.dueTime|escape}{/if}
+              {if $itemRenewResult.success}
                 <span class="previous-due-date">({translate text='Original'}: {$ilsDetails.original_duedate|escape})</span>
               {/if}
-            {else}
-              {if !empty($ilsDetails.duedate)}
-                {$ilsDetails.duedate|escape} {if $ilsDetails.dueTime}{$ilsDetails.dueTime|escape}{/if}
-                {if $itemRenewResult.success}
-                  <span class="previous-due-date">({translate text='Original'}: {$ilsDetails.original_duedate|escape})</span>
-                {/if}
-              {/if}
             {/if}
-          </td>
-          <td>{$ilsDetails.date_charged|escape}</td>
-          <td>{$ilsDetails.number_of_renewals}</td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+          {/if}
+        </dd>
+        <dt>{translate text='Checkout Date'}:</dt>
+        <dd>{$ilsDetails.date_charged|escape}</dd>
+        <dt>{translate text='Renewals'}:</dt>
+        <dd>{$ilsDetails.number_of_renewals}</dd>
+    </dl>
+    
   </div>
   <abbr class="unapi-id" title="{$summId}"></abbr>
 </li>

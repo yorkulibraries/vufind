@@ -26,46 +26,30 @@
         <dt class="sr-only">{translate text='Publication info'}:</dt>
         <dd class="publication-info">{$yorkPublicationInfo|trim:' *,:/'|escape}</dd>
       {/if}
-      {if !empty($summFormats)}
-        <dt class="sr-only">{translate text='Format'}:</dt>
-        <dd class="format-info">
-        {foreach from=$summFormats item=format name=formats}
-          <span class="format">{translate text=$format}</span>{if !$smarty.foreach.formats.last},{/if}
-        {/foreach}
-        </dd>
-      {/if}
+      
     </dl>
     
-    <div class="table-responsive">
-      <table class="table table-condensed holdings">
-        <caption class="sr-only">{translate text='Hold Details'}</caption>
-      <thead>
-      <tr>
-        <th>{translate text='Status'}</th>
-        <th>{translate text='Note'}</th>
-        <th>{translate text='Created'}</th>
-        <th>{translate text='Expires'}</th>
-      </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            {if $ilsDetails.available}
+    <dl class="dl-horizontal hold-details">
+      <dt>{translate text='Status'}:</dt>
+        <dd>
+          {if $ilsDetails.available}
             <span class="available">{translate text='hold_available'}</span>
-              {if $ilsDetails.date_available_expires}
-                {$ilsDetails.date_available_expires}
-              {/if}
-            {else}
-              <span class="checkedout">{translate text='Not Available'}</span>
+            {if $ilsDetails.date_available_expires}
+              {$ilsDetails.date_available_expires}
             {/if}
-          </td>
-          <td>{$ilsDetails.comment|replace:'VuFind - Pickup:':'Pick up @'|escape}</td>
-          <td>{$ilsDetails.create|escape}</td>
-          <td>{$ilsDetails.expire|escape}</td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+          {else}
+            <span class="checkedout">{translate text='Not Available'}</span>
+          {/if}
+        </dd>
+        {if $ilsDetails.available}
+          <dt>{translate text='Note'}:</dt>
+          <dd>{$ilsDetails.comment|replace:'VuFind - Pickup:':'Pick up @'|escape}</dd>
+        {/if}
+        <dt>{translate text='Date Created'}:</dt>
+        <dd>{$ilsDetails.create|escape}</dd>
+        <dt>{translate text='Expiry Date'}:</dt>
+        <dd>{$ilsDetails.expire|escape}</dd>
+    </dl>
   </div>
   
   <abbr class="unapi-id" title="{$summId}"></abbr>

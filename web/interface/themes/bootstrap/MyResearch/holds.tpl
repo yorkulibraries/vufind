@@ -33,7 +33,7 @@
       </div>
       {/if}
       
-      <ul class="media-list result-list hold-list">
+      <ul class="media-list result-list my-account-list">
         {foreach from=$recordListHTML item=resource name="recordLoop"}
           {$resource}
         {/foreach}
