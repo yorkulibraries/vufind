@@ -1,5 +1,5 @@
 {if $user->cat_username}
-  <h1>{translate text='Your Holds'}</h1>
+  <h1>{translate text='Holds'}</h1>
     
   {if $holdResults.success}
       <div class="alert alert-success alert-dismissable">

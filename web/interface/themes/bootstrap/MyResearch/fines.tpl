@@ -1,5 +1,5 @@
 {if $user->cat_username}
-  <h1>{translate text='Your Fines'}</h1>
+  <h1>{translate text='Fines'}</h1>
   {if empty($rawFinesData)}
     <p>{translate text='You do not have any fines'}.</p>
   {else}
