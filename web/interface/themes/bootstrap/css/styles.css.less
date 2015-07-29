@@ -646,7 +646,13 @@ a.btn-link,a.btn-link:hover,a.btn-link:active,a.btn-link:visited {
               font-size: 1em;
             }
             dl {
-              font-size: .95em;
+              .author-info,.publication-info {
+                	text-overflow: ellipsis;
+                	overflow:hidden;
+                	width: 190px;
+                  	white-space: nowrap;
+                  	overflow: hidden;
+              }
             }
         }
       }
