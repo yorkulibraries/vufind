@@ -25,7 +25,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
-require_once 'services/MyResearch/MyResearch.php';
+require_once 'Action.php';
 
 /**
  * ShareList action for MyResearch module
@@ -36,7 +36,7 @@ require_once 'services/MyResearch/MyResearch.php';
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
-class ShareList extends MyResearch
+class ShareList extends Action
 {
     /**
      * Process parameters and display the page.
