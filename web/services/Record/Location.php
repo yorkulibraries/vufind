@@ -62,11 +62,7 @@ class Location extends Record
         global $interface;
 
         $area = $this->findArea($_REQUEST['callnumber'], $_REQUEST['location_code']);
-        if (isset($area['map']) && !empty($area['map'])) {
-            $interface->assign('map', $area['map']);
-        } else if (isset($area['googleMap']) && !empty($area['googleMap'])) {
-            $interface->assign('googleMap', $area['googleMap']);
-        }
+        $interface->assign('area', $area);
         $interface->setPageTitle('Item Location');
         $interface->assign('location', $_REQUEST['location']);
         $interface->assign('callnumber', $_REQUEST['callnumber']);
