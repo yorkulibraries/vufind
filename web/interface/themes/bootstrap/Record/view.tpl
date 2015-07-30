@@ -66,6 +66,7 @@
           <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/SMS"><span class="fa fa-mobile-phone"></span> {translate text='Text this'}</a></li>
           <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/Email"><span class="fa fa-envelope-o"></span> {translate text='Email this'}</a></li>
           <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" title="{translate text='Save this record permanently in your account'}" href="{$path}/Record/{$id}/Save"><span class="fa fa-save"></span> {translate text='Save'}</a></li>
+          <li role="presentation"><a target="_blank" title="{translate text='Export to EndNote'}" href="{$path}/Record/{$id}/Export?style=endnoteweb"><span class="fa fa-external-link"></span> {translate text='Export to Endnote'}</a></li>
         </ul>
       </div>
       <div class="btn-group">
