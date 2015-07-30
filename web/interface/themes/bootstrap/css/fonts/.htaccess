@@ -7,3 +7,7 @@ AddType application/x-font-opentype .otf
 AddType application/x-font-ttf .ttf
 AddType application/font-woff .woff
 AddType image/svg+xml .svg
+
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+</IfModule>
