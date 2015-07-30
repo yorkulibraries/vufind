@@ -60,17 +60,22 @@ class Location extends Record
     public function launch()
     {
         global $interface;
-        
+
+        $area = $this->findArea($_REQUEST['callnumber'], $_REQUEST['location_code']);
+        if (isset($area['map']) && !empty($area['map'])) {
+            $interface->assign('map', $area['map']);
+        } else if (isset($area['googleMap']) && !empty($area['googleMap'])) {
+            $interface->assign('googleMap', $area['googleMap']);
+        }
         $interface->setPageTitle('Item Location');
-        $interface->assign('map', $this->findMap($_REQUEST['callnumber'], $_REQUEST['location_code']));
         $interface->assign('location', $_REQUEST['location']);
         $interface->assign('callnumber', $_REQUEST['callnumber']);
         $interface->setTemplate('view-location.tpl');
 
-        $interface->display('layout.tpl', $this->cacheId);
+        $interface->display('layout.tpl');
     }
     
-    private function findMap($callnumber, $location)
+    private function findArea($callnumber, $location)
     {
         if (isset($this->buildings[$location])) {
             $building = $this->buildings[$location];
@@ -79,29 +84,18 @@ class Location extends Record
                     // check designated locations
                     $locations = array_map('trim', explode(',', $area['locations']));
                     if (in_array($location, $locations)) {
-                        return $this->pickMap($area);
+                        return $area;
                     }
                     
                     // check call number range
                     list($alpha, $rest) = explode(' ', $callnumber);
                     if ($alpha >= $area['start'] && $alpha <= $area['end']) {
-                        return $this->pickMap($area);
+                        return $area;
                     }
                 }
             }
         }
         return false;
-    }
-    
-    private function pickMap($area) 
-    {
-        if (isset($area['map'])) {
-            return $area['map'];
-        }
-        if (isset($area['googleMap'])) {
-            return $area['googleMap'];
-        }
-        return null;    
     }
 }
 

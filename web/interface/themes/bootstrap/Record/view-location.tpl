@@ -16,10 +16,12 @@
     <dd>{$location|escape}</dd>
   </dl>
   
-  {if $map}
+  {if $map || $googleMap}
   <div class="map">
-    {if stripos($map, 'https://www.google.com/maps/embed') == 0 }
-      <iframe src="{$map}" width="400" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
+    {if $googleMap}
+      <div class="google-map-container">
+        <iframe src="{$googleMap}" width="400" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
+      </div>
     {else}
       <img class="img-responsive" src="{$path}/images/maps/{$map}" alt="Map"/>
     {/if}
