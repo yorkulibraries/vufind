@@ -4,6 +4,7 @@ if (typeof window.activateCarousels === 'undefined') {
             slidesToShow: 5,
             slidesToScroll: 5,
             infinite: false,
+            autoplay: false,
             responsive: [
                 {
                   breakpoint: 321,
@@ -16,6 +17,8 @@ if (typeof window.activateCarousels === 'undefined') {
         };
 
         $('.carousel:not(.slick-slider):visible').each(function(index) {
+            settings.autoplay = $(this).data('autoplay');
+            settings.infinite = $(this).data('infinite');
             $(this).slick(settings)
             var startIndex = $(this).data('start-index');
             if(startIndex > 0) {
