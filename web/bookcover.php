@@ -679,12 +679,12 @@ function fetchFromTMDB($id, $size) {
             if (!processMovieMatches($title, $movies, $directors, $movieRepo, $config)) {
                 $query->year(null);
                 $movies = $searchRepo->searchMovie($title, $query);
-                if (!processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelper)) {
+                if (!processMovieMatches($title, $movies, $directors, $movieRepo, $config)) {
                     // if nothing found, then try shorter title
                     $movies = $searchRepo->searchMovie($record['title'], $query);
-                    if (!processMovieMatches($record['title'], $movies, $directors, $movieRepo, $imageHelper)) {
+                    if (!processMovieMatches($record['title'], $movies, $directors, $movieRepo, $config)) {
                         $movies = $searchRepo->searchMovie($record['title_short'], $query);
-                        return processMovieMatches($record['title_short'], $movies, $directors, $movieRepo, $imageHelper);
+                        return processMovieMatches($record['title_short'], $movies, $directors, $movieRepo, $config);
                     }
                 }
             }
