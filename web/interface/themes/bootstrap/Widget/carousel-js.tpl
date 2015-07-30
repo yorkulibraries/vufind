@@ -1,7 +1,7 @@
 var VuFind_carousel_{$id} = {$carousel|json_encode};
 var VuFind_js = '{$url}/interface/themes/bootstrap/min/f=';
 
-if (!window.loadingCarouselCSS) window.loadingCarouselCSS=true && document.head.insertAdjacentHTML('beforeend', '{minifycss files="slick.css,slick-theme.css.less,carousel.css.less"}');
+if (!window.loadingCarouselCSS) window.loadingCarouselCSS=true && document.head.insertAdjacentHTML('beforeend', '{minifycss files="slick.css,slick-theme.css.less,carousel.css.less" absolute=1}');
 
 document.body.insertAdjacentHTML('beforeend', '<div class="carousel-not-loaded" style="display:none" data-carousel-id="{$id}">' + VuFind_carousel_{$id} + '</div>');
 

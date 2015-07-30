@@ -48,6 +48,7 @@ function smarty_function_minifycss($params, &$smarty)
     require_once('sys/lessc.inc.php');
     
     $path = $configArray['Site']['path'];
+    $url = $configArray['Site']['url'];
     $local = $configArray['Site']['local'];
     $themes = explode(',', $smarty->getVuFindTheme());
     $theme = trim($themes[0]);
@@ -80,7 +81,8 @@ function smarty_function_minifycss($params, &$smarty)
     }
     
     $css = implode(',', $cssFiles);
-    $href = "{$path}/interface/themes/{$theme}/min/f={$css}";
+    $baseURL = $params['absolute'] ? $url : $path;
+    $href = "{$baseURL}/interface/themes/{$theme}/min/f={$css}";
     $media = isset($params['media']) ? " media=\"{$params['media']}\"" : '';
     return "<link rel=\"stylesheet\" type=\"text/css\"{$media} href=\"{$href}\" />";
 }
