@@ -35,9 +35,7 @@ $(document).ready(function() {
     setupUploadCoverForm();
     
     // setup more/less buttons
-    activateMoreLessButtons('.container');   
-    
-    setupZeroClipboard() 
+    activateMoreLessButtons('.container');    
 });
 
 // handle logged out event
