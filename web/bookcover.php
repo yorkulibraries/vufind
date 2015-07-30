@@ -651,8 +651,8 @@ function fetchFromTMDB($id, $size) {
 
             $token  = new \Tmdb\ApiToken($configArray['TMDB']['apikey']);
             $client = new \Tmdb\Client($token);
-            $configRepo = new \Tmdb\Repository\ConfigurationRepository($client);        
-            $imageHelper = new \Tmdb\Helper\ImageHelper($configRepo->load());
+            $configRepo = new \Tmdb\Repository\ConfigurationRepository($client);
+            $config = $configRepo->load();     
             $searchRepo = new \Tmdb\Repository\SearchRepository($client);
             $movieRepo = new \Tmdb\Repository\MovieRepository($client);  
         
@@ -676,7 +676,7 @@ function fetchFromTMDB($id, $size) {
             $directors = $record['video_director_str_mv'];
         
             // if nothing found, then try without the year
-            if (!processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelper)) {
+            if (!processMovieMatches($title, $movies, $directors, $movieRepo, $config)) {
                 $query->year(null);
                 $movies = $searchRepo->searchMovie($title, $query);
                 if (!processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelper)) {
@@ -696,7 +696,7 @@ function fetchFromTMDB($id, $size) {
     return false;
 }
 
-function processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelper) {
+function processMovieMatches($title, $movies, $directors, $movieRepo, $config) {
     $match = null;
     
     foreach($movies as $movie) {
@@ -732,7 +732,12 @@ function processMovieMatches($title, $movies, $directors, $movieRepo, $imageHelp
     if ($match) {
         $image = $match->getPosterPath();
         if ($image) {
-            $url = $imageHelper->getUrl($image, 'w185');
+            $imageConfig = $config->getImages();
+            $size = 'w185';
+            $base_url = (empty($_SERVER['https']) || $_SERVER['https'] != 'on') 
+                ? $imageConfig['base_url']
+                : $imageConfig['secure_base_url'];
+            $url = $base_url . $size . $image;
             return processImageUrl($url);
         }
     }
