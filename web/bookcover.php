@@ -734,7 +734,7 @@ function processMovieMatches($title, $movies, $directors, $movieRepo, $config) {
         if ($image) {
             $imageConfig = $config->getImages();
             $size = 'w185';
-            $base_url = (empty($_SERVER['https']) || $_SERVER['https'] != 'on') 
+            $base_url = (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') 
                 ? $imageConfig['base_url']
                 : $imageConfig['secure_base_url'];
             $url = $base_url . $size . $image;
