@@ -39,19 +39,25 @@ class YorkMarcRecord extends MarcRecord
     public function getExport($exportFormat)
     {
         global $interface;
-        if ($exportFormat == 'refworks_data') {
-            $referenceType = "Generic";
-            $map = parse_ini_file('conf/refworks_export.ini', true, INI_SCANNER_RAW);
-            $formats = $this->getFormats();
-            foreach ($formats as $format) {
-                if (isset($map['RT'][$format])) {
-                    $referenceType = $map['RT'][$format];
-                    break;
-                }
-            }
-            $interface->assign('referenceType', $referenceType);
+        global $configArray;
+        if (strtolower($exportFormat) == 'endnoteweb') {           
+            $this->driver = $this;
+            $this->recordURL = $configArray['Site']['url'] . '/Record/' . $this->getUniqueId();
+            header('Content-Disposition: attachment; filename="YUL_' . $this->getUniqueId() . '.ris"');
+            header('Content-Type: application/x-research-info-systems;charset=utf-8');
+            header('Pragma: private');
+            include_once('export-endnoteweb.phtml');
+            exit;
         }
         return parent::getExport($exportFormat);
+    }
+    
+    /**
+     * support method for the export-endnoteweb.phtml template
+     */
+    private function tryMethod($method) 
+    {
+        return method_exists($this, $method) ? $this->$method() : null;
     }
 
     public function getEdition()
