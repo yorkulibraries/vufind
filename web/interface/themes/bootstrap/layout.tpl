@@ -67,16 +67,15 @@
           <li role="presentation">
             <a role="menuitem" tabindex="-1" href="//www.library.yorku.ca/">{translate text='Libraries Home'}</a>
           </li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{$allLangs.$userLang|translate} <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-              {foreach from=$allLangs key=langCode item=langName}
-              <li role="presentation" {if $langCode==$userLang}class="active"{/if}>
-                <a role="menuitem" tabindex="-1" data-mylang="{$langCode}" href="#">{translate text=$langName}</a>
-              </li>
-              {/foreach}
-            </ul>
-          </li>
+          {if 'fr'==$userLang}
+            <li role="presentation">
+              <a role="menuitem" tabindex="-1" data-mylang="en" href="#">English</a>
+            </li>
+          {else}
+            <li role="presentation">
+              <a role="menuitem" tabindex="-1" data-mylang="fr" href="#">Français</a>
+            </li>
+          {/if}
         </ul>
       </div>
     </div>
