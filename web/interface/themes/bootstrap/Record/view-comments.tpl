@@ -11,7 +11,7 @@
   </div>
   <div class="form-group">
     <input type="submit" name="cancel" value="{translate text='Cancel'}" class="btn btn-default" data-dismiss="modal" />
-    <input type="submit" name="submit" value="{translate text='Add your comment'}" class="btn btn-primary" />
+    <input type="submit" name="submit" value="{translate text='Add your comment'}" class="btn btn-default" />
   </div>
 </form>
 {else}
@@ -19,6 +19,6 @@
     {include file="Record/view-comments-list.tpl"}
   </div>
   <div class="btn-group">
-    <a data-toggle="modal" data-target="#modal" class="btn btn-primary" title="{translate text='Add your comment'}" href="{$path}/Record/{$id}/UserComments?add=1"><span class="icon-comment-alt"></span> {translate text='Add your comment'}</a>
+    <a data-toggle="modal" data-target="#modal" class="btn btn-default" title="{translate text='Add your comment'}" href="{$path}/Record/{$id}/UserComments?add=1"><span class="icon-comment-alt"></span> {translate text='Add your comment'}</a>
   </div>
 {/if}
