@@ -1,4 +1,5 @@
 <li class="media result-container" data-record-id="{$listId}">
+  {assign var=hideCheckbox value=1}
   {include file="RecordDrivers/Index/checkbox.tpl"}
   {include file="RecordDrivers/Index/bookcover.tpl"}
   <div class="media-body result-details">

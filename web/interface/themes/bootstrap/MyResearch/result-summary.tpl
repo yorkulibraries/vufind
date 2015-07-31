@@ -26,9 +26,11 @@
       {/if}
       </ul>
     </div>
+    {if false}
     <div class="btn-group">
       {include file="Search/bookbag.tpl"}
     </div>
+    {/if}
   </div>
 
   <div class="clearfix"></div>
