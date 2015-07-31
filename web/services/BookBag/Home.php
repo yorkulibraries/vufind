@@ -59,7 +59,7 @@ class Home extends Action
         }
         $interface->assign('sortList', $searchObject->getSortList());
         
-        $interface->setPageTitle('View Book Bag');
+        $interface->setPageTitle('View Marked Items');
         $interface->setTemplate('bookbag-list.tpl');
         $currentView  = $searchObject->getView();
         $interface->assign('subpage', 'Search/list-' . $currentView .'.tpl');

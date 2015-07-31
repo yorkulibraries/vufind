@@ -44,7 +44,7 @@
     <div class="pull-left hidden-xs">
       <div class="btn-group">
       {if $lastsearch}
-        <a title="{translate text='Go back to search results'}" class="btn btn-link btn-sm" href="{$lastsearch|escape}"><span class="fa fa-search"></span> {translate text='Search Results'}</a>
+        <a title="{translate text='Go back to search results'}" class="btn btn-link btn-sm" href="{$lastsearch|escape}"><span class="fa fa-arrow-left"></span> {translate text='Search Results'}</a>
       {else}
         <a title="{translate text='New search'}" class="btn btn-link btn-sm" href="{$path}"><span class="fa fa-search"></span> {translate text='New Search'}</a>
       {/if}
@@ -65,8 +65,8 @@
           <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/Cite"><span class="fa fa-quote-left"></span> {translate text='Cite this'}</a></li>
           <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/SMS"><span class="fa fa-mobile-phone"></span> {translate text='Text this'}</a></li>
           <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" href="{$path}/Record/{$id}/Email"><span class="fa fa-envelope-o"></span> {translate text='Email this'}</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" title="{translate text='Save this record permanently in your account'}" href="{$path}/Record/{$id}/Save"><span class="fa fa-save"></span> {translate text='Save'}</a></li>
-          <li role="presentation"><a target="_blank" title="{translate text='Export to EndNote'}" href="{$path}/Record/{$id}/Export?style=endnoteweb"><span class="fa fa-external-link"></span> {translate text='Export to Endnote'}</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#modal" title="{translate text='Save this record permanently in your account'}" href="{$path}/Record/{$id}/Save"><span class="fa fa-save"></span> {translate text='Save to My Account'}</a></li>
+          <li role="presentation"><a target="_blank" title="{translate text='Export to EndNote'}" href="{$path}/Record/{$id}/Export?style=endnoteweb"><span class="fa fa-download"></span> {translate text='Export to Endnote'}</a></li>
         </ul>
       </div>
       <div class="btn-group">
