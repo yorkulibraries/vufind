@@ -495,18 +495,6 @@ function googleBooksAPICallback(booksInfo) {
 /** Book bag functions **/
 function setupBookBag() {
     syncBookBagWithUI(getBookBagContent());
-    $('.add-remove-bookbag').on('click', function (e) {
-        e.preventDefault();
-        var id = $(this).data('record-id');
-        if ($(this).hasClass('add-to-bookbag')) {
-            addToBookBag(id);
-            setBookBagCheckbox(this);
-        } else {
-            removeFromBookBag(id);
-            clearBookBagCheckbox(this);
-        }
-        updateBookBagButton(getBookBagContent());
-    });
     $('.empty-book-bag').on('click', function (e) {
         e.preventDefault();
         emptyBookBag();
@@ -515,6 +503,14 @@ function setupBookBag() {
         } else {
             syncBookBagWithUI(getBookBagContent());
         }
+    });
+    $('.mark-unmark-record').change(function() {
+        if ($(this).is(':checked')) {
+            addToBookBag($(this).val());
+        } else {
+            removeFromBookBag($(this).val());
+        }
+        updateBookBagButton(getBookBagContent());
     });
 }
 
@@ -558,12 +554,8 @@ function emptyBookBag() {
 
 function syncBookBagWithUI(items) {
     updateBookBagButton(items);
-    $('.add-remove-bookbag').each(function() {
-        if (inBookBag($(this).data('record-id'), items)) {
-            setBookBagCheckbox(this);
-        } else {
-            clearBookBagCheckbox(this);
-        }
+    $('.mark-unmark-record').each(function() {
+        $(this).prop('checked', inBookBag($(this).val(), items));
     });
 }
 
@@ -572,27 +564,13 @@ function updateBookBagButton(content) {
         var $badge = $('.bookbag-count', this);
         $badge.html(content.length);
         if (content.length == 0) {
-            $badge.removeClass('bg-success').addClass('bg-danger');
+            $badge.removeClass('bg-success');
             $(this).siblings('.dropdown-menu').children('li').addClass('disabled');
         } else {
-            $badge.removeClass('bg-danger').addClass('bg-success');
+            $badge.addClass('bg-success');
             $(this).siblings('.dropdown-menu').children('li').removeClass('disabled');
         } 
     });
-}
-
-function setBookBagCheckbox(button) {
-    $(button).removeClass('add-to-bookbag').addClass('remove-from-bookbag');
-    $(button).attr('title', $(button).data('on-title'));
-    $(button).attr('href', $(this).data('on-href'));
-    $(button).children('span.fa:first').removeClass($(button).data('off-icon')).addClass($(button).data('on-icon'));
-}
-
-function clearBookBagCheckbox(button) {
-    $(button).removeClass('remove-from-bookbag').addClass('add-to-bookbag');
-    $(button).attr('title', $(button).data('off-title'));
-    $(button).attr('href', $(this).data('off-href'));
-    $(button).children('span.fa:first').removeClass($(button).data('on-icon')).addClass($(button).data('off-icon'));
 }
 
 function onAjaxTabLoaded(target) {
