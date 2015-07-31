@@ -7,19 +7,19 @@
         <a data-json="{$path}/AJAX/JSON?method=logout" href="{$path}/MyResearch/Logout">{translate text='Logout'}</a>
       </li>
       <li>
-        <a href="{$path}/MyResearch/CheckedOut">{translate text='My Checkouts'}</a>
+        <a href="{$path}/MyResearch/CheckedOut">{translate text='Checkouts'}</a>
       </li>
       <li>
-        <a href="{$path}/MyResearch/Holds">{translate text='My Holds'}</a>
+        <a href="{$path}/MyResearch/Holds">{translate text='Holds'}</a>
       </li>
       <li>
-        <a href="{$path}/MyResearch/Fines">{translate text='My Fines'}</a>
+        <a href="{$path}/MyResearch/Fines">{translate text='Fines'}</a>
       </li>
       <li>
-        <a href="{$path}/MyResearch/MyList">{translate text='My Lists'}</a>
+        <a href="{$path}/MyResearch/MyList">{translate text='Lists'}</a>
       </li>
       <li>
-        <a href="{$path}/Search/History?require_login=1">{translate text='My Search History'}</a>
+        <a href="{$path}/Search/History?require_login=1">{translate text='Search History'}</a>
       </li>
     </ul>
   </li>
