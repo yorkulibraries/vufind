@@ -7,4 +7,5 @@
       {$record}
     {/foreach}
   </ul>
+  {include file="Search/result-pager.tpl"}
 {/if}
