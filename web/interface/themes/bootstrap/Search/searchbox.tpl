@@ -19,7 +19,7 @@
       <input type="hidden" name="type" value="{$currentSearchType}" />
       <label class="sr-only" for="search_form_lookfor">{translate text='Search Terms'}</label>
       <div class="input-group">
-        <input autofocus="autofocus" value="{$lookfor|escape}" class="form-control"
+        <input value="{$lookfor|escape}" class="form-control"
         id="search_form_lookfor" type="search" name="lookfor"
         placeholder="{'basic_search_placeholder_'|cat:$currentSearchType|lower|translate|escape}"
         {foreach from=$basicSearchTypes item=searchDesc key=searchVal name=typeloop}
