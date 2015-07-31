@@ -83,7 +83,7 @@ class Save extends Action
         }
         
         // Display Page
-        $interface->setPageTitle('Save Book Bag');
+        $interface->setPageTitle('Save Marked Items');
         $interface->setTemplate('save.tpl');
         if ($_REQUEST['modal']) {
             $interface->assign('modal', $_REQUEST['modal']);

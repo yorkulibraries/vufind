@@ -115,7 +115,7 @@ class JSON extends Action
             );
         }
         $result = new stdClass();
-        $result->modalAlert = $this->modalAlert('Email Book Bag', translate('email_success'), 'success');
+        $result->modalAlert = $this->modalAlert('Email Marked Items', translate('email_success'), 'success');
         return $this->output($result, JSON::STATUS_OK);
     }
     
@@ -170,7 +170,7 @@ class JSON extends Action
 
         if (!Save::saveBookBag()) {
             return $this->output(
-                translate('Error occurred while saving book bag'), JSON::STATUS_ERROR
+                translate('Error occurred while saving items'), JSON::STATUS_ERROR
             );
         }
 
@@ -178,10 +178,10 @@ class JSON extends Action
         $list->id = $list->getLastUsed();
         if ($list->find(true)) {
             $result = new stdClass();
-            $result->modalAlert = $this->modalAlert('Save Book Bag', translate('Book bag saved'), 'success');
+            $result->modalAlert = $this->modalAlert('Save Marked Items', translate('Marked items saved'), 'success');
             return $this->output($result, JSON::STATUS_OK);
         }
-        return $this->output('Error occurred while saving book bag', JSON::STATUS_ERROR);
+        return $this->output('Error occurred while saving items', JSON::STATUS_ERROR);
     }
     
     /**

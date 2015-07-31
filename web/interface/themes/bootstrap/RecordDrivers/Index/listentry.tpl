@@ -17,14 +17,7 @@
         <dt class="sr-only">{translate text='Publication info'}:</dt>
         <dd class="publication-info">{$listPublicationInfo|trim:' *,:/'|escape}</dd>
       {/if}
-      {if !empty($listFormats)}
-        <dt class="sr-only">{translate text='Format'}:</dt>
-        <dd class="format-info">
-        {foreach from=$listFormats item=format name=formats}
-          <span class="format">{translate text=$format}</span>{if !$smarty.foreach.formats.last},{/if}
-        {/foreach}
-        </dd>
-      {/if}
+      
       {if $listNotes}
         <dt class="sr-only">{translate text='Your Notes'}:</dt>
         <dd>
