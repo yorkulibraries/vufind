@@ -52,6 +52,14 @@ class Export extends Record
         global $interface;
         global $configArray;
 
+        if (strtolower($_GET['style']) == 'endnoteweb') {
+            header('Content-Disposition: attachment; filename="YUL_' . $this->recordDriver->getUniqueId() . '.ris"');
+            header('Content-Type: application/x-research-info-systems;charset=utf-8');
+            header('Pragma: private');
+            $this->recordDriver->getExport($_GET['style']);
+            exit;
+        }
+        
         $tpl = $this->recordDriver->getExport($_GET['style']);
         if (!empty($tpl)) {
             $interface->display($tpl);

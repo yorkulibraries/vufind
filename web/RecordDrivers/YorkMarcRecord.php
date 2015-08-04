@@ -43,11 +43,8 @@ class YorkMarcRecord extends MarcRecord
         if (strtolower($exportFormat) == 'endnoteweb') {           
             $this->driver = $this;
             $this->recordURL = $configArray['Site']['url'] . '/Record/' . $this->getUniqueId();
-            header('Content-Disposition: attachment; filename="YUL_' . $this->getUniqueId() . '.ris"');
-            header('Content-Type: application/x-research-info-systems;charset=utf-8');
-            header('Pragma: private');
-            include_once('export-endnoteweb.phtml');
-            exit;
+            include('export-endnoteweb.phtml');
+            return null;
         }
         return parent::getExport($exportFormat);
     }

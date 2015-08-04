@@ -52,7 +52,7 @@ class ExportList extends Action
         global $configArray;
         global $interface;
         
-        if(strtolower($_REQUEST['style']) != 'refworks' && strtolower($_REQUEST['style']) != 'refworks_data') {
+        if(strtolower($_REQUEST['style']) != 'endnoteweb') {
             PEAR::raiseError(new PEAR_Error('Unsupported Export Format'));
         }
         
@@ -61,49 +61,11 @@ class ExportList extends Action
             PEAR::raiseError(new PEAR_Error('List not found'));
         }
         
-        if (!$list->public) {
-            PEAR::raiseError(new PEAR_Error('This list is not public'));
-        }
-        
         $resources = $list->getResources();
         if (empty($resources)) {
             PEAR::raiseError(new PEAR_Error('This list does not have any resource'));
         }
-        
-        if (strtolower($_REQUEST['style']) == 'refworks') {
-            // Check if user is logged in
-            $user = UserAccount::isLoggedIn();
-            if (!$user) {
-                $interface->assign('followup', true);
-                $interface->assign('followupModule', 'Search');
-                $interface->assign('followupAction', 'Email');                    
-                $interface->setPageTitle('Login');
-                $interface->assign('message', 'You must be logged in first');
-                $interface->assign('subTemplate', '../MyResearch/login.tpl');
-                if ($_REQUEST['modal']) {
-                    $interface->assign('followupURL', $_SERVER['PHP_SELF']);
-                    $interface->assign('followupQueryString', $_SERVER['QUERY_STRING']);
-                    $interface->assign('modal', $_REQUEST['modal']);
-                    $interface->display('modal.tpl');
-                } else {
-                    $interface->setTemplate('view-alt.tpl');
-                    $interface->display('layout.tpl');
-                }
-                exit();
-            }
-            
-            // Build the URL to pass data to RefWorks:
-            $exportUrl = $configArray['Site']['url'] . '/MyResearch/ExportList/' .
-                 $list->id . '?style=refworks_data';
 
-            // Build up the RefWorks URL:
-            $url = $configArray['RefWorks']['url'] . '/express/expressimport.asp';
-            $url .= '?vendor=' . urlencode($configArray['RefWorks']['vendor']);
-            $url .= '&filter=RefWorks%20Tagged%20Format&url=' . urlencode($exportUrl);
-            header("Location: {$url}");
-            exit;
-        }
-        
         $items = array();
         foreach($resources as $resource) {
             $items[] = $resource->record_id;
@@ -114,15 +76,20 @@ class ExportList extends Action
         $searchObject->setSort('title');
         $searchObject->setQueryIDs($items);
         $searchObject->setLimit(count($items));
-        $result = $searchObject->processSearch(false, true);
+        $result = $searchObject->processSearch(false, false);
         if (PEAR::isError($result)) {
             PEAR::raiseError($result);
         }
+        
+        header('Content-Disposition: attachment; filename="YUL_List_' . $list->id . '.ris"');
+        header('Content-Type: application/x-research-info-systems;charset=utf-8');
+        header('Pragma: private');
+        
         if (isset($result['response']['docs'])) {
             foreach ($result['response']['docs'] as $doc) {
                 $record = RecordDriverFactory::initRecordDriver($doc);
-                $interface->assign('id', $record->getUniqueId());
-                echo $interface->fetch($record->getExport($_REQUEST['style'])) . "\n";
+                $record->getExport($_REQUEST['style']);
+                echo "\n";
             }
         }
     }
