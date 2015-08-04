@@ -1,6 +1,6 @@
 <form class="search-form adv-search-form" role="form" method="get" action="{$path}/Search/Results">
   <div class="adv-search-fields">
-  {assign var=maxrows value=1}
+  {assign var=maxrows value=2}
   {assign var=group value=0}
   {assign var=join value=''}
   {assign var=numrows value=$searchDetails|@count}
@@ -28,7 +28,13 @@
   {/section}
   </div>
   <div class="btn-group">
-    <button type="submit" class="btn btn-primary"><span class="fa fa-search"></span> {translate text='Find'}</button>
+    <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-search"></span> {translate text='Find'}</button>
+  </div>
+  <div class="btn-group">
+    <button type="button" title="{translate text='Add row'}" class="btn btn-default btn-sm adv-search-add-field">
+      <span class="fa fa-plus"></span>
+      {translate text='Add row'}
+    </button>
   </div>
   
   {if $facetList && $pageTemplate=='advanced.tpl'}

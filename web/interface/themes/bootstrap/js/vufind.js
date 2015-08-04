@@ -335,18 +335,14 @@ function setupLinks() {
 
 function setupAdvancedSearchButtons() {
     $('.adv-search-form').on('click', '.adv-search-add-field', function(e) {
-        var $button = $(this);
-        var $thisRow = $button.closest('.row');
-        var numberOfRows = $button.closest('.adv-search-fields').children('.row').size();
-        var nextGroup = Math.max($thisRow.data('row-index') + 1, numberOfRows);
+        var numberOfRows = $(this).closest('.adv-search-form').find('.row').size();
         $.ajax({
 	        dataType: 'json',
 	        url: _global_path + '/AJAX/JSON?method=newAdvancedSearchRow',
-	        data: {group: nextGroup},
+	        data: {group: numberOfRows-1},
 	        success: function(response) {
 	            if(response.status == 'OK') {
 	                $('.adv-search-fields').append(response.data);
-	                $button.addClass('hidden');
 	            }
 	        }
 		});

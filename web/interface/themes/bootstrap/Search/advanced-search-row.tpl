@@ -23,7 +23,7 @@
   {/if}
   <div class="{if $group > 0}col-sm-4{else}col-sm-5{/if}">
     <div class="adv-search-lookfor-container">
-      <input autofocus="autofocus" class="form-control input-sm" type="text" id="adv_search_lookfor{$group}0" name="lookfor{$group}[]" value="{$lookfor0|escape}" />
+      <input class="form-control input-sm" type="text" id="adv_search_lookfor{$group}0" name="lookfor{$group}[]" value="{$lookfor0|escape}" />
     </div>
   </div>
   <div class="col-sm-4">
@@ -48,12 +48,14 @@
           {/foreach}
         </ul>
       </div>
+      {if false}
       <div class="btn-group">
         <button type="button" title="{translate text='Add row'}" class="btn btn-default btn-sm adv-search-add-field {if $group < $numrows - 1}hidden{/if}">
           <span class="fa fa-plus"></span>
           <span class="sr-only">{translate text='Add row'}</span>
         </button>
       </div>
+      {/if}
     </div>
     
   </div>
