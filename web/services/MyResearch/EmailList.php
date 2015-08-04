@@ -118,6 +118,8 @@ class EmailList extends Action
     
     public function sendEmail($to, $from, $message) 
     {
+        global $interface;
+        
         $list = User_list::staticGet($_REQUEST['id']);
         $items = array();
         $resources = $list->getResources();
@@ -132,25 +134,28 @@ class EmailList extends Action
         $searchObject = SearchObjectFactory::initSearchObject();
         $searchObject->init();
         $searchObject->setSort('title');
-        $records = '';
+        $records = array();
         if (!empty($items)) {
             $searchObject->setQueryIDs($items);
-            $result = $searchObject->processSearch(false, true);
+            $result = $searchObject->processSearch(false, false);
             if (PEAR::isError($result)) {
                 return $result;
             }
             if (isset($result['response']['docs'])) {
                 foreach ($result['response']['docs'] as $doc) {
                     $record = RecordDriverFactory::initRecordDriver($doc);
-                    
-                    $records .= $record->getEmail() . "\n" . str_repeat('#', 80) . "\n\n\n";
+                    $records[$record->getUniqueId()] = trim($record->getEmail());
                 }
             }
         }
         
+        $interface->assign('from', $from);
+        $interface->assign('records', $records);
+        $interface->assign('message', $message);        
+        $body = $interface->fetch('Emails/catalog-records.tpl');
+        
         require_once 'sys/Mailer.php';
-        $subject = $list->title;
-        $body = $message . "\n\n\n" . str_repeat('#', 80) . "\n\n\n" . $records;
+        $subject = translate('Library Catalogue') . ': ' . $list->title;
         $mail = new VuFindMailer();
         return $mail->send($to, $from, $subject, $body);
     }

@@ -7,5 +7,8 @@
 
 
 
-{$emailDetails}  {translate text="email_link"}: {$url}/Record/{$recordID|escape:"url"}
+{foreach from=$records item=record key=id}
+{$record}
+{translate text="email_link"}: {$url}/Record/{$id}
 
+{/foreach}

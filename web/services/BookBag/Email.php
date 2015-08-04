@@ -114,30 +114,36 @@ class Email extends Action
     
     public function sendEmail($to, $from, $message) 
     {
+        global $interface;
+        
         // Initialise from the current search globals
         $searchObject = SearchObjectFactory::initSearchObject();
         $searchObject->init();
         $searchObject->setSort('title');
         $cart = Cart_Model::getInstance();
         $items = $cart->getItems();
+        $records = array();
         if (!empty($items)) {
             $searchObject->setQueryIDs($items);
             $result = $searchObject->processSearch(false, true);
             if (PEAR::isError($result)) {
                 return $result;
             }
-            $email = '';
             if (isset($result['response']['docs'])) {
                 foreach ($result['response']['docs'] as $doc) {
                     $record = RecordDriverFactory::initRecordDriver($doc);
-                    
-                    $email .= $record->getEmail() . "\n" . str_repeat('#', 80) . "\n\n\n";
+                    $records[$record->getUniqueId()] = trim($record->getEmail());
                 }
             }
         }
         
+        $interface->assign('from', $from);
+        $interface->assign('records', $records);
+        $interface->assign('message', $message);        
+        $body = $interface->fetch('Emails/catalog-records.tpl');
+        
         require_once 'sys/Mailer.php';
-        $subject = translate('Library Catalog Search Result');
+        $subject = translate('Library Catalogue') . ': ' . translate('Marked Items');
         $mail = new VuFindMailer();
         return $mail->send($to, $from, $subject, $body);
     }
