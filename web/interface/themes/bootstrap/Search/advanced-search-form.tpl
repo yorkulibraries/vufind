@@ -31,9 +31,9 @@
     <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-search"></span> {translate text='Find'}</button>
   </div>
   <div class="btn-group">
-    <button type="button" title="{translate text='Add row'}" class="btn btn-default btn-sm adv-search-add-field">
+    <button type="button" title="{translate text='Add Search Field'}" class="btn btn-link btn-sm adv-search-add-field">
       <span class="fa fa-plus"></span>
-      {translate text='Add row'}
+      {translate text='Add Search Field'}
     </button>
   </div>
   
