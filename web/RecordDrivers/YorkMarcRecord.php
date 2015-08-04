@@ -175,6 +175,8 @@ class YorkMarcRecord extends MarcRecord
         // asssign openurls for Journals 
         $interface->assign('listJournalOpenURLs', $this->getJournalOpenURLs());
         
+        $interface->assign('listCOinS', $this->getOpenURL());
+        
         return $template;
     }
     

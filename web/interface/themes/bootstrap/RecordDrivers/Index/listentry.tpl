@@ -62,4 +62,7 @@
     {/if}
   </div>
   <abbr class="unapi-id" title="{$listId}"></abbr>
+  {if $listCOinS}
+    <span class="Z3988" title="{$listCOinS|escape}"></span>
+  {/if}
 </li>
