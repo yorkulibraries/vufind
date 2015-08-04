@@ -6,19 +6,19 @@
     <li role="presentation" class="{if $sortData.selected}active{/if}">
       <a role="menuitem" tabindex="-1" href="{$sortData.sortUrl|escape}">
         {if $sortData.desc == 'sort_relevance'}
-          <span class="fa fa-arrow-down"></span>
+          <span class="fa fa-sort-amount-desc"></span>
         {/if}
         {if $sortData.desc == 'sort_year'}
-          <span class="fa fa-arrow-down"></span>
+          <span class="fa fa-sort-amount-desc"></span>
         {/if}
         {if $sortData.desc == 'sort_year asc'}
-          <span class="fa fa-arrow-up"></span>
+          <span class="fa fa-sort-amount-asc"></span>
         {/if}
         {if $sortData.desc == 'sort_first_indexed'}
-          <span class="fa fa-arrow-down"></span>
+          <span class="fa fa-sort-amount-desc"></span>
         {/if}
         {if $sortData.desc == 'sort_first_indexed asc'}
-          <span class="fa fa-arrow-up"></span>
+          <span class="fa fa-sort-amount-asc"></span>
         {/if}
         {if $sortData.desc == 'sort_callnumber'}
           <span class="fa fa-sort-alpha-asc"></span>
