@@ -11,14 +11,12 @@
         {translate text='Options'} <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
-        <li><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/BookBag/Email"><span class="icon-envelope-alt"></span> {translate text='Email Items'}</a></li>
-        <li><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/BookBag/Save"><span class="icon-save"></span> {translate text='Save to My Account'}</a></li>
-        <li class="divider"></li>
-        <li><a class="empty-book-bag" href="{$path}/BookBag/Home?action=empty"><span class="icon-trash"></span> {translate text='Empty Book Bag'}</a></li>
+        <li role="presentation"><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/BookBag/Email"><span class="fa fa-envelope-o"></span> {translate text='Email Marked Items'}</a></li>
+        <li role="presentation"><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/BookBag/Save"><span class="fa fa-save"></span> {translate text='Save to My Account'}</a></li>
+        <li role="presentation"><a target="_blank" role="menuitem" tabindex="-1" href="{$path}/BookBag/Export?style=endnoteweb"><span class="fa fa-download"></span> {translate text='Export to Endnote'}</a></li>
+        <li class="divider" role="presentation"></li>
+        <li role="presentation"><a class="empty-book-bag" href="{$path}/BookBag/Home?action=empty"><span class="fa fa-trash"></span> {translate text='Clear All Marked Items'}</a></li>
       </ul>
-    </div>
-    <div class="btn-group">
-      {include file="Search/bookbag.tpl"}
     </div>
   </div>
 

@@ -52,52 +52,38 @@ class Export extends Action
         global $configArray;
         global $interface;
         
-        if(strtolower($_REQUEST['style']) != 'refworks') {
+        if(strtolower($_REQUEST['style']) != 'endnoteweb') {
             PEAR::raiseError(new PEAR_Error('Unsupported Export Format'));
-        }
-        
-        // Check if user is logged in
-        $user = UserAccount::isLoggedIn();
-        if (!$user) {
-            $interface->assign('followup', true);
-            $interface->assign('followupModule', 'Search');
-            $interface->assign('followupAction', 'Email');                    
-            $interface->setPageTitle('Login');
-            $interface->assign('message', 'You must be logged in first');
-            $interface->assign('subTemplate', '../MyResearch/login.tpl');
-            if ($_REQUEST['modal']) {
-                $interface->assign('followupURL', $_SERVER['PHP_SELF']);
-                $interface->assign('followupQueryString', $_SERVER['QUERY_STRING']);
-                $interface->assign('modal', $_REQUEST['modal']);
-                $interface->display('modal.tpl');
-            } else {
-                $interface->setTemplate('view-alt.tpl');
-                $interface->display('layout.tpl');
-            }
-            exit();
         }
 
         $cart = Cart_Model::getInstance();
         $items = $cart->getItems();
         
         if (!empty($items)) {
-            // Create a temporary list for the items in the book bag
-            $id = $this->saveBookBag($items);
-            
-            if ($id) {
-                // Build the URL to pass data to RefWorks:
-                $exportUrl = $configArray['Site']['url'] . '/MyResearch/ExportList/' .
-                     $id . '?style=refworks_data';
+            // Initialise from the current search globals
+            $searchObject = SearchObjectFactory::initSearchObject();
+            $searchObject->init();
+            $searchObject->setSort('title');
+            $searchObject->setQueryIDs($items);
+            $searchObject->setLimit(count($items));
+            $result = $searchObject->processSearch(false, false);
+            if (PEAR::isError($result)) {
+                PEAR::raiseError($result);
+            }
 
-                // Build up the RefWorks URL:
-                $url = $configArray['RefWorks']['url'] . '/express/expressimport.asp';
-                $url .= '?vendor=' . urlencode($configArray['RefWorks']['vendor']);
-                $url .= '&filter=RefWorks%20Tagged%20Format&url=' . urlencode($exportUrl);
-                header("Location: {$url}");
-                exit;
+            header('Content-Disposition: attachment; filename="YUL_Export.ris"');
+            header('Content-Type: application/x-research-info-systems;charset=utf-8');
+            header('Pragma: private');
+
+            if (isset($result['response']['docs'])) {
+                foreach ($result['response']['docs'] as $doc) {
+                    $record = RecordDriverFactory::initRecordDriver($doc);
+                    $record->getExport($_REQUEST['style']);
+                    echo "\n";
+                }
             }
         }
-        PEAR::raiseError(new PEAR_Error('Error exporting book bag'));
+        PEAR::raiseError(new PEAR_Error('Error exporting items'));
     }
     
     private function saveBookBag($items)
