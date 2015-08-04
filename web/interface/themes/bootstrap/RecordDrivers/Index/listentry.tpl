@@ -1,7 +1,9 @@
 <li class="media result-container" data-record-id="{$listId}">
   {assign var=hideCheckbox value=1}
   {include file="RecordDrivers/Index/checkbox.tpl"}
-  {include file="RecordDrivers/Index/bookcover.tpl"}
+  <div class="media-left">
+    {include file="RecordDrivers/Index/bookcover.tpl"}
+  </div>
   <div class="media-body result-details">
     <h3 class="media-heading">
       <a href="{$path}/Record/{$listId|escape}">

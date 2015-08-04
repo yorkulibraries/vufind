@@ -9,7 +9,9 @@
     </div>
     {/if}
   </div>
-  {include file="RecordDrivers/Index/bookcover.tpl"}
+  <div class="media-left">
+    {include file="RecordDrivers/Index/bookcover.tpl"}
+  </div>
   <div class="media-body result-details">
     <h3 class="media-heading">
       <a href="{$path}/Record/{$summId|escape}">

@@ -1,6 +1,8 @@
 <li class="media result-container" data-record-id="{$summId}">
   {include file="RecordDrivers/Index/checkbox.tpl"}
-  {include file="RecordDrivers/Index/bookcover.tpl"}
+  <div class="media-left">
+    {include file="RecordDrivers/Index/bookcover.tpl"}
+  </div>
   <div class="media-body result-details">
     <h3 class="media-heading">
       <a href="{$path}/Record/{$summId|escape}">

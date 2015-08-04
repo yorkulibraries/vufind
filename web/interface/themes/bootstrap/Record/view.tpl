@@ -6,7 +6,13 @@
   <abbr class="unapi-id hidden" title="{$id}"></abbr>
   
   <div class="media">
-    {include file="RecordDrivers/Index/bookcover.tpl"}
+    <div class="media-left">
+      {include file="RecordDrivers/Index/bookcover.tpl"}
+      <div class="checkbox btn btn-default btn-sm">
+        <input class="mark-unmark-record" type="checkbox" id="mark_record_{$id}" value="{$id}" aria-label="{translate text='Mark'}">
+        <label for="mark_record_{$id}">{translate text='Mark'}</label>
+      </div>
+    </div>
     <div class="media-body">
       <h2 class="media-heading">
         {if $fullTitle}
