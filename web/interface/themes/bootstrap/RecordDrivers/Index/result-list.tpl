@@ -11,4 +11,7 @@
     {include file="RecordDrivers/$type/result-list-extended.tpl"}
   </div>
   <abbr class="unapi-id" title="{$summId}"></abbr>
+  {if $summCOinS}
+    <span class="Z3988" title="{$summCOinS|escape}"></span>
+  {/if}
 </li>

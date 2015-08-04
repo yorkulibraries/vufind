@@ -292,7 +292,7 @@ class YorkMarcRecord extends MarcRecord
         }
         
         $this->assignBriefDetails();
-
+        $interface->assign('coreCOinS', $this->getOpenURL());
         return $template;
     }
 
