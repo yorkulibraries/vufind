@@ -335,11 +335,12 @@ function setupLinks() {
 
 function setupAdvancedSearchButtons() {
     $('.adv-search-form').on('click', '.adv-search-add-field', function(e) {
-        var numberOfRows = $(this).closest('.adv-search-form').find('.row').size();
+        var numberOfRows = $(this).closest('.adv-search-form').find('.adv-search-row').size();
+        console.log(numberOfRows);
         $.ajax({
 	        dataType: 'json',
 	        url: _global_path + '/AJAX/JSON?method=newAdvancedSearchRow',
-	        data: {group: numberOfRows-1},
+	        data: {group: numberOfRows},
 	        success: function(response) {
 	            if(response.status == 'OK') {
 	                $('.adv-search-fields').append(response.data);

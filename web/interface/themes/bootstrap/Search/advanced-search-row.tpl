@@ -1,4 +1,4 @@
-<div class="row" data-row-index="{$group}">
+<div class="row adv-search-row" data-row-index="{$group}">
   {if $group > 0}
   <div class="col-sm-1">
       <div class="adv-search-join-container">
@@ -48,14 +48,6 @@
           {/foreach}
         </ul>
       </div>
-      {if false}
-      <div class="btn-group">
-        <button type="button" title="{translate text='Add row'}" class="btn btn-default btn-sm adv-search-add-field {if $group < $numrows - 1}hidden{/if}">
-          <span class="fa fa-plus"></span>
-          <span class="sr-only">{translate text='Add row'}</span>
-        </button>
-      </div>
-      {/if}
     </div>
     
   </div>

@@ -1,32 +1,30 @@
 <form class="search-form adv-search-form" role="form" method="get" action="{$path}/Search/Results">
   <div class="adv-search-fields">
-  {assign var=maxrows value=2}
+  {assign var=rowsToStart value=2}
   {assign var=group value=0}
   {assign var=join value=''}
-  {assign var=numrows value=$searchDetails|@count}
   {if $searchDetails}
     {foreach from=$searchDetails item=searchGroup name=grouploop}
       {assign var=join value=$searchGroup.join}
       {assign var=searchType value=$searchGroup.group.0.field}
       {assign var=lookfor0 value=$searchGroup.group.0.lookfor}
       {assign var=lookfor1 value=$searchGroup.group.1.lookfor}
-      {assign var=lookfor2 value=$searchGroup.group.2.lookfor}
       {include file="Search/advanced-search-row.tpl"}
       {assign var=group value=$group+1}
     {/foreach}
   {/if}
   
-  {section name=grouploop start=$group loop=$maxrows step=1}
+  {section name=grouploop start=$group loop=$rowsToStart step=1}
     {assign var=searchGroup value=false}
     {assign var=join value=''}
     {assign var=searchType value=''}
     {assign var=lookfor0 value=''}
     {assign var=lookfor1 value=''}
-    {assign var=lookfor2 value=''}
     {include file="Search/advanced-search-row.tpl"}
     {assign var=group value=$group+1}
   {/section}
   </div>
+  
   <div class="btn-group">
     <button type="submit" class="btn btn-sm btn-primary"><span class="fa fa-search"></span> {translate text='Find'}</button>
   </div>
