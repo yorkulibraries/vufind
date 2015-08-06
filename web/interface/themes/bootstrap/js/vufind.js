@@ -334,9 +334,22 @@ function setupLinks() {
 }
 
 function setupAdvancedSearchButtons() {
+    $('.adv-search-form').on('click', '.adv-search-clear-form', function(e) {
+        var $form = $(this).closest('.adv-search-form');
+        var minRows = $form.data('min-rows');
+        var remove = [];
+        $form.find('.adv-search-row').each(function() {
+            if ($(this).data('row-index') >= minRows) {
+                remove.push(this);
+            }
+        });
+        for (var i = 0; i < remove.length; i++) {
+            $(remove[i]).remove();
+        }
+        $form.find('input[type="text"]').val("");
+    });
     $('.adv-search-form').on('click', '.adv-search-add-field', function(e) {
         var numberOfRows = $(this).closest('.adv-search-form').find('.adv-search-row').size();
-        console.log(numberOfRows);
         $.ajax({
 	        dataType: 'json',
 	        url: _global_path + '/AJAX/JSON?method=newAdvancedSearchRow',

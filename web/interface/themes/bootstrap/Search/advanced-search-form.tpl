@@ -1,6 +1,6 @@
-<form class="search-form adv-search-form" role="form" method="get" action="{$path}/Search/Results">
+{assign var=minRows value=2}
+<form class="search-form adv-search-form" data-min-rows="{$minRows}" role="form" method="get" action="{$path}/Search/Results">
   <div class="adv-search-fields">
-  {assign var=rowsToStart value=2}
   {assign var=group value=0}
   {assign var=join value=''}
   {if $searchDetails}
@@ -14,7 +14,7 @@
     {/foreach}
   {/if}
   
-  {section name=grouploop start=$group loop=$rowsToStart step=1}
+  {section name=grouploop start=$group loop=$minRows step=1}
     {assign var=searchGroup value=false}
     {assign var=join value=''}
     {assign var=searchType value=''}
@@ -32,6 +32,10 @@
     <button type="button" title="{translate text='Add Search Field'}" class="btn btn-link btn-sm adv-search-add-field">
       <span class="fa fa-plus"></span>
       {translate text='Add Search Field'}
+    </button>
+    <button type="button" title="{translate text='Clear Form'}" class="btn btn-link btn-sm adv-search-clear-form">
+      <span class="fa fa-remove"></span>
+      {translate text='Clear Form'}
     </button>
   </div>
   
