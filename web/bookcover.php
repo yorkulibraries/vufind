@@ -345,15 +345,15 @@ function fetchFromTMDB($id, $size) {
             $directors = $record['video_director_str_mv'];
         
             // if nothing found, then try without the year
-            if (!processMovieMatches($title, $movies, $directors, $movieRepo, $config)) {
+            if (!processMovieMatches($title, $movies, $directors, $movieRepo, $config, $id)) {
                 $query->year(null);
                 $movies = $searchRepo->searchMovie($title, $query);
-                if (!processMovieMatches($title, $movies, $directors, $movieRepo, $config)) {
+                if (!processMovieMatches($title, $movies, $directors, $movieRepo, $config, $id)) {
                     // if nothing found, then try shorter title
                     $movies = $searchRepo->searchMovie($record['title'], $query);
-                    if (!processMovieMatches($record['title'], $movies, $directors, $movieRepo, $config)) {
+                    if (!processMovieMatches($record['title'], $movies, $directors, $movieRepo, $config, $id)) {
                         $movies = $searchRepo->searchMovie($record['title_short'], $query);
-                        return processMovieMatches($record['title_short'], $movies, $directors, $movieRepo, $config);
+                        return processMovieMatches($record['title_short'], $movies, $directors, $movieRepo, $config, $id);
                     }
                 }
             }
@@ -365,7 +365,7 @@ function fetchFromTMDB($id, $size) {
     return false;
 }
 
-function processMovieMatches($title, $movies, $directors, $movieRepo, $config) {
+function processMovieMatches($title, $movies, $directors, $movieRepo, $config, $id) {
     $match = null;
     
     foreach($movies as $movie) {
