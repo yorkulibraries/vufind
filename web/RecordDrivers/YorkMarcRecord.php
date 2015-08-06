@@ -444,6 +444,7 @@ class YorkMarcRecord extends MarcRecord
                     || stripos($s, 'abstract') !== false
                     || stripos($s, 'description') !== false
                     || stripos($s, 'sample text') !== false
+                    || stripos($s, 'View cover art') !== false
             ) {
                 $this->relatedURLFields[] = $field;
                 continue;
@@ -645,6 +646,19 @@ class YorkMarcRecord extends MarcRecord
     protected function getThumbnail($size = 'small')
     {
         global $configArray;
+        
+        // check if there is a link to cover art in 856
+        foreach ($this->relatedURLFields as $field) {
+            // check content of |3 |y and |z for presence of "View cover art", etc..
+            $s = $this->getAllSubFields($field, '3yz');
+            if (stripos($s, 'View cover art') !== false) {
+               $subu = $field->getSubfield('u');
+               if ($subu) {
+                   return $subu->getData();
+               }
+            }
+        }
+        
         $url = parent::getThumbnail($size);
         if (!$url) {
             $url = $configArray['Site']['url'] . '/bookcover.php?size=' . urlencode($size);
