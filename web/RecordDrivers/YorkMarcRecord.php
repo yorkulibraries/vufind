@@ -648,13 +648,15 @@ class YorkMarcRecord extends MarcRecord
         global $configArray;
         
         // check if there is a link to cover art in 856
+        $coverArtURL = null;
         foreach ($this->relatedURLFields as $field) {
             // check content of |3 |y and |z for presence of "View cover art", etc..
             $s = $this->getAllSubFields($field, '3yz');
             if (stripos($s, 'View cover art') !== false) {
                $subu = $field->getSubfield('u');
                if ($subu) {
-                   return $subu->getData();
+                   $coverArtURL = $subu->getData();
+                   break;
                }
             }
         }
@@ -663,7 +665,11 @@ class YorkMarcRecord extends MarcRecord
         if (!$url) {
             $url = $configArray['Site']['url'] . '/bookcover.php?size=' . urlencode($size);
         }
-    	return $url . '&id=' . urlencode($this->getUniqueID());
+    	$url .= '&id=' . urlencode($this->getUniqueID());
+    	if ($coverArtURL) {
+    	    $url .= '&url=' . urlencode($coverArtURL);
+    	}
+    	return $url;
     }
     
     public function isFond() 
