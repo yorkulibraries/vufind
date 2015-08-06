@@ -1,9 +1,18 @@
-<table class="table table-condensed holdings">
-{if empty($library)}
-  <caption class="sr-only">{translate text="Location and Availability"}</caption>
-{else}
-  <caption>{translate text=$library}</caption>
+{if !empty($library) && !empty($statusItems)}
+  <h4>{translate text=$library}</h4>
+  {foreach from=$statusItems item=row name="summaryloop"}
+    {if !empty($row.textual_holdings)}
+      {if $row.marc852->getSubfield('z')}
+        <p class="text-muted">{translate text='Note'}: {$row.marc852|getvalue:'z'|escape}</p>
+      {/if}
+      {foreach from=$row.textual_holdings item=textual}
+      <p class="text-muted">{translate text='Holdings'}: {$textual|escape}</p>
+      {/foreach}
+    {/if}
+  {/foreach}
 {/if}
+<table class="table table-condensed holdings">
+  <caption class="sr-only">{translate text="Location and Availability"}</caption>
 <thead>
 <tr>
   <th class="hidden-xs">{translate text='Location'}</th>

@@ -46,19 +46,6 @@
   
   {foreach from=$holdings item=statusItems key=library name="outerloop"}
   {if !empty($library) && !empty($statusItems)}
-        {foreach from=$statusItems item=row name="summaryloop"}
-        {if !empty($row.textual_holdings)}
-        <div class="well well-sm">
-          {if $row.marc852->getSubfield('z')}
-            <p>{translate text='Note'}: {$row.marc852|getvalue:'z'|escape}</p>
-          {/if}
-          {foreach from=$row.textual_holdings item=textual}
-          <p>{translate text='Holdings'}: {$textual|escape}</p>
-          {/foreach}
-        </div>
-        {/if}
-        {/foreach}
-        
         {include file="RecordDrivers/Index/holdings-table.tpl"}
         
         <button data-toggle="more-less" class="btn btn-default btn-xs hidden" data-threshold="5" data-target=".panel-body" data-target-name="holdings"><span class="fa fa-plus"></span> <span class="more-less-label" data-alt="{translate text='Less'}">{translate text="More"}</span></button>
