@@ -13,7 +13,7 @@
       <ul class="dropdown-menu" role="menu">
         <li class="visible-xs visible-sm" role="presentation"><a role="menuitem" tabindex="-1" href="#" data-toggle="offcanvas"><span class="fa fa-filter"></span> {translate text='Refine search'}</a></li>
         <li role="presentation"><a role="menuitem" tabindex="-1" href="{$rssLink|escape}"><span class="fa fa-rss"></span> {translate text='RSS Feed'}</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="{$rssLink|makeWidgetURL|escape}"><span class="fa fa-rss"></span> {translate text='Carousel'}</a></li>
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="{$rssLink|makeWidgetURL|escape}"><span class="fa fa-file-picture-o"></span> {translate text='Carousel'}</a></li>
         <li role="presentation"><a data-toggle="modal" data-target="#modal" role="menuitem" tabindex="-1" href="{$path}/Search/Email"><span class="fa fa-envelope-o"></span> {translate text='Email Search'}</a></li>
         <li role="presentation"><a role="menuitem" tabindex="-1" href="{$path}/MyResearch/SaveSearch?save={$searchId}"><span class="fa fa-save"></span> {translate text='save_search'}</a></li>
       </ul>
