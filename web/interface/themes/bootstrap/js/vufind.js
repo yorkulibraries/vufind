@@ -4,6 +4,26 @@ $.ajaxSetup ({
 });
 
 ZeroClipboard.config( { swfPath: _global_path + "/interface/themes/bootstrap/js/ZeroClipboard.swf" } );
+// workaround for https://github.com/zeroclipboard/zeroclipboard/issues/460
+if (/MSIE|Trident|Firefox\/39/.test(window.navigator.userAgent)) {
+  (function($) {
+    var zcClass = '.' + ZeroClipboard.config('containerClass');
+    var proto = $.fn.modal.Constructor.prototype;
+    proto.enforceFocus = function() {
+      $(document)
+        .off('focusin.bs.modal')  /* Guard against infinite focus loop */
+        .on('focusin.bs.modal', $.proxy(function(e) {
+          if (this.$element[0] !== e.target &&
+             !this.$element.has(e.target).length &&
+             /* Adding this final condition check is the only real change */
+             !$(e.target).closest(zcClass).length
+          ) {
+            this.$element.focus();
+          }
+        }, this));
+    };
+  })(window.jQuery);
+}
 
 $(document).ready(function() {
     // disable repeat submissions when enter is pressed and held down
