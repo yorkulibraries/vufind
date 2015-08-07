@@ -40,9 +40,12 @@
  */ // @codingStandardsIgnoreStart
 function smarty_modifier_makeWidgetURL($url, $widget='Carousel', $preview=1)
 {   // @codingStandardsIgnoreEnd
-    $replacement = '/Widget/' . $widget . '?preview=' . $preview;
-    $url = preg_replace('/\/Search\/(Results|Reserves)\?/', $replacement, $url);
+    $replacement = '/Widget/' . $widget;
+    $url = preg_replace('/\/Search\/(Results|Reserves)/', $replacement, $url);
     $url = str_replace('view=rss', 'view=list', $url);
+    if ($preview) {
+        $url .=  '&preview=1';
+    }
     return $url;
 }
 ?>
