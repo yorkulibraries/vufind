@@ -14,6 +14,13 @@ if (typeof window.activateCarousels === 'undefined') {
                   }
                 },
                 {
+                  breakpoint: 415,
+                  settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2
+                  }
+                },
+                {
                   breakpoint: 569,
                   settings: {
                     slidesToShow: 3,
