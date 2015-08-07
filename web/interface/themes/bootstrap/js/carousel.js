@@ -9,8 +9,22 @@ if (typeof window.activateCarousels === 'undefined') {
                 {
                   breakpoint: 321,
                   settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                  }
+                },
+                {
+                  breakpoint: 569,
+                  settings: {
                     slidesToShow: 3,
                     slidesToScroll: 3
+                  }
+                },
+                {
+                  breakpoint: 769,
+                  settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 4
                   }
                 },
             ]
