@@ -3,7 +3,9 @@ $.ajaxSetup ({
     cache: false
 });
 
-$(document).ready(function() {    
+ZeroClipboard.config( { swfPath: _global_path + "/interface/themes/bootstrap/js/ZeroClipboard.swf" } );
+
+$(document).ready(function() {
     // disable repeat submissions when enter is pressed and held down
     preventRepeatedEnters();    
     
@@ -649,23 +651,22 @@ $(document).on('afterChange', '.browse-shelf', function(event, slick, currentSli
 });
 
 
-function setupZeroClipboard() {
-    ZeroClipboard.config( { swfPath: _global_path + "/interface/themes/bootstrap/js/ZeroClipboard.swf" } );
-    $('.btn-clipboard').hover(
+function setupZeroClipboard(elementId) {
+    $(elementId).hover(
       function() {
         $( this ).addClass( "btn-clipboard-hover" );
       }, function() {
         $( this ).removeClass( "btn-clipboard-hover" );
       }
     );
-    $('.btn-clipboard').tooltip();
-    var client = new ZeroClipboard($('.btn-clipboard'));
+    $(elementId).tooltip();
+    var client = new ZeroClipboard($(elementId));
     client.on( "ready", function( readyEvent ) {
       client.on( "aftercopy", function( event ) {
         // `this` === `client`
         // `event.target` === the element that was clicked
         var message = $(event.target).data('copied-message');
-        $('.btn-clipboard').attr('data-original-title', message).tooltip('show');
+        $(elementId).attr('data-original-title', message).tooltip('show');
       });
     });
 }
