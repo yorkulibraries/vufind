@@ -66,7 +66,7 @@ header("Expires: ". gmdate("D, d M Y H:i:s", time() + $maxAge) . " GMT");
 
 sanitizeParameters() || exit();
 
-fetchFromId($_GET['id'], $_GET['size'])
+fetchFromId($_GET['id'])
 || fetchFromGoogle($_GET['id'], $_GET['size'], $_GET['isn'])
 || fetchFromTMDB($_GET['id'], $_GET['size'])
 || fetchFromURL($_GET['id'], $_GET['size'], $_GET['url'])
@@ -118,14 +118,25 @@ function processImageURL($url, $id, $cache = 'url')
     $file = $configArray['Site']['local'] . '/images/covers/by-id/' . $id;
     
     if (!file_exists($file)) {
+        $url = trim($url);
         if ($cache == 'url') {
             $logger->log('Caching ' . $url . ' to ' . $file, PEAR_LOG_DEBUG);
-            file_put_contents($file, trim($url));
+            file_put_contents($file, $url);
             header('Location: ' . $url);
         } else if ($cache == 'image') {
             // TODO: fetch the content of the URL and cache it
         } else {
-            header('Location: ' . $url);
+            if (isSecure()) {
+                // if in HTTPS, then proxy the URL if it is NOT HTTPS
+                if (stripos($url, 'https://') === false) {
+                    $logger->log('Not a secure URL, caching contents to file ' . $file, PEAR_LOG_DEBUG);
+                    $image = file_get_contents($url);
+                    file_put_contents($file, $image);
+                    return fetchFromId($id);
+                }
+            } else {
+                header('Location: ' . $url);
+            }
         }
     }
     
@@ -193,7 +204,7 @@ function fetchFromGoogle($id, $size, $isn)
     return false;
 }
 
-function fetchFromId($id, $size)
+function fetchFromId($id)
 {
 	global $configArray, $logger;
 
@@ -385,9 +396,9 @@ function processMovieMatches($title, $movies, $directors, $movieRepo, $config, $
         if ($image) {
             $imageConfig = $config->getImages();
             $size = 'w500';
-            $base_url = (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') 
-                ? $imageConfig['base_url']
-                : $imageConfig['secure_base_url'];
+            $base_url = isSecure()
+                ? $imageConfig['secure_base_url']
+                : $imageConfig['base_url'];
             $url = $base_url . $size . $image;
             $logger->log('Got ' . $url, PEAR_LOG_DEBUG);
             return processImageURL($url, $id);
@@ -403,5 +414,9 @@ function fetchFromURL($id, $size, $url) {
     $logger->log('Trying URL embeded in record: ' . $url, PEAR_LOG_DEBUG);
     
     return processImageURL($url, $id, false);
+}
+
+function isSecure() {
+    return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
 }
 ?>
