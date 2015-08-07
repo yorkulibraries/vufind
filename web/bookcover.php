@@ -29,7 +29,9 @@
 require_once 'sys/ConfigArray.php';
 require_once 'sys/Proxy_Request.php';
 require_once 'sys/Logger.php';
-require_once 'sys/ISBN.php';
+require_once 'sys/ConnectionManager.php';
+require_once 'generator.php';
+require_once 'vendor/autoload.php';
 
 // Retrieve values from configuration file
 $configArray = readConfig();
@@ -54,22 +56,6 @@ if (isset($configArray['Caching'])) {
         $logger->log("Could not connect to Memcache (host = {$host}, port = {$port}).", PEAR_LOG_ERR);
         $memcache = false;
     }
-}
-
-// Proxy server settings
-if (isset($configArray['Proxy']['host'])) {
-    if (isset($configArray['Proxy']['port'])) {
-        $proxy_server
-            = $configArray['Proxy']['host'].":".$configArray['Proxy']['port'];
-    } else {
-        $proxy_server = $configArray['Proxy']['host'];
-    }
-    $proxy = array(
-        'http' => array(
-            'proxy' => "tcp://$proxy_server", 'request_fulluri' => true
-        )
-    );
-    stream_context_get_default($proxy);
 }
 
 // cache cover images for 24 hours
@@ -123,20 +109,27 @@ function sanitizeParameters()
 /**
  * Cache the image URL (or actual content), then redirect (or serve).
  */
-function processImageURL($url, $id, $size, $cache = 'url')
+function processImageURL($url, $id, $cache = 'url')
 {
-    global $configArray;
+    global $configArray, $logger;
 
     if (empty($url)) return false;
     
     $file = $configArray['Site']['local'] . '/images/covers/by-id/' . $id;
-    if ($cache == 'url') {
-        file_put_contents($file, trim($url));
-        header('Location: ' . $url);
-        exit();
+    
+    if (!file_exists($file)) {
+        if ($cache == 'url') {
+            $logger->log('Caching ' . $url . ' to ' . $file, PEAR_LOG_DEBUG);
+            file_put_contents($file, trim($url));
+            header('Location: ' . $url);
+        } else if ($cache == 'image') {
+            // TODO: fetch the content of the URL and cache it
+        } else {
+            header('Location: ' . $url);
+        }
     }
     
-    return false;
+    exit();
 }
 
 /**
@@ -146,11 +139,15 @@ function processImageURL($url, $id, $size, $cache = 'url')
  */
 function fetchFromGoogle($id, $size, $isn)
 {
+    global $logger;
+    
     // Don't bother trying if we can't read JSON:
-    if (is_callable('json_decode')) {
+    if (is_callable('json_decode') && !empty($isn)) {        
         // Construct the request URL:
         $url = 'https://books.google.com/books?jscmd=viewapi&' .
                'bibkeys=ISBN:' . $isn . '&callback=addTheCover';
+               
+        $logger->log('Trying Google API: ' . $url, PEAR_LOG_DEBUG);
 
         // Make the HTTP request:
         $client = new Proxy_Request();
@@ -187,7 +184,8 @@ function fetchFromGoogle($id, $size, $isn)
                 if (isset($current['thumbnail_url'])) {
                     $thumbnail_url = str_replace('zoom=5', 'zoom=1', $current['thumbnail_url']);
                     $thumbnail_url = str_replace('&edge=curl', '', $thumbnail_url);
-                    return processImageURL($thumbnail_url, $id, $size);
+                    $logger->log('Got ' . $thumbnail_url, PEAR_LOG_DEBUG);
+                    return processImageURL($thumbnail_url, $id);
                 }
             }
         }
@@ -197,9 +195,9 @@ function fetchFromGoogle($id, $size, $isn)
 
 function fetchFromId($id, $size)
 {
-	global $configArray;
+	global $configArray, $logger;
 
-	if (empty($id) || empty($size)) {
+	if (empty($id)) {
 		return false;
 	}
 	
@@ -211,13 +209,16 @@ function fetchFromId($id, $size)
 	        $url = trim(file_get_contents($file));
 	        if (stripos($url, 'http') === 0) {
 	            // is a HTTP URL cache file - redirect
+	            $logger->log($file . ' is ' . $url, PEAR_LOG_DEBUG);
 	            header('Location: ' . trim($url));
                 exit();
             }
             // does not look like an HTTP URL
+            $logger->log($file . ' does not contain a URL', PEAR_LOG_DEBUG);
             return false;
         }
         // some kind of image file, send it off
+        $logger->log($file . ' is ' . $info['mime'], PEAR_LOG_DEBUG);
         header("Content-type: {$info['mime']}");
         readfile($file);
         exit();
@@ -226,33 +227,16 @@ function fetchFromId($id, $size)
 	return false;
 }
 
-function scaleImage($file) {
-    $size = $_GET['size'];
-    $sizes = array('small'=>'128', 'medium'=>'140','large'=>'160');
-    if (function_exists('imagecreatefromjpeg') 
-        && ($image = @imagecreatefromjpeg($file))) {
-        $fullSize = getimagesize($file);
-        $ratio = $fullSize[0] / $fullSize[1];
-        $newWidth = $sizes[$size];
-        $newHeight = $newWidth / $ratio;
-        $scaled = imagecreatetruecolor($newWidth, $newHeight);
-        imagecopyresampled($scaled, $image, 0, 0, 0, 0,
-            $newWidth, $newHeight, $fullSize[0], $fullSize[1]);
-        imagedestroy($image);
-        imagejpeg($scaled, $file);
-        imagedestroy($scaled);
-    }
-}
-
 function generateImage($id, $size) {
-    require_once 'sys/ConnectionManager.php';
-    require_once 'generator.php';
-
+    global $configArray, $logger;
+    
     $record = null;
     $solr = ConnectionManager::connectToIndex();
     if (!($record = $solr->getRecord($id))) {
         return false;
     }
+
+    $logger->log('Trying to generate cover image for record: ' . $id, PEAR_LOG_DEBUG);
 
     // clean title
     $title = preg_replace('/\[[A-Za-z \(\)]+\]/', '', $record['title_full']);
@@ -300,9 +284,8 @@ function generateImage($id, $size) {
 }
 
 function fetchFromTMDB($id, $size) {
-    require_once 'sys/ConnectionManager.php';
-    require_once 'vendor/autoload.php';
-        
+    global $configArray, $logger;
+    
     $record = null;
     $solr = ConnectionManager::connectToIndex();
     if (!($record = $solr->getRecord($id))) {
@@ -312,12 +295,9 @@ function fetchFromTMDB($id, $size) {
     if (!in_array('Sound Recording', $record['format']) && 
         (in_array('Video', $record['format']))
     ) {
-        global $configArray;
-        global $localFile;
-
+        $logger->log('Trying TMDB for record: ' . $id, PEAR_LOG_DEBUG);
+        
         try {
-            $localFile = 'images/covers/by-id/' . $id;
-
             $token  = new \Tmdb\ApiToken($configArray['TMDB']['apikey']);
             $client = new \Tmdb\Client($token);
             $configRepo = new \Tmdb\Repository\ConfigurationRepository($client);
@@ -366,6 +346,8 @@ function fetchFromTMDB($id, $size) {
 }
 
 function processMovieMatches($title, $movies, $directors, $movieRepo, $config, $id) {
+    global $configArray, $logger;
+    
     $match = null;
     
     foreach($movies as $movie) {
@@ -402,12 +384,13 @@ function processMovieMatches($title, $movies, $directors, $movieRepo, $config, $
         $image = $match->getPosterPath();
         if ($image) {
             $imageConfig = $config->getImages();
-            $size = 'w185';
+            $size = 'w500';
             $base_url = (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') 
                 ? $imageConfig['base_url']
                 : $imageConfig['secure_base_url'];
             $url = $base_url . $size . $image;
-            return processImageURL($url, $id, $size);
+            $logger->log('Got ' . $url, PEAR_LOG_DEBUG);
+            return processImageURL($url, $id);
         }
     }
     
@@ -415,6 +398,10 @@ function processMovieMatches($title, $movies, $directors, $movieRepo, $config, $
 }
 
 function fetchFromURL($id, $size, $url) {
-    return processImageURL($url, $id, $size);
+    global $configArray, $logger;
+    
+    $logger->log('Trying URL embeded in record: ' . $url, PEAR_LOG_DEBUG);
+    
+    return processImageURL($url, $id, false);
 }
 ?>
