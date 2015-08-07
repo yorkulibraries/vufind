@@ -658,5 +658,14 @@ function setupZeroClipboard() {
         $( this ).removeClass( "btn-clipboard-hover" );
       }
     );
+    $('.btn-clipboard').tooltip();
     var client = new ZeroClipboard($('.btn-clipboard'));
+    client.on( "ready", function( readyEvent ) {
+      client.on( "aftercopy", function( event ) {
+        // `this` === `client`
+        // `event.target` === the element that was clicked
+        var message = $(event.target).data('copied-message');
+        $('.btn-clipboard').attr('data-original-title', message).tooltip('show');
+      });
+    });
 }

@@ -1,8 +1,7 @@
 {$carouselCode}
-  
 <p>{translate text='Copy the following HTML code'}:</p>
 <div class="zero-clipboard">
-  <span class="btn-clipboard" data-clipboard-text="{$carouselCode|escape}">{translate text='Copy'}</span>
+  <span  data-placement="left"  data-copied-message="{translate text='Copied!'}" title="{translate text='Copy to clipboard'}" class="btn-clipboard" data-clipboard-text="{$carouselCode|escape}">{translate text='Copy'}</span>
 </div>
 <div class="html-code">
   <pre>
