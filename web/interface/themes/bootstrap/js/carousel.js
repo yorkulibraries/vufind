@@ -1,6 +1,7 @@
 if (typeof window.activateCarousels === 'undefined') {
     window.activateCarousels = function() {
         var settings = {
+            lazyLoad: 'ondemand',
             slidesToShow: 5,
             slidesToScroll: 5,
             infinite: false,

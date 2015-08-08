@@ -103,6 +103,7 @@ class ShelfBrowser
             $recordDriver->getSearchResult();
             $interface->assign('shelfOrder', $item['order']);
             $interface->assign('callnum', $item['callnum']);
+            $interface->assign('lazy', true);
             $html = $interface->fetch('RecordDrivers/Index/browse-shelf-item.tpl');
             if (strlen(trim($html)) > 0) {
                 $htmlItems[] = $html;    
