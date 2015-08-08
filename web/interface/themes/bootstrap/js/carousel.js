@@ -7,32 +7,36 @@ if (typeof window.activateCarousels === 'undefined') {
             autoplay: false,
             responsive: [
                 {
-                  breakpoint: 321,
-                  settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                  }
+                    // up to 320  (iphone 5s - portrait)
+                    breakpoint: 321,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
                 },
                 {
-                  breakpoint: 415,
-                  settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2
-                  }
+                    // 321 to 414 (iphone 6 plus - portrait)
+                    breakpoint: 415,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 2
+                    }
                 },
                 {
-                  breakpoint: 569,
-                  settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3
-                  }
+                    // 415 to 736 (iphone 6 plus - landscape)
+                    breakpoint: 737,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3
+                    }
                 },
                 {
-                  breakpoint: 769,
-                  settings: {
-                    slidesToShow: 4,
-                    slidesToScroll: 4
-                  }
+                    //  737 to 1024 (ipad)
+                    breakpoint: 1025,
+                    settings: {
+                        slidesToShow: 4,
+                        slidesToScroll: 4
+                    }
                 },
             ]
         };
