@@ -137,6 +137,7 @@ class Carousel extends Action
         	}
         }
         $this->searchObject->setQueryIDs($recordIds);
+        $this->searchObject->setLimit(count($recordIds));
         $result = $this->searchObject->processSearch(false, false);
         return $result['response']['docs'];
     }
