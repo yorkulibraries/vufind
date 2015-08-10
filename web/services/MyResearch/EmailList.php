@@ -151,7 +151,9 @@ class EmailList extends Action
         
         $interface->assign('from', $from);
         $interface->assign('records', $records);
-        $interface->assign('message', $message);        
+        $interface->assign('message', $message); 
+        $interface->assign('list', $list);
+        
         $body = $interface->fetch('Emails/catalog-records.tpl');
         
         require_once 'sys/Mailer.php';
