@@ -85,6 +85,7 @@
             </div>
           </div>
         </fieldset>
+        {if false}
         {assign var=label value='Source'}
         <fieldset>
         <legend>{translate text=$label}</legend>
@@ -99,6 +100,7 @@
           </div>
         </div>
         </fieldset>
+        {/if}
       </div>
       <div class="col-sm-4 col-lg-5">
         {assign var=label value='Location'}
