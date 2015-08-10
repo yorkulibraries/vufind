@@ -43,6 +43,32 @@ class YorkMarcRecord extends MarcRecord
         if (strtolower($exportFormat) == 'endnoteweb') {           
             $this->driver = $this;
             $this->recordURL = $configArray['Site']['url'] . '/Record/' . $this->getUniqueId();
+            
+            // multiple formats causes Zotero to create blank records, so pick the best match
+            $formats = $this->getFormats();
+            if (is_array($formats) && count($formats) > 1) {
+                $risFormats = array();
+                foreach ($formats as $format) {
+                    switch (strtolower($format)) {
+                        case "book";
+                            $risFormats[] = "BOOK";
+                            break;
+                        case "journal":
+                        case "article":
+                            $risFormats[] = "JOUR";
+                            break;
+                        case "thesis":
+                            $risFormats[] = "THES";
+                            break;
+                        default:
+                            $risFormats[] = "GEN";
+                            break;
+                    }
+                }
+                $risFormats = array_unique($risFormats);
+                $this->overrideFormats = array($risFormats[0]);
+            }
+            
             include('export-endnoteweb.phtml');
             return null;
         }
