@@ -230,7 +230,6 @@ function setupForms() {
 	    $('#spinModal').modal('show');
 	    var target = document.getElementById('spinModalSpinner');
         var spinner = new Spinner({}).spin(target);
-        return false;
     });
 	
 	// submit the form with .ajax if data-json is set
