@@ -288,6 +288,12 @@ function setupForms() {
 }
 
 function setupLinks() {
+    // disable links in disabled menu items 
+    $('body').on('click', 'li.disabled > a', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
     // handle links with data-json
     $('body').on('click', 'a[data-json]', function(e) {
         e.preventDefault();
