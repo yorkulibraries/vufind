@@ -141,7 +141,7 @@
         </div>
       </div>
     </div>
-    <div id="spinModal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+    <div id="spinModal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="false" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
