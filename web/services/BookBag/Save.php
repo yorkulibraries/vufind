@@ -88,7 +88,17 @@ class Save extends Action
         
         // find last used list
         if (!empty($lists)) {
-            $interface->assign('lastUsedList', User_list::getLastUsed());
+            // select to the first list as lastUsedList unless one was used previously
+            $interface->assign('lastUsedList', $lists[0]->id);
+            
+            $lastUsedListId = User_list::getLastUsed();
+            if ($lastUsedListId) {            
+                $lastUsedList = new User_list();
+                $lastUsedList->id = $lastUsedListId;
+                if ($lastUsedList->find(true)) {
+                    $interface->assign('lastUsedList', $lastUsedList->id);
+                }
+            }
         }
         
         // Display Page
