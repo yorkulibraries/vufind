@@ -7,30 +7,44 @@
     </div>
     {/if}
   </div>
+  {if !empty($mylists)}
   <div class="form-group">
-    <label class="col-sm-3 control-label" for="add_list">{translate text='New List Name'}</label>
+    <label class="col-sm-3 control-label" for="add_list_select">{translate text='Save to'}</label>
     <div class="col-sm-9">
-      <input type="text" class="form-control" id="add_list" name="listname" value="Untitled List"/>
-      <span class="help-block">{translate text='A new list will be created with this name.'}</span>
+      <select class="form-control" id="add_list_select" name="selected_list">
+        {foreach from=$mylists item=l}
+          <option value="{$l->id}" {if $l->id==$lastUsedList}selected="selected"{/if}>{$l->title|escape}</option>
+        {/foreach}
+      </select>
     </div>
   </div>
-  <div class="form-group">
-    <label class="col-sm-3 control-label" for="list_desc">{translate text='List Description'}</label>
-    <div class="col-sm-9">
-      <textarea class="form-control" id="list_desc" name="desc" rows="3"></textarea>
+  {/if}
+  <div class="add-list-container {if !empty($mylists)}hidden{/if}">
+    <div class="form-group">
+      <label class="col-sm-3 control-label" for="add_list">{translate text='New List Name'}</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="add_list" name="listname" value="Untitled List"/>
+        <span class="help-block">{translate text='A new list will be created with this name'}.</span>
+      </div>
     </div>
-  </div>
-  <div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
-      <fieldset>
-        <legend>{translate text="Access"}:</legend>
-      <div class="radio">
-        <input id="list_public_1" type="radio" name="public" value="1" {if $list->public == 1}checked="checked"{/if}/> <label for="list_public_1">{translate text="Public"}</label>
+    <div class="form-group">
+      <label class="col-sm-3 control-label" for="list_desc">{translate text='List Description'}</label>
+      <div class="col-sm-9">
+        <textarea class="form-control" id="list_desc" name="desc" rows="3"></textarea>
       </div>
-      <div class="radio">
-        <input id="list_public_0" type="radio" name="public" value="0" {if $list->public == 0}checked="checked"{/if}/> <label for="list_public_0">{translate text="Private"}</label>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-3 col-sm-9">
+        <fieldset>
+          <legend>{translate text="Access"}:</legend>
+        <div class="radio">
+          <input id="list_public_1" type="radio" name="public" value="1" {if $list->public == 1}checked="checked"{/if}/> <label for="list_public_1">{translate text="Public"}</label>
+        </div>
+        <div class="radio">
+          <input id="list_public_0" type="radio" name="public" value="0" {if $list->public == 0}checked="checked"{/if}/> <label for="list_public_0">{translate text="Private"}</label>
+        </div>
+        </fieldset>
       </div>
-      </fieldset>
     </div>
   </div>
   <div class="form-group">

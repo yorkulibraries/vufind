@@ -82,6 +82,15 @@ class Save extends Action
             }
         }
         
+        // fetch lists
+        $lists = $user->getLists();
+        $interface->assign('mylists', $lists);
+        
+        // find last used list
+        if (!empty($lists)) {
+            $interface->assign('lastUsedList', User_list::getLastUsed());
+        }
+        
         // Display Page
         $interface->setPageTitle('Save Marked Items');
         $interface->setTemplate('save.tpl');
@@ -99,16 +108,31 @@ class Save extends Action
         $cart = Cart_Model::getInstance();
         $items = $cart->getItems();
         if (!empty($items)) {
-            $list = new User_list();
-            $list->user_id = $user->id;
-            $list->title = trim($_REQUEST['listname']);
-            $list->description = trim($_REQUEST['desc']);
-            $list->public = $_REQUEST['public'];
-            if (!$list->insert()) {
+            $list = null;
+            
+            if (isset($_REQUEST['selected_list']) && !empty($_REQUEST['selected_list'])) {
+                $list = new User_list();
+                $list->id = $_REQUEST['selected_list'];
+                if (!$list->find(true)) {
+                    return false;
+                }
+            } else {
+                $list = new User_list();
+                $list->user_id = $user->id;
+                $list->title = trim($_REQUEST['listname']);
+                $list->description = trim($_REQUEST['desc']);
+                $list->public = $_REQUEST['public'];
+                if (!$list->insert()) {
+                    return false;
+                }
+            }
+            
+            if (!$list) {
                 return false;
             }
+            
             $list->rememberLastUsed();
-        
+            
             foreach ($items as $item) {
                 $resource = new Resource();
                 $resource->record_id = $item;
