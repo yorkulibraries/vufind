@@ -38,7 +38,7 @@
   {minifycss media="print" files="print.css.less"}
   
   <!-- combine javascript files -->
-  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.min.js,js/bootstrap-datepicker.fr.min.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/slick.js,js/carousel.js,js/ZeroClipboard.min.js,js/vufind.js"></script>
+  <script type="text/javascript" src="{$path}/interface/themes/bootstrap/min/f=js/jquery.min.js,js/bootstrap.min.js,js/bootstrap-datepicker.min.js,js/bootstrap-datepicker.fr.min.js,js/jquery.ui.widget.js,js/jquery.fileupload.js,js/jquery.cookie.js,js/slick.js,js/carousel.js,js/ZeroClipboard.min.js,js/spin.min.js,js/vufind.js"></script>
 </head>
 <body>
   <a class="sr-only" href="#content">{translate text='Skip to main content'}</a>
@@ -138,6 +138,21 @@
     <div data-backdrop="false" class="modal fade ajax-modal" id="modal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
+        </div>
+      </div>
+    </div>
+    <div id="spinModal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">{translate text='Please wait'}...</h4>
+          </div>
+          <div class="modal-body" >
+            <p>{translate text='long_wait_message'}</p>
+            <div class="spinner">
+              <span id="spinModalSpinner"></span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

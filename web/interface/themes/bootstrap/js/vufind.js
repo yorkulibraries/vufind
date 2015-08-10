@@ -225,6 +225,14 @@ function setupForms() {
         }
 	});
 	
+	// display spinning please wait dialog for long wait forms
+	$('body').on('submit', 'form.long-wait', function(e) {
+	    $('#spinModal').modal('show');
+	    var target = document.getElementById('spinModalSpinner');
+        var spinner = new Spinner({}).spin(target);
+        return false;
+    });
+	
 	// submit the form with .ajax if data-json is set
     $('body').on('submit', 'form', function(e) {
         var $this = $(this);
