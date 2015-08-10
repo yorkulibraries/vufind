@@ -11,7 +11,8 @@
   <div class="form-group">
     <label class="col-sm-3 control-label" for="add_list_select">{translate text='Save to'}</label>
     <div class="col-sm-9">
-      <select class="form-control" id="add_list_select" name="selected_list">
+      <select class="form-control" id="saveToOptions" name="selected_list">
+        <option value="">{translate text='Create New List'}</option>
         {foreach from=$mylists item=l}
           <option value="{$l->id}" {if $l->id==$lastUsedList}selected="selected"{/if}>{$l->title|escape}</option>
         {/foreach}
@@ -19,7 +20,7 @@
     </div>
   </div>
   {/if}
-  <div class="add-list-container {if !empty($mylists)}hidden{/if}">
+  <div {if !empty($mylists)}class="hidden"{/if} id="createNewListFields">
     <div class="form-group">
       <label class="col-sm-3 control-label" for="add_list">{translate text='New List Name'}</label>
       <div class="col-sm-9">

@@ -276,6 +276,15 @@ function setupForms() {
             });
         }
     });
+    
+    // show/hide the add-list-container when 
+    $('body').on('change', '#saveToOptions', function(e) {
+		if ($(this).val() == '') {
+		    $('#createNewListFields').removeClass('hidden');
+		} else {
+		    $('#createNewListFields').addClass('hidden');
+		}
+	});
 }
 
 function setupLinks() {
