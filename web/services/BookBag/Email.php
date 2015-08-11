@@ -102,7 +102,7 @@ class Email extends Action
         
         // Display Page
         $interface->assign('from', $from);
-        $interface->setPageTitle('Email Book Bag');
+        $interface->setPageTitle('Email Marked Items');
         $interface->setTemplate('email.tpl');
         if ($_REQUEST['modal']) {
             $interface->assign('modal', $_REQUEST['modal']);
