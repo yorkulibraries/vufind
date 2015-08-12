@@ -219,7 +219,7 @@ JournalTitle:
     - series2:
       - [onephrase, 50]
       - [and , ~]
-  FilterQuery: "(format:Journal OR format:Journal/Periodical OR format:eJournal OR format:Serial OR format:Index/Database OR format:Newspaper OR format:eNewspaper)"
+  FilterQuery: "(format:Journal OR format:Periodical OR format:Journal/Magazine OR format:Journal/Periodical OR format:eJournal OR format:Serial OR format:Index/Database OR format:Newspaper OR format:eNewspaper)"
 
 Title:
   DismaxFields:
