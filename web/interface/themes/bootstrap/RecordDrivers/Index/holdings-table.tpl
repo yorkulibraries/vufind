@@ -27,7 +27,7 @@
   {if $item.current_location && $item.item_type}
   <tr class="more-less">
     <td class="hidden-xs">
-      <a title="{translate text='Locate this item'}" class="btn btn-link btn-xs" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}" role="button"><i class="fa fa-map-marker"></i> {$item.current_location|replace:'- 204 Founders College':''|translate|escape}</a>
+      <a title="{translate text='Locate this item'}" class="btn btn-default btn-xs" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}" role="button"><i class="fa fa-location-arrow"></i></a> <a title="{translate text='Locate this item'}" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}">{$item.current_location|replace:'- 204 Founders College':''|translate|escape}</a>
     </td>
     <td><a title="{translate text='Locate this item'}" class="btn btn-link btn-xs visible-xs" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}" role="button"><i class="fa fa-map-marker"></i> {$item.callnumber|escape}</a><span class="hidden-xs">{$item.callnumber|escape}</span></td>
     <td>
