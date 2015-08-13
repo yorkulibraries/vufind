@@ -28,13 +28,13 @@
   <tr class="more-less">
     <td class="hidden-xs">
       <div class="btn-group">
-        <a title="{translate text='Locate this item'}" class="btn btn-default btn-xs" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}" role="button"><i class="fa fa-location-arrow"></i></a>
+        <a title="{translate text='Locate this item'}" class="btn btn-default btn-xs" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}" role="button"><i class="yul-map-icon"></i></a>
       </div>
       {$item.current_location|replace:'- 204 Founders College':''|translate|escape}
     </td>
     <td>
       <div class="btn-group">
-        <a title="{translate text='Locate this item'}" class="btn btn-default btn-xs visible-xs" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}" role="button"><i class="fa fa-location-arrow"></i></a>
+        <a title="{translate text='Locate this item'}" class="btn btn-default btn-xs visible-xs" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}" role="button"><i class="yul-map-icon"></i></a>
       </div>
       {$item.callnumber|escape}
     </td>
