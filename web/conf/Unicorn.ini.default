@@ -11,6 +11,9 @@ leaveFinesAmountsInCents = false
 ; default is DD/MM/YYYY
 server_date_format = "d/m/Y"
 
+; file containing list of record IDs that have been suppressed (not in SOLR)
+suppressed_records_file = "suppressed-records.txt"
+
 [ApiMessages]
 105 = "This item has been recalled"
 141 = "Renewal limit exceeded"
