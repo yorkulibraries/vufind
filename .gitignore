@@ -25,6 +25,7 @@ web/images/covers/local/small/*
 web/images/covers/by-id/*
 web/conf/config.ini
 web/conf/Unicorn.ini
+web/conf/grad-reading-room.ini
 
 # Compiled source #
 ###################
