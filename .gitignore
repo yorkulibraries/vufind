@@ -27,6 +27,7 @@ web/conf/config.ini
 web/conf/Unicorn.ini
 web/conf/grad-reading-room.ini
 web/conf/las-room.ini
+web/conf/taxfind.ini
 
 # Compiled source #
 ###################
