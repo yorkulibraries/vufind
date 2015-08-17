@@ -342,11 +342,25 @@ class YorkUnicorn extends Unicorn
 
     public function findReserves($courseId, $instructorId, $departmentId)
     {
+        global $configArray;
+        
+        // load suppressed list
+        $suppressedFile = $configArray['Site']['local'] . '/conf/' . $this->ilsConfigArray['Catalog']['suppressed_records_file'];
+        $suppressed = file_exists($suppressedFile) ? file($suppressedFile) : array();
+        $suppressed = array_map('trim', $suppressed);
+        
+        // find the reserve records from ILS
         $items = parent::findReserves($courseId, $instructorId, $departmentId);
-        foreach ($items as &$item) {
-            $item['DEPARTMENT_ID'] = '';
+        
+        // filter out suppressed items
+        $results = array();
+        foreach ($items as $item) {
+            if (!in_array($item['BIB_ID'], $suppressed)) {
+                $item['DEPARTMENT_ID'] = '';
+                $results[] = $item;
+            }
         }
-        return $items;
+        return $results;
     }
 }
 ?>
