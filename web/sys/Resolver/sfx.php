@@ -114,6 +114,13 @@ class Resolver_Sfx implements ResolverInterface
             $record['proxy'] = (string)$target->proxy;
             $record['target_name'] = (string)$target->target_name;
             
+            // temporary workaround for https://github.com/yorkulibraries/vufind/issues/3
+            $doNotProxy = $configArray['EZproxy']['do_not_proxy'];
+            if (!in_array($record['target_name'], $doNotProxy) && $record['proxy'] == 'no') {
+                $record['proxy'] = 'yes';
+                $record['href'] = $configArray['EZproxy']['host'] . '/login?url=' . $record['href'];
+            }
+            
             if(preg_match('/\/licenses\/(.+)\/sfx/', $record['note'], $matches)) {
                 $rights = $this->getUsageRights($matches[1]);
                 $record['usage_rights'] = $rights;

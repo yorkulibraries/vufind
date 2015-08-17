@@ -418,6 +418,10 @@ replace_other_urls = false
 [EZproxy]
 host            = http://ezproxy.library.yorku.ca
 
+; list of SFX targets that should NOT be proxied
+do_not_proxy[] = DOAJ_DIRECTORY_OPEN_ACCESS_JOURNALS_FREE
+do_not_proxy[] = MISCELLANEOUS_FREE_EJOURNALS
+
 ; These settings affect RefWorks record exports.  They rarely need to be changed.
 [RefWorks]
 vendor          = VuFind
