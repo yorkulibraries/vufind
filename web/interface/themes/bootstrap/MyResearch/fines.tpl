@@ -20,6 +20,7 @@
     <tr>
       <th>{translate text='Date'}</th>
       <th>{translate text='Amount'}</th>
+      <th>{translate text='Balance'}</th>
       <th>{translate text='Reason'}</th>
       <th>{translate text='Title'}</th>
     </tr>
@@ -29,6 +30,7 @@
       <tr>
         <td>{$record.date_billed|escape}</td>
         <td>{$record.amount|safe_money_format|escape}</td>
+        <td>{$record.balance|safe_money_format|escape}</td>
         <td>{$record.fine|translate|escape}</td>
         <td>
           {if empty($record.title)}
