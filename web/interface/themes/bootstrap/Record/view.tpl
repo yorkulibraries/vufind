@@ -1,6 +1,6 @@
 
 
-<div class="alert-container"></div>
+<div class="alert-container print-hidden"></div>
 
 <div class="record-container" data-record-id="{$id}">
   <abbr class="unapi-id hidden" title="{$id}"></abbr>
@@ -8,7 +8,7 @@
   <div class="media">
     <div class="media-left">
       {include file="RecordDrivers/Index/bookcover.tpl"}
-      <div class="checkbox btn btn-default btn-sm">
+      <div class="checkbox btn btn-default btn-sm print-hidden">
         <input class="mark-unmark-record" type="checkbox" id="mark_record_{$id}" value="{$id}" aria-label="{translate text='Mark'}">
         <label for="mark_record_{$id}">{translate text='Mark'}</label>
       </div>
@@ -83,7 +83,7 @@
     <div class="clearfix"></div>
   </div>
 
-  <ul aria-hidden="true" class="nav nav-tabs responsive record-view-tabs" id="record-tabs">
+  <ul aria-hidden="true" class="nav nav-tabs responsive record-view-tabs print-hidden" id="record-tabs">
     <li {if $tab == 'Holdings'}class="active"{/if}>
       <a data-toggle="tab" data-target="#Holdings" href="{$path}/Record/{$id}/Holdings">{translate text='Details'}</a>
     </li>
@@ -101,8 +101,8 @@
     <div class="{if $tab == 'Holdings' || $tab == 'Hold'}tab-pane active{/if}" id="Holdings">
     {if $tab == 'Holdings' || $tab == 'Hold'}
       <div id="Holdings-tab-content">
-        <h3 class="pull-left">{translate text="Holdings"}</h3>
-        <div class="pull-right">
+        <h3 class="pull-left print-hidden">{translate text="Holdings"}</h3>
+        <div class="pull-right print-hidden">
           {if $allowHold}
           <div class="btn-group">
             <a href="{$path}/Record/{$id}/Hold" class="btn btn-primary btn-toggle" data-toggle="modal" data-target="#modal">{translate text='Place Hold'}</a>
@@ -135,7 +135,7 @@
         </div>
         
         {if !empty($browseShelf)}
-        <div class="section">
+        <div class="section print-hidden">
           <h3>{translate text="On the Shelf"}</h3>
           {$browseShelf}
         </div>

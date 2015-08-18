@@ -48,7 +48,7 @@
           </ul>
         </div>
       </div>
-      <div class="change-search-link">
+      <div class="change-search-link print-hidden">
         <span class="fa fa-search"></span> <a href="{$path}/Search/Advanced?mylang={$userLang}">{translate text='Advanced Search'}</a>
       </div>
       <input type="hidden" name="mylang" value="{$userLang}" />
