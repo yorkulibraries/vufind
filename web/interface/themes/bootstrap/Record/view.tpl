@@ -145,12 +145,12 @@
           <h3>{translate text='Subjects'}</h3>
           <div class="section">
             <dl class="dl-horizontal">
-              {foreach from=$coreSubjects key=fieldName item=field name=loop}
-              <dt>{translate text=$fieldName}:</dt>
+              {foreach from=$coreSubjects item=field name=loop}
+              <dt>{translate text=$field.0}:</dt>
               <dd>
               <div class="subject-line">
                 {assign var=subject value=""}
-                {foreach from=$field item=subfield name=subloop}
+                {foreach from=$field.1 item=subfield name=subloop}
                   {if !$smarty.foreach.subloop.first} &raquo; {/if}
                   {assign var=subject value="$subject $subfield"}
                   <a title="{$subject|escape}" href="{$url}/Search/Results?lookfor=%22{$subject|escape:'url'}%22&amp;type=Subject">{$subfield|escape}</a>

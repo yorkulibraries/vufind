@@ -787,7 +787,7 @@ class YorkMarcRecord extends MarcRecord
                     // If we found at least one chunk, add a heading to our result:
                     if (!empty($current)) {
                         $fieldName = 'marc' . $field;
-                        $retval[$fieldName] = $current;
+                        $retval[] = array($fieldName, $current);
                     }
                 }
             }
