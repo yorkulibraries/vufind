@@ -53,7 +53,7 @@
     </dl>
   </div>
   
-  <abbr class="unapi-id" title="{$summId}"></abbr>
+  <abbr class="unapi-id hidden" title="{$summId}"></abbr>
   
   {if $ilsDetails.cancel_details && !$ilsDetails.available}
     <input type="hidden" name="cancelAllIDS[]" value="{$ilsDetails.cancel_details|escape}" />
