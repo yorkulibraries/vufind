@@ -7,8 +7,10 @@
 non-commercial educational or research purposes only.</p>
 </div>
 
-<p><strong>To gain access to TaxFind at York choose one of the logins provided below and then
-click <a href="{$finalUrl|escape}">here</a> to sign on.</strong></p>
+<p>To gain access to TaxFind at York choose one of the logins provided below and then</p>
+<div class="btn-group">
+<a class="btn btn-sm btn-default" href="{$finalUrl|escape}">click here to sign on</a>
+</div>
 
 
 
