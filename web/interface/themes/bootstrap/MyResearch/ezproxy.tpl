@@ -8,7 +8,7 @@
     {include file="MyResearch/$tou.$userLang.tpl"}
     <form role="form" method="post" action="{$url}/MyResearch/{$action}{if $queryString}?{$queryString}{/if}">
       <div class="form-group">
-        <input class="btn btn-primary" type="submit" name="agree" value="{translate text='I agree to abide by acceptable use'|escape}" />
+        <input autofocus class="btn btn-primary" type="submit" name="agree" value="{translate text='I agree to abide by acceptable use'|escape}" />
       </div>
     </form>
   {/if}
