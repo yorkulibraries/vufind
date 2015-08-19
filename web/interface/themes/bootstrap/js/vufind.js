@@ -27,7 +27,7 @@ if (/MSIE|Trident|Firefox\/39/.test(window.navigator.userAgent)) {
 
 $(document).ready(function() {
     // disable repeat submissions when enter is pressed and held down
-    preventRepeatedEnters();    
+    //preventRepeatedEnters();    
     
 	// check availability
 	checkAvailability();
