@@ -1,7 +1,7 @@
 <li class="media result-container" data-record-id="{$summId}">
   <div class="pull-left number-and-checkbox">
     <span class="result-number">{math equation="x + y" x=$recordStart y=$listItemIndex}.</span>
-    {if $ilsDetails.renewable && $ilsDetails.overdue == 'N' && empty($ilsDetails.recall_duedate)}
+    {if $ilsDetails.renewable && empty($ilsDetails.recall_duedate)}
     <div class="select-item-container">
       <input type="hidden" name="renewAllIDS[]" value="{$renewKey|escape}" />
       <input type="checkbox" name="renewSelectedIDS[]" value="{$renewKey|escape}" id="checkbox_{$summId|regex_replace:'/[^a-z0-9]/':''|escape}" />

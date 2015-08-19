@@ -119,7 +119,6 @@ class CheckedOut extends MyResearch
             } else {
                 // Form Details
                 if ($transList[$key]['ils_details']['renewable'] 
-                && $transList[$key]['ils_details']['overdue'] == 'N' 
                 && empty($transList[$key]['ils_details']['recall_duedate'])) {
                     $interface->assign('renewForm', true);
                 }
