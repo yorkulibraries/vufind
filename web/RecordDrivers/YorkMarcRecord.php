@@ -392,7 +392,11 @@ class YorkMarcRecord extends MarcRecord
         $urls = array();
         $mulerHost = $configArray['MULER']['host'];
         foreach ($this->fulltextURLFields as $field) {
-            if ($subu = $field->getSubfield('u')) {
+            $subu = $field->getSubfield('u');
+            if (!$subu) {
+                $subu = $field->getSubfield('a');
+            }
+            if ($subu) {
                 $u = $subu->getData();
                 if ($mulerHost) {
                     $u = str_replace('www.library.yorku.ca', $mulerHost, $u);
