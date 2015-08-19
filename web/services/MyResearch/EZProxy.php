@@ -147,6 +147,9 @@ class EZProxy extends XLogin
         foreach ($ezproxyHeaders as $key => $value) {
             header("$key: $value");
         }
+        
+        // gtfo
+        exit();
     }
 }
 ?>
