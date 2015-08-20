@@ -19,7 +19,6 @@
   </tr>
 {/foreach}
 </table>  
-</div>
 {else}
   <p>{translate text="There are currently no locked accounts."}</p>
 {/if}
