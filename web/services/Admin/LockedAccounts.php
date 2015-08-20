@@ -63,6 +63,7 @@ class LockedAccounts extends Action
         $lockedOutList = array();
         $failedLogins = new FailedLogins();
         $failedLogins->whereAdd("attempts >= $failedLimit");
+        $failedLogins->whereAdd("last_attempt >= timestampadd(hour, -24, now())");
         $failedLogins->orderBy('last_attempt DESC');
         $failedLogins->find();
         while ($failedLogins->fetch()) {
