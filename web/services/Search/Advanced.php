@@ -257,7 +257,7 @@ class Advanced extends Action
                 } else {
                     $selected = false;
                 }
-                $currentList[$value['value']]
+                $currentList[$value['untranslated']]
                     = array('filter' => $fullFilter, 'selected' => $selected);
             }
 
