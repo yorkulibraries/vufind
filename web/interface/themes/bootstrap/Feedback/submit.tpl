@@ -4,11 +4,11 @@
     <input type="email" class="form-control" id="feedbackEmail" name="from"/>
   </div>
   <div class="form-group">
-    <label for="feedbackLike">{translate text='What do you like?'}</label>
+    <label for="feedbackLike">{translate text='What do you like'}?</label>
     <textarea class="form-control" rows="2" id="feedbackLike" name="like"></textarea>
   </div>
   <div class="form-group">
-    <label for="feedbackImprovement">{translate text='What needs to be improved?'}</label>
+    <label for="feedbackImprovement">{translate text='What needs to be improved'}?</label>
     <textarea class="form-control" rows="2" id="feedbackImprovement" name="improvement"></textarea>
   </div>
   <input type="submit" class="btn btn-default" data-dismiss="modal" name="cancel" value="{translate text='Cancel'}" />
