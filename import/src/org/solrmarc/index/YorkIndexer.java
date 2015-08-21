@@ -375,7 +375,7 @@ public class YorkIndexer extends VuFindIndexer {
 
         // load
         resolverIDsInSirsi = new TreeSet<String>();
-        stmt.setString(1, "sirsi");
+        stmt.setString(1, "catalog");
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
             resolverIDsInSirsi.add(rs.getString(1));
