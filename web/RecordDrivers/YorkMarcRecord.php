@@ -401,7 +401,7 @@ class YorkMarcRecord extends MarcRecord
                 if ($mulerHost) {
                     $u = str_replace('www.library.yorku.ca', $mulerHost, $u);
                 }
-                $notes = trim($this->getAllSubFields($field, '3z'), ' :()[]"\'');
+                $notes = trim($this->getAllSubFields($field, '3z'), ' :()[]"\'\.');
                 // if the notes contain "useless" information, we should remove it
                 foreach ($uselessNotes as $useless) {
                     $notes = str_replace($useless, '', $notes);
