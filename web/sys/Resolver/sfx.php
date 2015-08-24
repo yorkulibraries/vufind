@@ -125,8 +125,11 @@ class Resolver_Sfx implements ResolverInterface
                 $rights = $this->getUsageRights($matches[1]);
                 $record['usage_rights'] = $rights;
                 $record['license_name'] = $matches[1];
+            } else if (preg_match('/src=[\'\"]?http:\/\/york.scholarsportal.info\/licenses\/([^\'\" ]+)[\'\" ]? /', $record['note'], $matches)) {
+                $rights = $this->getUsageRights($matches[1]);
+                $record['usage_rights'] = $rights;
+                $record['license_name'] = $matches[1];
             }
-            
             array_push($records, $record);
         }
         return $records;
