@@ -163,24 +163,23 @@ public class YorkIndexer extends VuFindIndexer {
     public Set<String> getLocation(Record record) {
         String id = Utils.getRecordId(record, "catalog");
         Set<String> locations = itemsLocationsMap.get(id);
+        if (locations == null) {
+            locations = new HashSet<String>(); 
+        }
         
         // check if item is available online, if so then add INTERNET as a location
-        if (locations != null && !locations.contains("INTERNET")) {
-            // check if issn in SFX or MULER
-            Set<String> issns = getISSNs(record);
-            for (String issn : issns) {
-                if (sfxISSNs.contains(issn) || mulerISSNs.contains(issn)) {
-                    locations.add("INTERNET");
-                    return locations;
-                }
+        Set<String> issns = getISSNs(record);
+        for (String issn : issns) {
+        	issn = issn.toUpperCase().replaceAll("[^0-9X]", "");
+            if (sfxISSNs.contains(issn) || mulerISSNs.contains(issn)) {
+                locations.add("INTERNET");
+                return locations;
             }
-            if (!locations.contains("INTERNET")) {
-                Set<String> urls = getFullTextUrls(record);
-                if (!urls.isEmpty()) {
-                    locations.add("INTERNET");
-                    return locations;
-                }
-            }
+        }
+        Set<String> urls = getFullTextUrls(record);
+        if (!urls.isEmpty()) {
+            locations.add("INTERNET");
+            return locations;
         }
         return locations;
     }
