@@ -101,7 +101,7 @@ function sanitizeParameters()
 
     // id
     $_GET['id'] = isset($_GET['id'])
-        ? preg_replace('/[^0-9a-z]/', '', $_GET['id']) : '';
+        ? preg_replace('/[^0-9a-z\-]/', '', $_GET['id']) : '';
     
     return true;
 }
