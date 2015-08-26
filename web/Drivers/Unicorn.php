@@ -244,7 +244,7 @@ class Unicorn implements DriverInterface
      */
     public function getStatus($id)
     {
-        if (!is_int($id)) {
+        if (!preg_match('/^[0-9]+$/', $id)) {
             return array();
         }
         $params = array('query' => 'single', 'id' => $id);
