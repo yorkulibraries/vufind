@@ -19,7 +19,10 @@
         <dt class="sr-only">{translate text='Publication info'}:</dt>
         <dd class="publication-info">{$listPublicationInfo|trim:' *,:/'|escape}</dd>
       {/if}
-      
+      {if $recordDataSource == 'MULER' && !empty($yorkSummary)}
+        <dt class="sr-only">{translate text='Summary'}:</dt>
+        <dd class="summary">{$yorkSummary.0|escape}</dd>
+      {/if}
       {if $listNotes}
         <dt class="sr-only">{translate text='Your Notes'}:</dt>
         <dd>

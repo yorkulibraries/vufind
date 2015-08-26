@@ -150,6 +150,8 @@ class YorkMarcRecord extends MarcRecord
         $interface->assign('yorkAuthorInfo', $authorInfo);
         
         $interface->assign('yorkTitleWithoutMedium', $this->getTitleWithoutMedium());
+        
+        $interface->assign('yorkSummary', $this->getSummary());
     }
     
     private function getTitleWithoutMedium()
@@ -199,6 +201,8 @@ class YorkMarcRecord extends MarcRecord
         $interface->assign('listJournalOpenURLs', $this->getJournalOpenURLs());
         
         $interface->assign('listCOinS', $this->getOpenURL());
+        
+        $interface->assign('yorkSummary', $this->getSummary());
         
         return $template;
     }
