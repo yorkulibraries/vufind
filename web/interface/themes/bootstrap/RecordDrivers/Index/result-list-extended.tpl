@@ -7,6 +7,10 @@
     <dt class="sr-only">{translate text='Publication info'}:</dt>
     <dd class="publication-info">{$yorkPublicationInfo|trim:' *,:/'|escape}</dd>
   {/if}
+  {if $recordDataSource == 'MULER' && !empty($yorkSummary)}
+    <dt class="sr-only">{translate text='Summary'}:</dt>
+    <dd class="summary">{$yorkSummary.0|escape}</dd>
+  {/if}
   {if !empty($summFormats)}
     <dt class="sr-only">{translate text='Format'}:</dt>
     <dd class="format-info">
