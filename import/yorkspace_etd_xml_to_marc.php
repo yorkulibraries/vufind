@@ -2,41 +2,41 @@
     require 'File/MARC.php';
     require 'File/MARCXML.php';
 
-   $modsDir = isset($argv[1]) ? $argv[1] : null;
+   $xmlDir = isset($argv[1]) ? $argv[1] : null;
+   $stylesheet = isset($argv[2]) ? $argv[2] : null;
    
-   if (empty($modsDir)) {
-       echo "Usage: php mods2marcxml.php /path/to/input/mods/dir\n";
+   if (empty($xmlDir) || empty($stylesheet)) {
+       echo "Usage: php $argv[0] /path/to/input/xml/dir /path/to/xsl\n";
        exit;
    }
    
-   $files = scandir($modsDir);
-   $modsFiles = array();
+   $files = scandir($xmlDir);
+   $xmlFiles = array();
    foreach ($files as $file) {
        $ext = pathinfo($file, PATHINFO_EXTENSION);
        if ($ext == 'xml') {
-           $modsFiles[] = $modsDir . '/' . $file;
+           $xmlFiles[] = $xmlDir . '/' . $file;
        }
    }
    
    // Load Stylesheet
    $style = new DOMDocument;
-   $style->load('import/xsl/MODS2MARC21slim.xsl');
+   $style->load($stylesheet) || die("Cannot load $stylesheet");
 
    // Setup XSLT
    $xsl = new XSLTProcessor();
    $xsl->importStyleSheet($style);
    
-   foreach ($modsFiles as $file) {
-       $mods = file_get_contents($file);
+   foreach ($xmlFiles as $file) {
+       $src = file_get_contents($file);
        $marcxml = null;
        
        // Transform MARCXML
        $doc = new DOMDocument;
-       if ($doc->loadXML($mods)) {
+       if ($doc->loadXML($src)) {
            $marcxml = $xsl->transformToXML($doc);
        }
-       
-       $records = new File_MARCXML($marcxml, File_MARC::SOURCE_STRING, 'marc', true);
+       $records = new File_MARCXML($marcxml, File_MARC::SOURCE_STRING);
        while ($record = $records->next()) {
            $field = new File_MARC_Data_Field('035', array( new File_MARC_Subfield('a', getIDFromFileName($file))));
            $record->appendField($field);

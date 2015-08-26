@@ -244,6 +244,9 @@ class Unicorn implements DriverInterface
      */
     public function getStatus($id)
     {
+        if (!is_int($id)) {
+            return array();
+        }
         $params = array('query' => 'single', 'id' => $id);
         $response = $this->querySirsi($params);
         if (empty($response)) {
