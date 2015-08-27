@@ -64,15 +64,21 @@ header('Pragma:');
 header("Cache-Control: max-age=$maxAge, public");
 header("Expires: ". gmdate("D, d M Y H:i:s", time() + $maxAge) . " GMT");
 
-sanitizeParameters() || exit();
+sanitizeParameters() || dieWithDefaultImage();
 
-fetchFromId($_GET['id'])
+if(fetchFromId($_GET['id'], $_GET['size'])
 || fetchFromGoogle($_GET['id'], $_GET['size'], $_GET['isn'])
 || fetchFromTMDB($_GET['id'], $_GET['size'])
-|| fetchFromURL($_GET['id'], $_GET['size'], $_GET['url'])
-|| generateImage($_GET['id'], $_GET['size']);
+|| fetchFromURL($_GET['id'], $_GET['size'], $_GET['url'])) {
+    exit();
+}
 
-exit();
+$generate = true;
+if ($generate && generateImage($_GET['id'], $_GET['size'])) {
+    exit();
+}
+
+dieWithDefaultImage();
 
 /* END OF INLINE CODE */
 
@@ -113,7 +119,9 @@ function processImageURL($url, $id, $cache = 'url')
 {
     global $configArray, $logger;
 
-    if (empty($url)) return false;
+    if (empty($url)) {
+        dieWithDefaultImage();
+    }
     
     $file = $configArray['Site']['local'] . '/images/covers/by-id/' . $id;
     
@@ -123,23 +131,24 @@ function processImageURL($url, $id, $cache = 'url')
             $logger->log('Caching ' . $url . ' to ' . $file, PEAR_LOG_DEBUG);
             file_put_contents($file, $url);
             header('Location: ' . $url);
-        } else if ($cache == 'image') {
-            // TODO: fetch the content of the URL and cache it
-        } else {
-            if (isSecure()) {
-                // if in HTTPS, then proxy the URL if it is NOT HTTPS
-                if (stripos($url, 'https://') === false) {
-                    $logger->log('Not a secure URL, caching contents to file ' . $file, PEAR_LOG_DEBUG);
-                    $image = file_get_contents($url);
-                    file_put_contents($file, $image);
-                    return fetchFromId($id);
+            exit();
+        } 
+        if (isSecure()) {
+            // if in HTTPS, then proxy the URL if it is NOT HTTPS
+            if (stripos($url, 'https://') === false) {
+                $logger->log('Not a secure URL, proxying', PEAR_LOG_DEBUG);
+                file_put_contents($file, file_get_contents($url));
+                $sent = sendLocalFile($file);
+                unlink($file);
+                if ($sent) {
+                    exit();
                 }
-            } else {
-                header('Location: ' . $url);
             }
         }
+        header('Location: ' . $url);
+        exit();
     }
-    
+    sendLocalFile($file);
     exit();
 }
 
@@ -196,7 +205,7 @@ function fetchFromGoogle($id, $size, $isn)
                     $thumbnail_url = str_replace('zoom=5', 'zoom=1', $current['thumbnail_url']);
                     $thumbnail_url = str_replace('&edge=curl', '', $thumbnail_url);
                     $logger->log('Got ' . $thumbnail_url, PEAR_LOG_DEBUG);
-                    return processImageURL($thumbnail_url, $id);
+                    processImageURL($thumbnail_url, $id);
                 }
             }
         }
@@ -204,7 +213,7 @@ function fetchFromGoogle($id, $size, $isn)
     return false;
 }
 
-function fetchFromId($id)
+function fetchFromId($id, $size='small')
 {
 	global $configArray, $logger;
 
@@ -213,29 +222,10 @@ function fetchFromId($id)
 	}
 	
 	$file = $configArray['Site']['local'] . '/images/covers/by-id/' . $id;
-	
 	if (file_exists($file) && is_readable($file)) {
-	    $info = getimagesize($file);
-	    if ($info === false) {
-	        $url = trim(file_get_contents($file));
-	        if (stripos($url, 'http') === 0) {
-	            // is a HTTP URL cache file - redirect
-	            $logger->log($file . ' is ' . $url, PEAR_LOG_DEBUG);
-	            header('Location: ' . trim($url));
-                exit();
-            }
-            // does not look like an HTTP URL
-            $logger->log($file . ' does not contain a URL', PEAR_LOG_DEBUG);
-            return false;
-        }
-        // some kind of image file, send it off
-        $logger->log($file . ' is ' . $info['mime'], PEAR_LOG_DEBUG);
-        header("Content-type: {$info['mime']}");
-        readfile($file);
-        exit();
-	}
-	
-	return false;
+	    return sendLocalFile($file);
+    }
+    return false;
 }
 
 function generateImage($id, $size) {
@@ -401,7 +391,7 @@ function processMovieMatches($title, $movies, $directors, $movieRepo, $config, $
                 : $imageConfig['base_url'];
             $url = $base_url . $size . $image;
             $logger->log('Got ' . $url, PEAR_LOG_DEBUG);
-            return processImageURL($url, $id);
+            processImageURL($url, $id);
         }
     }
     
@@ -411,12 +401,54 @@ function processMovieMatches($title, $movies, $directors, $movieRepo, $config, $
 function fetchFromURL($id, $size, $url) {
     global $configArray, $logger;
     
-    $logger->log('Trying URL embeded in record: ' . $url, PEAR_LOG_DEBUG);
-    
-    return processImageURL($url, $id, false);
+    $url = trim($url);
+    if (!empty($url)) {
+        $logger->log('Trying URL embeded in record: ' . $url, PEAR_LOG_DEBUG);
+        processImageURL($url, $id, false);
+    }
+    return false;
 }
 
 function isSecure() {
     return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
+}
+
+function sendDefaultImage() {
+    global $configArray;
+    $file = $configArray['Site']['local'] . '/images/covers/1x1.gif';
+    header("Content-type: image/gif");
+    readfile($file);
+}
+
+function dieWithDefaultImage() {
+    sendDefaultImage();
+    exit();
+}
+
+function sendLocalFile($file) {
+    global $logger;
+    if (file_exists($file) && is_readable($file)) {
+	    $info = getimagesize($file);
+	    if ($info === false) {
+	        $url = trim(file_get_contents($file));
+	        if (stripos($url, 'http') === 0) {
+	            // is a HTTP URL cache file - redirect
+	            $logger->log($file . ' is ' . $url, PEAR_LOG_DEBUG);
+	            header('Location: ' . trim($url));
+                return true;
+            }
+            // does not look like an HTTP URL
+            $logger->log($file . ' does not contain a URL, sending default image instead', PEAR_LOG_DEBUG);
+            sendDefaultImage();
+            return true;
+        }
+        // some kind of image file, send it off
+        $logger->log($file . ' is ' . $info['mime'], PEAR_LOG_DEBUG);
+        header("Content-type: {$info['mime']}");
+        readfile($file);
+        return true;
+	}
+	$logger->log($file . ' not exist or not readable', PEAR_LOG_DEBUG);
+	return false;
 }
 ?>
