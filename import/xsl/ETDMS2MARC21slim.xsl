@@ -39,7 +39,7 @@
 					<subfield code="a">
 						<xsl:value-of select="."/>
 					</subfield>
-					<subfield code="e">collaborator</subfield>
+					<subfield code="e">Supervisor</subfield>
 				</datafield>
 			</xsl:for-each>
 
@@ -52,11 +52,10 @@
 			</xsl:for-each>
 
 			<xsl:for-each select="//oai_etdms:creator">
-				<datafield tag="720" ind1=" " ind2=" ">
+				<datafield tag="100" ind1=" " ind2=" ">
 					<subfield code="a">
 						<xsl:value-of select="."/>
 					</subfield>
-					<subfield code="e">author</subfield>
 				</datafield>
 			</xsl:for-each>
 
