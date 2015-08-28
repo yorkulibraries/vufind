@@ -1,12 +1,12 @@
 {if $pageTemplate != 'advanced.tpl' && $pageTemplate != 'login.tpl'}
   {if $searchType=='advanced'}
     <h1>{translate text='Advanced Search'}</h1>
-    <div class="change-search-link">
+    <div class="change-search-link  print-hidden">
       <span class="fa fa-search"></span> <a href="{$path}/Search/Home?mylang={$userLang}">{translate text='Basic Search'}</a>
     </div>
     {include file="Search/advanced-search-form.tpl"}
   {else}
-    <form class="search-form basic-search" role="form" method="get" action="{$path}/Search/Results">
+    <form class="search-form basic-search print-hidden" role="form" method="get" action="{$path}/Search/Results">
       {if empty($searchIndex)}
         {assign var='currentSearchType' value='AllFields'}
       {else}
