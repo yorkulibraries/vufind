@@ -1,5 +1,5 @@
 {assign var=minRows value=2}
-<form class="search-form adv-search-form" data-min-rows="{$minRows}" role="form" method="get" action="{$path}/Search/Results">
+<form class="search-form adv-search-form print-hidden" data-min-rows="{$minRows}" role="form" method="get" action="{$path}/Search/Results">
   <div class="adv-search-fields">
   {assign var=group value=0}
   {assign var=join value=''}
