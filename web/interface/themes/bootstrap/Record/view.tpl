@@ -7,6 +7,8 @@
   
   <div class="media">
     <div class="media-left">
+      {assign var="summISBN" value=""}
+      {assign var="listISBN" value=""}
       {include file="RecordDrivers/Index/bookcover.tpl"}
       <div class="checkbox btn btn-default btn-sm print-hidden">
         <input class="mark-unmark-record" type="checkbox" id="mark_record_{$id}" value="{$id}" aria-label="{translate text='Mark'}">
