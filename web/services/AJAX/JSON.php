@@ -1154,13 +1154,15 @@ class JSON extends Action
                 }
             }
         }
+        
         // resolve based on input ISSNs only if no openurl input
-        if (empty($openurls)) {
-            foreach ($issns as $issn) {
-                $result = $resolver->fetchLinks($this->makeOpenURL($issn));
-                if (!empty($result)) {
-                    break;
-                }
+        if (empty($openurls) && !empty($issns)) {
+            if (count($issns) > 1) {
+                $r1 = $resolver->fetchLinks($this->makeOpenURL($issns[0], $issns[1]));
+                $r2 = $resolver->fetchLinks($this->makeOpenURL($issns[1], $issns[0]));
+                $result = array_merge($r1, $r2);
+            } else {
+                $result = $resolver->fetchLinks($this->makeOpenURL($issns[0]));
             }
         }
 
@@ -1231,7 +1233,7 @@ class JSON extends Action
         return $this->output($result, JSON::STATUS_OK);
     }
     
-    private function makeOpenURL($issn) {
+    private function makeOpenURL($issn, $eissn=null) {        
         // Start an array of OpenURL parameters:
         $params = array(
             'ctx_ver' => 'Z39.88-2004',
@@ -1239,6 +1241,9 @@ class JSON extends Action
             'rft.format' => 'Journal',
             'sfx.ignore_date_threshold' => 1
         );
+        if (!empty($eissn)) {
+            $params['rft.eissn'] = $eissn;
+        }
 
         // Assemble the URL:
         $parts = array();
