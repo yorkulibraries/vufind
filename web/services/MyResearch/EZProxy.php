@@ -15,6 +15,7 @@ class EZProxy extends XLogin
         global $interface, $logger;
         
         if (isset($_GET['confirmed'])) {
+            $interface->setPageTitle('EZProxy');
             $interface->setTemplate('ezproxy-confirmed.' . $interface->lang . '.tpl');
             $interface->display('layout.tpl');
             exit();
