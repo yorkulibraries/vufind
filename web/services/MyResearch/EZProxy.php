@@ -14,6 +14,12 @@ class EZProxy extends XLogin
     {
         global $interface, $logger;
         
+        if (isset($_GET['confirmed'])) {
+            $interface->setTemplate('ezproxy-confirmed.' . $interface->lang . '.tpl');
+            $interface->display('layout.tpl');
+            exit();
+        }
+        
         // Load Configuration for this Module
         $this->config = parse_ini_file('conf/ezproxy.ini', true);
         
@@ -52,12 +58,6 @@ class EZProxy extends XLogin
     public function launch()
     {
         global $interface;
-        
-        if (isset($_GET['confirmed'])) {
-            $interface->setTemplate('ezproxy-confirmed.' . $interface->lang . '.tpl');
-            $interface->display('layout.tpl');
-            exit();
-        }
         
         // get patron from ILS
         $patron = UserAccount::catalogLogin();
