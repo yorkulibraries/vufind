@@ -53,6 +53,12 @@ class EZProxy extends XLogin
     {
         global $interface;
         
+        if (isset($_GET['confirmed'])) {
+            $interface->setTemplate('ezproxy-confirmed.' . $interface->lang . '.tpl');
+            $interface->display('layout.tpl');
+            exit();
+        }
+        
         // get patron from ILS
         $patron = UserAccount::catalogLogin();
         if (!$patron || PEAR::isError($patron)) {
@@ -115,7 +121,7 @@ class EZProxy extends XLogin
     protected function connect($patron) 
     {
         global $interface, $logger;
-        
+
         $url = (isset($_GET['qurl']) && !empty($_GET['qurl'])) 
                 ? $_GET['qurl'] : $this->config['default_url'];
         $logger->log($patron['barcode'] . ' uses EZProxy to access: ' . $url, PEAR_LOG_NOTICE);
