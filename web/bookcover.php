@@ -123,6 +123,11 @@ function processImageURL($url, $id, $cache = 'url')
         dieWithDefaultImage();
     }
     
+    if (!$cache || empty($id)) {
+        header('Location: ' . $url);
+        exit();
+    }
+    
     $file = $configArray['Site']['local'] . '/images/covers/by-id/' . $id;
     
     if (!file_exists($file)) {
