@@ -14,6 +14,13 @@ class EZProxy extends XLogin
     {
         global $interface, $logger;
         
+        if (isset($_GET['confirmed'])) {
+            $interface->setPageTitle('EZProxy');
+            $interface->setTemplate('ezproxy-confirmed.' . $interface->lang . '.tpl');
+            $interface->display('layout.tpl');
+            exit();
+        }
+        
         // Load Configuration for this Module
         $this->config = parse_ini_file('conf/ezproxy.ini', true);
         
@@ -115,9 +122,15 @@ class EZProxy extends XLogin
     protected function connect($patron) 
     {
         global $interface, $logger;
-        
+
         $url = (isset($_GET['qurl']) && !empty($_GET['qurl'])) 
                 ? $_GET['qurl'] : $this->config['default_url'];
+        
+        // old references to the ezproxyconfirmation.htm page
+        if (stripos($url, 'ezproxyconfirmation') !== false) {
+            $url = $this->config['default_url'];
+        }
+        
         $logger->log($patron['barcode'] . ' uses EZProxy to access: ' . $url, PEAR_LOG_NOTICE);
         $connectURL = ($this->config['use_ssl'] ? 'https' : 'http') 
             . '://'
