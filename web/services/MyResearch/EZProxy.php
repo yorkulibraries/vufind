@@ -125,6 +125,12 @@ class EZProxy extends XLogin
 
         $url = (isset($_GET['qurl']) && !empty($_GET['qurl'])) 
                 ? $_GET['qurl'] : $this->config['default_url'];
+        
+        // old references to the ezproxyconfirmation.htm page
+        if (stripos($url, 'ezproxyconfirmation') !== false) {
+            $url = $this->config['default_url'];
+        }
+        
         $logger->log($patron['barcode'] . ' uses EZProxy to access: ' . $url, PEAR_LOG_NOTICE);
         $connectURL = ($this->config['use_ssl'] ? 'https' : 'http') 
             . '://'
