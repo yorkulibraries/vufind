@@ -484,3 +484,258 @@ oclc_num:
   QueryFields:
     - oclc_num:
       - [oclc_num, ~]
+
+#############################################
+# special searches for the reserves app
+#############################################
+BookTitle:
+  DismaxFields:
+    - title_short_txtP^757.5
+    - title_short^750
+    - title_full_unstemmed^404
+    - title_full^400
+    - title_txtP^750
+    - title^500
+    - title_alt_txtP_mv^202
+    - title_alt^200
+    - title_new_txtP_mv^101
+    - title_new^100
+    - title_old
+    - series^100
+    - series2
+  DismaxParams:
+    - [pf, title_txtP^100]
+  QueryFields:
+    - title_txtP:
+      - [onephrase, 350]
+      - [and, 275]
+    - title:
+      - [onephrase, 300]
+      - [and, 250]
+    - title_alt_txtP_mv:
+      - [and, 202]  
+    - title_alt:
+      - [and, 200]
+    - title_new_txtP_mv:
+      - [and, 101]  
+    - title_new:
+      - [and, 100]
+    - title_old:
+      - [and, ~]  
+    - series:
+      - [onephrase, 100]
+      - [and, 50]  
+    - series2:
+      - [onephrase, 50]
+      - [and , ~]
+  FilterQuery: (format:Book) NOT (location_str_mv:"Online Access")
+
+EBookTitle:
+  DismaxFields:
+    - title_short_txtP^757.5
+    - title_short^750
+    - title_full_unstemmed^404
+    - title_full^400
+    - title_txtP^750
+    - title^500
+    - title_alt_txtP_mv^202
+    - title_alt^200
+    - title_new_txtP_mv^101
+    - title_new^100
+    - title_old
+    - series^100
+    - series2
+  DismaxParams:
+    - [pf, title_txtP^100]
+  QueryFields:
+    - title_txtP:
+      - [onephrase, 350]
+      - [and, 275]
+    - title:
+      - [onephrase, 300]
+      - [and, 250]
+    - title_alt_txtP_mv:
+      - [and, 202]  
+    - title_alt:
+      - [and, 200]
+    - title_new_txtP_mv:
+      - [and, 101]  
+    - title_new:
+      - [and, 100]
+    - title_old:
+      - [and, ~]  
+    - series:
+      - [onephrase, 100]
+      - [and, 50]  
+    - series2:
+      - [onephrase, 50]
+      - [and , ~]
+  FilterQuery: (format:EBook) OR (format:Book AND location_str_mv:"Online Access")
+
+MultimediaTitle:
+  DismaxFields:
+    - title_short_txtP^757.5
+    - title_short^750
+    - title_full_unstemmed^404
+    - title_full^400
+    - title_txtP^750
+    - title^500
+    - title_alt_txtP_mv^202
+    - title_alt^200
+    - title_new_txtP_mv^101
+    - title_new^100
+    - title_old
+    - series^100
+    - series2
+  DismaxParams:
+    - [pf, title_txtP^100]
+  QueryFields:
+    - title_txtP:
+      - [onephrase, 350]
+      - [and, 275]
+    - title:
+      - [onephrase, 300]
+      - [and, 250]
+    - title_alt_txtP_mv:
+      - [and, 202]  
+    - title_alt:
+      - [and, 200]
+    - title_new_txtP_mv:
+      - [and, 101]  
+    - title_new:
+      - [and, 100]
+    - title_old:
+      - [and, ~]  
+    - series:
+      - [onephrase, 100]
+      - [and, 50]  
+    - series2:
+      - [onephrase, 50]
+      - [and , ~]
+  FilterQuery: (format:Video OR format:Audio)
+
+EJournalTitle:
+  DismaxFields:
+    - title_short_txtP^757.5
+    - title_short^750
+    - title_full_unstemmed^404
+    - title_full^400
+    - title_txtP^750
+    - title^500
+    - title_alt_txtP_mv^202
+    - title_alt^200
+    - title_new_txtP_mv^101
+    - title_new^100
+    - title_old
+    - series^100
+    - series2
+  DismaxParams:
+    - [pf, title_txtP^100]
+  QueryFields:
+    - title_txtP:
+      - [onephrase, 350]
+      - [and, 275]
+    - title:
+      - [onephrase, 300]
+      - [and, 250]
+    - title_alt_txtP_mv:
+      - [and, 202]  
+    - title_alt:
+      - [and, 200]
+    - title_new_txtP_mv:
+      - [and, 101]  
+    - title_new:
+      - [and, 100]
+    - title_old:
+      - [and, ~]  
+    - series:
+      - [onephrase, 100]
+      - [and, 50]  
+    - series2:
+      - [onephrase, 50]
+      - [and , ~]
+  FilterQuery: (format:Journal/Magazine OR format:Periodical) AND (location_str_mv:"Online Access")
+  
+PrintPeriodicalTitle:
+  DismaxFields:
+    - title_short_txtP^757.5
+    - title_short^750
+    - title_full_unstemmed^404
+    - title_full^400
+    - title_txtP^750
+    - title^500
+    - title_alt_txtP_mv^202
+    - title_alt^200
+    - title_new_txtP_mv^101
+    - title_new^100
+    - title_old
+    - series^100
+    - series2
+  DismaxParams:
+    - [pf, title_txtP^100]
+  QueryFields:
+    - title_txtP:
+      - [onephrase, 350]
+      - [and, 275]
+    - title:
+      - [onephrase, 300]
+      - [and, 250]
+    - title_alt_txtP_mv:
+      - [and, 202]  
+    - title_alt:
+      - [and, 200]
+    - title_new_txtP_mv:
+      - [and, 101]  
+    - title_new:
+      - [and, 100]
+    - title_old:
+      - [and, ~]  
+    - series:
+      - [onephrase, 100]
+      - [and, 50]  
+    - series2:
+      - [onephrase, 50]
+      - [and , ~]
+  FilterQuery: (format:Journal/Magazine OR format:Periodical OR format:Newspaper) NOT (location_str_mv:"Online Access")
+  
+MapTitle:
+  DismaxFields:
+    - title_short_txtP^757.5
+    - title_short^750
+    - title_full_unstemmed^404
+    - title_full^400
+    - title_txtP^750
+    - title^500
+    - title_alt_txtP_mv^202
+    - title_alt^200
+    - title_new_txtP_mv^101
+    - title_new^100
+    - title_old
+    - series^100
+    - series2
+  DismaxParams:
+    - [pf, title_txtP^100]
+  QueryFields:
+    - title_txtP:
+      - [onephrase, 350]
+      - [and, 275]
+    - title:
+      - [onephrase, 300]
+      - [and, 250]
+    - title_alt_txtP_mv:
+      - [and, 202]  
+    - title_alt:
+      - [and, 200]
+    - title_new_txtP_mv:
+      - [and, 101]  
+    - title_new:
+      - [and, 100]
+    - title_old:
+      - [and, ~]  
+    - series:
+      - [onephrase, 100]
+      - [and, 50]  
+    - series2:
+      - [onephrase, 50]
+      - [and , ~]
+  FilterQuery: (format:Map)
