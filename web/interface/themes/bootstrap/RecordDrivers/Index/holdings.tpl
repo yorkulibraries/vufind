@@ -15,7 +15,7 @@
               </div>
               {/if}
             {/foreach}
-        
+            
             <ul>
             {foreach from=$holdingURLs item=notes key=href}
               <li class="more-less">
@@ -32,6 +32,12 @@
             {/foreach}
             </ul>
             <button data-toggle="more-less" class="btn btn-default btn-xs hidden" data-threshold="5" data-target=".normal-links-container" data-target-name="normal links"><span class="fa fa-plus"></span> <span class="more-less-label" data-alt="{translate text='Less'}">{translate text="More"}</span></button>
+            
+            {if $yorkOCULUsageRights}
+              {foreach from=$yorkOCULUsageRights item=oculUsageRightsHTML}
+                {$oculUsageRightsHTML}
+              {/foreach}
+            {/if}
           </div>
         {/if}
         {if !empty($holdingsJournalOpenURLs)}

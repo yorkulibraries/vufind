@@ -90,6 +90,8 @@ class Resolver_Sfx implements ResolverInterface
      */
     public function parseLinks($xmlstr)
     {
+        require_once 'sys/OUR_Util.php';
+        
         global $configArray;
 
         $records = array(); // array to return
@@ -122,56 +124,17 @@ class Resolver_Sfx implements ResolverInterface
             }
             
             if(preg_match('/\/licenses\/(.+)\/sfx/', $record['note'], $matches)) {
-                $rights = $this->getUsageRights($matches[1]);
+                $rights = OUR_Util::getUsageRights($matches[1]);
                 $record['usage_rights'] = $rights;
                 $record['license_name'] = $matches[1];
             } else if (preg_match('/src=[\'\"]?http:\/\/york.scholarsportal.info\/licenses\/([^\'\" ]+)[\'\" ]? /', $record['note'], $matches)) {
-                $rights = $this->getUsageRights($matches[1]);
+                $rights = OUR_Util::getUsageRights($matches[1]);
                 $record['usage_rights'] = $rights;
                 $record['license_name'] = $matches[1];
             }
             array_push($records, $record);
         }
         return $records;
-    }
-    
-    private function getUsageRights($name)
-    {
-        global $configArray, $logger, $memcache;
-        
-        $cacheKey = 'OCUL Usage Rights ' . $name;
-        if ($memcache) {
-            $xmlstr = $memcache->get($cacheKey);
-            if ($xmlstr !== false) {
-                $logger->log('Cache hit - ' . $cacheKey, PEAR_LOG_DEBUG);
-                return $this->parseUsageRights($xmlstr);
-            }
-        }
-        $url = $configArray['UsageRightsApi']['url'] . '/' . $name . '/api';
-        $xmlstr = file_get_contents($url);
-        if ($memcache && $memcache->set($cacheKey, $xmlstr, 0, $configArray['Caching']['memcache_expiry'])) {
-            $logger->log('Cache set - ' . $cacheKey, PEAR_LOG_DEBUG);
-        }
-        return $this->parseUsageRights($xmlstr);
-    }
-    
-    private function parseUsageRights($xmlstr) 
-    {
-        global $logger;
-        $map = array('Yes'=>'success', 'Ask'=>'warning', 'No'=>'danger');
-        $rights = null;
-        try {
-            $xml = new SimpleXmlElement($xmlstr);
-            $root = $xml->xpath("//license");
-            $xml = $root[0];
-            $rights = $xml->children();
-        } catch (Exception $e) {
-            $logger->log('Can not parse usage rights XML: ' . $xmlstr, PEAR_LOG_ERR);
-        }
-        foreach ($rights as $right) {
-            $right->addChild('status', $map[(string)$right->usage]);
-        }
-        return $rights;
     }
 }
 

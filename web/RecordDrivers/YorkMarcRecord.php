@@ -152,6 +152,8 @@ class YorkMarcRecord extends MarcRecord
         $interface->assign('yorkTitleWithoutMedium', $this->getTitleWithoutMedium());
         
         $interface->assign('yorkSummary', $this->getSummary());
+        
+        $interface->assign('yorkOCULUsageRights', $this->getOCULUsageRights());
     }
     
     private function getTitleWithoutMedium()
@@ -803,6 +805,39 @@ class YorkMarcRecord extends MarcRecord
 
         // Send back everything we collected:
         return $retval;
+    }
+    
+    private function getOCULUsageRights() {
+        require_once 'sys/OUR_Util.php';
+        
+        global $interface;
+        
+        $records = array();
+        $fields = $this->marcRecord->getFields('596');
+        foreach ($fields as $field) {
+            $suba = $field->getSubfield('a');
+            if ($suba) {
+                $text = $suba->getData();
+                $name = OUR_Util::getLicenseName($text);
+                if ($name) {
+                    $rights = OUR_Util::getUsageRights($name);
+                    if ($rights) {
+                        $record = array(
+                            'usage_rights' => $rights,
+                            'license_name' => $name
+                        );
+                        $records[] = $record;
+                    }
+                }
+            }
+        }
+        
+        $result = array();
+        foreach ($records as $record) {
+            $interface->assign('oculUsageRights', $record);
+            $result[] = $interface->fetch('OUR/usage-rights.tpl');
+        }
+        return $result;
     }
 }
 ?>
