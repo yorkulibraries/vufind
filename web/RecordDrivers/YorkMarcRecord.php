@@ -837,6 +837,7 @@ class YorkMarcRecord extends MarcRecord
             $interface->assign('oculUsageRights', $record);
             $result[] = $interface->fetch('OUR/usage-rights.tpl');
         }
+        $interface->assign('oculUsageRights', null);
         return $result;
     }
 }
