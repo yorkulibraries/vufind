@@ -38,7 +38,7 @@ require_once 'LDAPAuthentication.php';
  */
 class YorkAuthentication extends LDAPAuthentication
 {
-    private $_barcodePattern = '/^29007[0-9]{9}$|^OCULVR$/';
+    private $_barcodePattern = '/^29007[0-9]{9}$|^OCULVR$/i';
     private $_username;
     private $_password;
     private $_catalog;
@@ -131,7 +131,7 @@ class YorkAuthentication extends LDAPAuthentication
             $logger->log('Attempting to login using ILS driver with barcode='
             		. $this->_username, PEAR_LOG_DEBUG);
             $this->_patron = $catalog->patronLogin(
-                $this->_username, strtoupper($this->_password)
+                strtoupper($this->_username), strtoupper($this->_password)
             );
             if (!$this->_patron || PEAR::isError($this->_patron)) {
                 $logger->log('Failed to login using ILS driver with barcode='
