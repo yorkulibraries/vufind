@@ -390,7 +390,7 @@ function processMovieMatches($title, $movies, $directors, $movieRepo, $config, $
         $image = $match->getPosterPath();
         if ($image) {
             $imageConfig = $config->getImages();
-            $size = 'w500';
+            $size = 'w154';
             $base_url = isSecure()
                 ? $imageConfig['secure_base_url']
                 : $imageConfig['base_url'];
