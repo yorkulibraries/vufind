@@ -128,7 +128,7 @@ class Resolver_Sfx implements ResolverInterface
                     $logger->log('Journal key=' . $matches[1], PEAR_LOG_DEBUG);
                     $record['proxy'] = 'yes';
                     $record['href'] = $configArray['EZproxy']['host'] . '/login?url='  
-                        . 'http://c.wanfangdata.com.cn/Periodical-' . $matches[1] . '.aspx';
+                        . 'http://c.g.wanfangdata.com.cn/Periodical-' . $matches[1] . '.aspx';
                     $logger->log('Corrected Journal URL=' . $record['href'], PEAR_LOG_DEBUG);
                 }
             }
