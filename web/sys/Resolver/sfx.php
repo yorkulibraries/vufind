@@ -91,6 +91,7 @@ class Resolver_Sfx implements ResolverInterface
     public function parseLinks($xmlstr)
     {
         global $configArray;
+        global $logger;
 
         $records = array(); // array to return
         try {
@@ -119,6 +120,17 @@ class Resolver_Sfx implements ResolverInterface
             if (!in_array($record['target_name'], $doNotProxy) && $record['proxy'] == 'no') {
                 $record['proxy'] = 'yes';
                 $record['href'] = $configArray['EZproxy']['host'] . '/login?url=' . $record['href'];
+            }
+            
+            // temporary workaround for https://github.com/yorkulibraries/vufind/issues/59
+            if (strpos($record['target_name'], 'CHINA_ONLINE_JOURNALS') !== false && stripos($record['href'], 'http://www.wanfangdata.com/') !== false) {
+                if(preg_match('/server_loc=&jkey=(.+)$/', $target->parse_param, $matches)) {
+                    $logger->log('Journal key=' . $matches[1], PEAR_LOG_DEBUG);
+                    $record['proxy'] = 'yes';
+                    $record['href'] = $configArray['EZproxy']['host'] . '/login?url='  
+                        . 'http://c.wanfangdata.com.cn/Periodical-' . $matches[1] . '.aspx';
+                    $logger->log('Corrected Journal URL=' . $record['href'], PEAR_LOG_DEBUG);
+                }
             }
             
             if(preg_match('/\/licenses\/(.+)\/sfx/', $record['note'], $matches)) {
