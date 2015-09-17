@@ -161,10 +161,12 @@ public class YorkIndexer extends VuFindIndexer {
 	public Set<String> getSuppressedBy(Record record, String source)
 			throws SQLException {
 		Set<String> results = new HashSet<String>();
-		PreparedStatement stmt = vufindDatabase
-				.prepareStatement("select record_id from resolver_ids where source=? and number=?");
+		
 
 		if ("muler".equalsIgnoreCase(source)) {
+			PreparedStatement stmt = vufindDatabase
+					.prepareStatement("select record_id from resolver_ids where source=? and number=?");
+			
 			Set<String> urls = getFullTextUrls(record);
 			for (String url : urls) {
 				String resolverId = extractResolverId(url);
@@ -178,9 +180,35 @@ public class YorkIndexer extends VuFindIndexer {
 					rs.close();
 				}
 			}
+			stmt.close();
+			
+			stmt = vufindDatabase
+					.prepareStatement("select record_id from issns where source=? and number=?");
+			
+			Set<String> issns = getCleanedISSNs(record);
+			for (String issn : issns) {
+				if (sfxISSNs.contains(issn)) {
+					stmt.setString(1, "sfx");
+					stmt.setString(2, issn);
+					ResultSet rs = stmt.executeQuery();
+					while (rs.next()) {
+						results.add(rs.getString(1));
+					}
+					rs.close();
+				}
+				if (sirsiISSNs.contains(issn)) {
+					stmt.setString(1, "catalog");
+					stmt.setString(2, issn);
+					ResultSet rs = stmt.executeQuery();
+					while (rs.next()) {
+						results.add(rs.getString(1));
+					}
+					rs.close();
+				}
+			}
+			
+			stmt.close();
 		}
-		
-		stmt.close();
 
 		return results;
 	}
