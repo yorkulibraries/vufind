@@ -25,6 +25,25 @@ if (/MSIE|Trident|Firefox\/39/.test(window.navigator.userAgent)) {
   })(window.jQuery);
 }
 
+if (/MSIE|Trident/.test(window.navigator.userAgent)) {
+  (function($) {
+    var url = _global_path + '/interface/themes/bootstrap/css/ie-hacks.css';
+    $('head').append('<link rel="stylesheet" type="text/css" media="print" href="' + url + '">');
+  })(window.jQuery);
+}
+if (/Chrome/.test(window.navigator.userAgent)) {
+  (function($) {
+    var url = _global_path + '/interface/themes/bootstrap/css/chrome-hacks.css';
+    $('head').append('<link rel="stylesheet" type="text/css" media="print" href="' + url + '">');
+  })(window.jQuery);
+}
+if (/Safari/.test(window.navigator.userAgent)) {
+  (function($) {
+    var url = _global_path + '/interface/themes/bootstrap/css/safari-hacks.css';
+    $('head').append('<link rel="stylesheet" type="text/css" media="print" href="' + url + '">');
+  })(window.jQuery);
+}
+
 $(document).ready(function() {
     // disable repeat submissions when enter is pressed and held down
     //preventRepeatedEnters();    
