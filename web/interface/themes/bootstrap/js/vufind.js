@@ -530,6 +530,8 @@ function resolveLinks() {
                             $onlineAccessContainer.removeClass('hidden');
                         }
     	            }
+    	            // increase the more/less threshold on SFX links to 10 on record view
+    	            $('.record-container #Holdings button[data-target=".openurl-container"]').data('threshold', 10);
     	            activateMoreLessButtons($openurlContainer);
     	        }
     		});
