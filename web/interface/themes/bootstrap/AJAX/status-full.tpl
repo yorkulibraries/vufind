@@ -1,4 +1,4 @@
-<div class="pull-right print-hidden">
+<div class="pull-right hidden-xs print-hidden">
   {if $allowHold}
   <div class="btn-group">
     <a href="{$path}/Record/{$requestRecordId}/Hold" class="btn btn-sm btn-primary btn-toggle" data-toggle="modal" data-target="#modal">{translate text='Place Hold'}</a>
