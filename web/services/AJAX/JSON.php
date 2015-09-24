@@ -455,6 +455,8 @@ class JSON extends Action
     {
         global $interface;
         global $configArray;
+        
+        require_once 'sys/RequestLogic.php';
 
         $catalog = ConnectionManager::connectToCatalog();
         if (!$catalog || !$catalog->status) {
@@ -514,9 +516,41 @@ class JSON extends Action
 
                 // If a full status display has been requested, append the HTML:
                 if ($showFullStatus) {
+                    // Check if any type of request is allowed
+                    $interface->assign('allowHold', false);
+                    $interface->assign('allowICB', false);
+                    $interface->assign('allowInProcess', false);
+                    $interface->assign('allowStorage', false);
+                    
+                	$requestLogic = new RequestLogic($catalog);
+                	$result = $requestLogic->checkHold($record, false);
+                	if ($result['allow']) {
+                	    $current['allowHold'] = true;
+                	    $interface->assign('allowHold', true);
+                	    $interface->assign('requestRecordId', $current['id']);
+                	}
+                	$result = $requestLogic->checkICB($record, false);
+                	if ($result['allow']) {
+                	    $current['allowICB'] = true;
+                	    $interface->assign('allowICB', true);
+                	    $interface->assign('requestRecordId', $current['id']);
+                	}
+                	$result = $requestLogic->checkInProcess($record, false);
+                	if ($result['allow']) {
+                	    $current['allowInProcess'] = true;
+                	    $interface->assign('allowInProcess', true);
+                	    $interface->assign('requestRecordId', $current['id']);
+                	}
+                	$result = $requestLogic->checkStorage($record, false);
+                	if ($result['allow']) {
+                	    $current['allowStorage'] = true;
+                	    $interface->assign('allowStorage', true);
+                	    $interface->assign('requestRecordId', $current['id']);
+                	}
+                	
                     $current['full_status'] = $this->_getItemStatusFull($record);
                 }
-
+            	
                 $statuses[] = $current;
 
                 // The current ID is not missing -- remove it from the missing list.
