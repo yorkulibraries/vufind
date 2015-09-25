@@ -630,7 +630,7 @@ class RequestLogic
         $interface->assign('requestedItem', $item);
         $interface->assign('requestType', $requestType);
         $body = $interface->fetch('Emails/catalog-item-request.tpl');
-        $subject = translate($requestType . ' Request');
+        $subject = translate($requestType . ' Request') . ': ' . $record['title_full'];
         $from = $this->config['from_address'];
         $to = $this->getRequestRecipient($item, $requestType);
         $mail = new VuFindMailer();
