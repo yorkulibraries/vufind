@@ -133,6 +133,14 @@ class Resolver_Sfx implements ResolverInterface
                 }
             }
             
+            // temporary workaround for https://github.com/yorkulibraries/vufind/issues/64
+            $search = 'http://infotrac.galegroup.com/itweb/?db=';
+            if (stripos($record['href'], $search) !== false) {
+                $replace = 'http://infotrac.galegroup.com/itweb/yorku_main?db=';
+                $record['href'] = str_replace($search, $replace, $record['href']);
+                $logger->log('Corrected Journal URL=' . $record['href'], PEAR_LOG_DEBUG);
+            }
+            
             if(preg_match('/\/licenses\/(.+)\/sfx/', $record['note'], $matches)) {
                 $rights = $this->getUsageRights($matches[1]);
                 $record['usage_rights'] = $rights;
