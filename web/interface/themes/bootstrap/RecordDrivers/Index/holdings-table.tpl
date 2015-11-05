@@ -6,7 +6,7 @@
         <p class="text-muted">{translate text='Note'}: {$row.marc852|getvalue:'z'|escape}</p>
       {/if}
       {foreach from=$row.textual_holdings item=textual}
-      <p class="text-muted">{translate text='Holdings'}: {$textual|escape}</p>
+      <p class="text-muted">{translate text='Holdings'}: {$row.location_code|escape} {$textual|escape}</p>
       {/foreach}
     {/if}
   {/foreach}
