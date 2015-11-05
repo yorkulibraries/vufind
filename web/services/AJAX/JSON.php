@@ -1182,21 +1182,14 @@ class JSON extends Action
         $result = array();
         foreach ($openurls as $url) {
             if (!empty($url)) {
-                $result = $resolver->fetchLinks($url);
-                if (!empty($result)) {
-                    break;
-                }
+                $result = array_merge($result, $resolver->fetchLinks($url));
             }
         }
         
         // resolve based on input ISSNs only if no openurl input
         if (empty($openurls) && !empty($issns)) {
-            if (count($issns) > 1) {
-                $r1 = $resolver->fetchLinks($this->makeOpenURL($issns[0], $issns[1]));
-                $r2 = $resolver->fetchLinks($this->makeOpenURL($issns[1], $issns[0]));
-                $result = array_merge($r1, $r2);
-            } else {
-                $result = $resolver->fetchLinks($this->makeOpenURL($issns[0]));
+            foreach ($issns as $issn) {
+                $result = array_merge($result, $resolver->fetchLinks($this->makeOpenURL($issn)));
             }
         }
 
