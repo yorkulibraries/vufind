@@ -125,6 +125,7 @@ class Email extends Action
         $records = array();
         if (!empty($items)) {
             $searchObject->setQueryIDs($items);
+            $searchObject->setLimit(count($items));
             $result = $searchObject->processSearch(false, true);
             if (PEAR::isError($result)) {
                 return $result;
