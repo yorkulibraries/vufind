@@ -505,7 +505,28 @@ function resolveLinks() {
         if ($openurlContainer.length == 0 && $normalContainer.length > 0) {
             $normalContainer.removeClass('hidden');
             $onlineAccessContainer.removeClass('hidden');
-            return;
+            $('a.online-access', $normalContainer).each(function() {
+                var $this = $(this);
+                var oldPrefix = 'http://www.library.yorku.ca/eresolver/?id=';
+                var newPrefix = 'http://www.library.yorku.ca/e/resolver/id/';
+                var href = $(this).attr('href');
+                var prefix = href.substring(0, 42);
+                if (prefix == oldPrefix || prefix == newPrefix) {
+        	        uid = href.substring(42);
+        	        $.ajax({
+                	    cache: true,
+            	        dataType: 'json',
+            	        url: _global_path + '/AJAX/JSON?method=getMULERLinks',
+            	        data: {url_id: uid},
+            	        success: function(response) {
+            	            if(response.status == 'OK' && response.data.length > 0) {
+            	                $this.replaceWith(response.data);
+                            }
+            	        }
+            		});
+    	        }
+        	});
+        	return;
         }
         
         // attempt to resolve openurl links

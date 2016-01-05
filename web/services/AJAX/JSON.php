@@ -1239,6 +1239,55 @@ class JSON extends Action
         return $this->output($html, JSON::STATUS_OK, $maxAge);
     }
     
+    public function getMULERLinks()
+    {
+        global $configArray;
+        global $interface;
+        
+        require_once('sys/OURUtils.php');
+        
+        $urlId = isset($_GET['url_id']) ? $_GET['url_id'] : null;
+        
+        if ($urlId) {
+            $mulerAPI = $configArray['MULER']['api_url'] . '/url/' . $urlId;
+            $apiResponse = file_get_contents($mulerAPI);
+            if ($apiResponse) {
+                $url = json_decode($apiResponse);
+                $links = array();
+                $linkText = translate('Click to access this resource');
+                if ($url->publisher) {
+                    $linkText = $url->publisher;
+                }
+                if ($url->provider) {
+                    $linkText = $url->provider;
+                }
+                $href = $url->url;
+                if ($url->proxy) {
+                    $href = $configArray['EZproxy']['host'] . '/login?url=' . $url->url;
+                }
+                $link = array(
+                    'title' => $linkText,
+                    'href' => $href,
+                    'coverage' => $url->holdings,
+                );
+                if ($url->license_url) {
+                    $licenseName = OURUtils::getLicenseNameFromURL($url->license_url);
+                    if ($licenseName) {
+                        $rights = OURUtils::getUsageRights($licenseName);
+                        $link['usage_rights'] = $rights;
+                        $link['license_name'] = $licenseName;
+                    }
+                }
+                $links[] = $link;
+                $interface->assign('electronic', $links);
+                $html = $interface->fetch('AJAX/resolverLinks.tpl');
+            }
+        }
+        
+        // output HTML encoded in JSON object
+        return $this->output($html, JSON::STATUS_OK);
+    }
+    
     /**
      * Submit user feedback
      *
