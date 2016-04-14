@@ -20,6 +20,11 @@
                 {foreach from=$row.textual_holdings item=textual}
                 <p>{translate text='Holdings'}: {$textual|escape}</p>
                 {/foreach}
+                {if !empty($row.notes)}
+                  {foreach from=$row.notes item=note name="notesLoop"}
+                    <p class="text-muted">{translate text='Note'}: {$note|escape}</p>
+                  {/foreach}
+                {/if}
               </div>
               {/if}
             {/foreach}
