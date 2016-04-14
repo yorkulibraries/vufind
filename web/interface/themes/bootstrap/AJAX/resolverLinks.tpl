@@ -40,5 +40,4 @@
     </li>
   {/foreach}
 </ul>
-<button data-toggle="more-less" class="btn btn-default btn-xs hidden" data-threshold="3" data-target=".openurl-container" data-target-name="ajax openurls"><span class="fa fa-plus"></span> <span class="more-less-label" data-alt="{translate text='Less'}">{translate text="More"}</span></button>
 {/if}

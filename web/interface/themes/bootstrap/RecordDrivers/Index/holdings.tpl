@@ -1,6 +1,14 @@
   {if !empty($holdingURLs) || !empty($holdingsJournalOpenURLs)} 
   <div class="online-access-container hidden">
     <h4>{translate text='Online Access'}</h4>
+        {if !empty($holdingsJournalOpenURLs)}
+          <div class="openurl-container hidden">
+            {foreach from=$holdingsJournalOpenURLs item=journalOpenURL key=journalISSN}
+              <span data-issn="{$journalISSN}" data-openurl="{$journalOpenURL|escape}" class="openurl hidden"></span>
+            {/foreach}
+          </div>
+        {/if}
+        
         {if !empty($holdingURLs)}
           <div class="normal-links-container hidden">
             {foreach from=$allItemRecords item=row name="summaryloop"}
@@ -31,16 +39,10 @@
               </li>
             {/foreach}
             </ul>
-            <button data-toggle="more-less" class="btn btn-default btn-xs hidden" data-threshold="5" data-target=".normal-links-container" data-target-name="normal links"><span class="fa fa-plus"></span> <span class="more-less-label" data-alt="{translate text='Less'}">{translate text="More"}</span></button>
           </div>
         {/if}
-        {if !empty($holdingsJournalOpenURLs)}
-          <div class="openurl-container hidden">
-            {foreach from=$holdingsJournalOpenURLs item=journalOpenURL key=journalISSN}
-              <span data-issn="{$journalISSN}" data-openurl="{$journalOpenURL|escape}" class="openurl hidden"></span>
-            {/foreach}
-          </div>
-        {/if}
+        
+        <button data-toggle="more-less" class="btn btn-default btn-xs hidden" data-threshold="10" data-target=".online-access-container" data-target-name="normal links"><span class="fa fa-plus"></span> <span class="more-less-label" data-alt="{translate text='Less'}">{translate text="More"}</span></button>
   </div>
   {/if}
   

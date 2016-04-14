@@ -454,14 +454,14 @@ function activateMoreLessButtons(container) {
         if ($itemsToHide.length > 0) {
             $button.removeClass('hidden');
         }
-        $button.on('click', function(e) {
+        $button.unbind('click').on('click', function(e) {
             e.preventDefault();
             $itemsToHide.toggleClass('hidden');
             $button.children('.fa').toggleClass('fa-plus fa-minus');
             var $label = $button.children('.more-less-label');
             var alt = $label.data('alt');
             $label.data('alt', $label.text());
-            $label.text(alt);        
+            $label.text(alt);
             if (typeof ga == 'function') { 
                 ga('send', 'event', 'button', 'click', 'More/less: ' + $button.data('target-name'), 1);
             }
@@ -495,68 +495,76 @@ function checkAvailability() {
 	}
 }
 
+function resolveOpenURL($openurlContainer) {    
+    var issns = [];
+    $('.openurl', $openurlContainer).each(function() {
+	    issns.push($(this).data('issn'));
+	});
+	
+	if (issns.length > 0) {
+	    return $.ajax({
+    	    cache: true,
+	        dataType: 'json',
+	        url: _global_path + '/AJAX/JSON?method=getResolverLinks',
+	        data: {issn:issns},
+	        success: function(response) {
+	            if (response.status == 'OK' && response.data.length > 0) {	                
+	                $openurlContainer.append(response.data);
+	                $openurlContainer.removeClass('hidden');
+                }
+	        }
+		});
+    }
+}
+
+function resolveMULERLinks($normalContainer) {
+    // if normal links are present 
+    if ($normalContainer.length > 0) {
+        // find MULER links within the normal links, then save the IDs and remove them
+        var uids = [];
+        $('a.online-access', $normalContainer).each(function() {
+            var $this = $(this);
+            var oldPrefix = 'http://www.library.yorku.ca/eresolver/?id=';
+            var newPrefix = 'http://www.library.yorku.ca/e/resolver/id/';
+            var href = $(this).attr('href');
+            var prefix = href.substring(0, 42);
+            if (prefix == oldPrefix || prefix == newPrefix) {
+    	        uids.push(href.substring(42));
+    	        $this.parent('li').remove();
+	        }
+    	});
+    	
+    	// enhance the MULER links and prepend them back into the normal links <UL>
+    	if (uids.length > 0) {
+    	    return $.ajax({
+        	    cache: true,
+    	        dataType: 'json',
+    	        url: _global_path + '/AJAX/JSON?method=getMULERLinks',
+    	        data: {url_id: uids},
+    	        success: function(response) {
+    	            if (response.status == 'OK' && response.data.length > 0) {
+    	                $normalLinksList = $('ul:first', $normalContainer);
+    	                if ($normalLinksList.length > 0) {
+    	                    $responseData = $(response.data);
+    	                    $normalLinksList.prepend($('li', $responseData));
+    	                    $normalContainer.removeClass('hidden');
+    	                }
+                    }
+    	        }
+    		});
+    	}
+    }
+}
+
 function resolveLinks() {
     $('.online-access-container').each(function() {
         var $onlineAccessContainer = $(this);
         var $normalContainer = $onlineAccessContainer.find('.normal-links-container');
         var $openurlContainer = $onlineAccessContainer.find('.openurl-container');
-        
-        // if only normal links are present, then activate the normal links
-        if ($openurlContainer.length == 0 && $normalContainer.length > 0) {
-            $normalContainer.removeClass('hidden');
+        $.when(resolveOpenURL($openurlContainer), resolveMULERLinks($normalContainer)).done(function(a1, a2) {
             $onlineAccessContainer.removeClass('hidden');
-            $('a.online-access', $normalContainer).each(function() {
-                var $this = $(this);
-                var oldPrefix = 'http://www.library.yorku.ca/eresolver/?id=';
-                var newPrefix = 'http://www.library.yorku.ca/e/resolver/id/';
-                var href = $(this).attr('href');
-                var prefix = href.substring(0, 42);
-                if (prefix == oldPrefix || prefix == newPrefix) {
-        	        uid = href.substring(42);
-        	        $.ajax({
-                	    cache: true,
-            	        dataType: 'json',
-            	        url: _global_path + '/AJAX/JSON?method=getMULERLinks',
-            	        data: {url_id: uid},
-            	        success: function(response) {
-            	            if(response.status == 'OK' && response.data.length > 0) {
-            	                $this.replaceWith(response.data);
-                            }
-            	        }
-            		});
-    	        }
-        	});
-        	return;
-        }
-        
-        // attempt to resolve openurl links
-        var issns = [];
-        $('.openurl', $openurlContainer).each(function() {
-    	    issns.push($(this).data('issn'));
-    	});
-    	if (issns.length > 0) {
-    	    $.ajax({
-        	    cache: true,
-    	        dataType: 'json',
-    	        url: _global_path + '/AJAX/JSON?method=getResolverLinks',
-    	        data: {issn:issns},
-    	        success: function(response) {
-    	            if(response.status == 'OK' && response.data.length > 0) {	                
-    	                $openurlContainer.append(response.data);
-    	                $openurlContainer.removeClass('hidden');
-    	                $onlineAccessContainer.removeClass('hidden');
-                    } else {
-                        if ($normalContainer.length) {
-                            $normalContainer.removeClass('hidden');
-                            $onlineAccessContainer.removeClass('hidden');
-                        }
-    	            }
-    	            // increase the more/less threshold on SFX links to 10 on record view
-    	            $('.record-container #Holdings button[data-target=".openurl-container"]').data('threshold', 10);
-    	            activateMoreLessButtons($openurlContainer);
-    	        }
-    		});
-	    }
+            activateMoreLessButtons($onlineAccessContainer);
+        });
     });
 }
 
