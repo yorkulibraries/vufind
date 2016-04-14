@@ -1246,14 +1246,15 @@ class JSON extends Action
         
         require_once('sys/OURUtils.php');
         
-        $urlId = isset($_GET['url_id']) ? $_GET['url_id'] : null;
-        
-        if ($urlId) {
+        $uids = isset($_GET['url_id']) ? $_GET['url_id'] : array();
+        $uids = is_array($uids) ? $uids : array($uids);
+        $links = array();
+        foreach ($uids as $urlId) {
             $mulerAPI = $configArray['MULER']['api_url'] . '/url/' . $urlId;
             $apiResponse = file_get_contents($mulerAPI);
             if ($apiResponse) {
                 $url = json_decode($apiResponse);
-                $links = array();
+                
                 $linkText = translate('Click to access this resource');
                 if ($url->publisher) {
                     $linkText = $url->publisher;
@@ -1279,10 +1280,11 @@ class JSON extends Action
                     }
                 }
                 $links[] = $link;
-                $interface->assign('electronic', $links);
-                $html = $interface->fetch('AJAX/resolverLinks.tpl');
             }
         }
+        
+        $interface->assign('electronic', $links);
+        $html = $interface->fetch('AJAX/resolverLinks.tpl');
         
         // output HTML encoded in JSON object
         return $this->output($html, JSON::STATUS_OK);
