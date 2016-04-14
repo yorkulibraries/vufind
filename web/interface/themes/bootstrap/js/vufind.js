@@ -531,6 +531,8 @@ function resolveMULERLinks($normalContainer) {
             if (prefix == oldPrefix || prefix == newPrefix) {
     	        uids.push(href.substring(42));
     	        $this.parent('li').remove();
+	        } else {
+	            $this.removeClass('hidden');
 	        }
     	});
     	
@@ -552,6 +554,8 @@ function resolveMULERLinks($normalContainer) {
                     }
     	        }
     		});
+    	} else {
+    	    $normalContainer.removeClass('hidden');
     	}
     }
 }
