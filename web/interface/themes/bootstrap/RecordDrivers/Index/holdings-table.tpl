@@ -8,6 +8,11 @@
       {foreach from=$row.textual_holdings item=textual}
       <p class="text-muted">{translate text='Holdings'}: {$row.location_code|escape} {$textual|escape}</p>
       {/foreach}
+      {if !empty($row.notes)}
+        {foreach from=$row.notes item=note name="notesLoop"}
+          <p class="text-muted">{translate text='Note'}: {$note|escape}</p>
+        {/foreach}
+      {/if}
     {/if}
   {/foreach}
 {/if}
