@@ -1257,10 +1257,10 @@ class JSON extends Action
                 
                 $linkText = translate('Click to access this resource');
                 if ($url->publisher) {
-                    $linkText = $url->publisher;
+                    $linkText .= ' (' . $url->publisher . ')';
                 }
                 if ($url->provider) {
-                    $linkText = $url->provider;
+                    $linkText .= ' (' . $url->provider . ')';
                 }
                 $href = $url->url;
                 if ($url->proxy) {
