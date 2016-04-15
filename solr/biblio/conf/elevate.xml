@@ -115,4 +115,10 @@
     <query text="ON THE BOARDS">
       <doc id="muler975994" />
     </query>
+    <query text="GMID">
+      <doc id="1958289" />
+    </query>
+    <query text="gmid">
+      <doc id="1958289" />
+    </query>
 </elevate>
