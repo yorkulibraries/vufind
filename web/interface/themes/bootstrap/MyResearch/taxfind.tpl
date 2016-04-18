@@ -1,7 +1,7 @@
 <h1>TaxFind Access</h1>
 
 <div class="alert alert-warning" role="alert">
-<p>Use of this product is restricted to members of the University of York community.</p>
+<p>Use of this product is restricted to members of the York University community.</p>
 
 <p>It is the responsibility of each user to ensure that he or she uses this product for individual,
 non-commercial educational or research purposes only.</p>
