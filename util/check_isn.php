@@ -40,8 +40,10 @@ $configArray = readConfig();
 $solr = ConnectionManager::connectToIndex();
 
 $template = $argv[1];
-if (count($argv) < 1) {
-    die('Usage: cat inputfile | php util/check_isn.php query_template ');
+if (count($argv) < 2) {
+    echo "Usage: cat inputfile | php util/check_isn.php query_template\n";
+    echo "Example: if inputfile contains 1 ISBN per line, then use: cat inputfile | php util/check_isn.php \"isbn:{f0}\"\n";
+    die;
 }
 $lineNumber = 1;
 $count = 0;
