@@ -362,5 +362,30 @@ class YorkUnicorn extends Unicorn
         }
         return $results;
     }
+    
+    public function getMyFines($patron)
+    {
+        global $configArray;
+        
+        $items = parent::getMyFines($patron);
+        if (isset($configArray['Fines']['groups'])) {
+            $groups = array();
+            foreach ($configArray['Fines']['groups'] as $s) {
+                list($key, $libs) = explode(':', $s);
+                $groupLibs = explode(',', $libs);
+                $groupItems = array();
+                $groupTotal = 0.00;
+                foreach ($items as $item) {
+                    if (in_array($item['library'], $groupLibs)) {
+                        $groupItems[] = $item;
+                        $groupTotal += $item['balance'];
+                    }
+                }
+                $groups[$key] = array('groupTotal' => $groupTotal, 'items' => $groupItems);
+            }
+            $items = $groups;
+        }
+        return $items;
+    }
 }
 ?>

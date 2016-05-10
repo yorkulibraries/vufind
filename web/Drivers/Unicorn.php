@@ -559,7 +559,7 @@ class Unicorn implements DriverInterface
         $items = array();
         foreach ($lines as $item) {
             list($catkey, $amount, $balance, $date_billed, $number_of_payments,
-            $with_items, $reason, $date_charged, $duedate, $date_recalled)
+            $with_items, $reason, $date_charged, $duedate, $date_recalled, $library)
                 = explode('|', $item);
 
             // the amount and balance are in cents, so we need to turn them into
@@ -583,7 +583,8 @@ class Unicorn implements DriverInterface
                 'fine' => $reason,
                 'checkout' => $this->_formatDateTime($date_charged),
                 'duedate' => $this->_formatDateTime($duedate),
-                'date_recalled' => $this->_formatDateTime($date_recalled)
+                'date_recalled' => $this->_formatDateTime($date_recalled),
+                'library' => $library
             );
         }
 

@@ -49,7 +49,6 @@ class Fines extends MyResearch
     public function launch()
     {
         global $interface;
-        global $finesIndexEngine;
 
         // Get My Fines
         if ($patron = UserAccount::catalogLogin()) {
@@ -57,15 +56,15 @@ class Fines extends MyResearch
                 PEAR::raiseError($patron);
             }
             $result = $this->catalog->getMyFines($patron);
-            $totalBalance = 0.00;
             if (!PEAR::isError($result)) {
-                for ($i = 0; $i < count($result); $i++) {
-                    $record = $this->db->getRecord($result[$i]['id']);
-                    $result[$i]['title'] = $record ? $record['title'] : null;
-                    $totalBalance += $result[$i]['balance'];
+                foreach ($result as $group => $data) {
+                    $items = $data['items'];
+                    for ($i = 0; $i < count($items); $i++) {
+                        $record = $this->db->getRecord($items[$i]['id']);
+                        $result[$group]['items'][$i]['title'] = $record ? $record['title'] : null;
+                    }
                 }
-                $interface->assign('rawFinesData', $result);
-                $interface->assign('totalBalance', $totalBalance);
+                $interface->assign('finesData', $result);
             }
         }
 

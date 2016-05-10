@@ -698,3 +698,7 @@ test_user_alt_id = 1234567890
 
 [TMDB]
 apikey=ENTER_API_KEY_HERE
+
+[Fines]
+groups[]=fines_group_YORK:YORK,NELLIE,YORK-EDUC,YORK-YCISS
+groups[]=fines_group_LAW:YORK-LAW
