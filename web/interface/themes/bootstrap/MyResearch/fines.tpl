@@ -7,7 +7,7 @@
       {assign var=message value='you_owe_xxx_in_fines_to_library'|translate}
       {assign var=library value=$group|translate}
       <p class="text-danger"><strong>{$message|replace:'###NUMBER###':$groupTotal|replace:'###LIBRARY###':$library}</strong>
-      <a class="btn btn-default" href="#" role="button"><i class="fa fa-credit-card" aria-hidden="true"></i> {translate text='Pay Online'}</a></p>
+      <a class="btn btn-default" href="{$path}/MyResearch/PayFines?g={$group|escape}" role="button"><i class="fa fa-credit-card" aria-hidden="true"></i> {translate text='Pay Online'}</a></p>
     {/foreach}
     
     {foreach from=$finesData key=group item=groupData}

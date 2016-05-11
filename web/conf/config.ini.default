@@ -702,3 +702,4 @@ apikey=ENTER_API_KEY_HERE
 [Fines]
 groups[]=fines_group_YORK:YORK,NELLIE,YORK-EDUC,YORK-YCISS
 groups[]=fines_group_LAW:YORK-LAW
+payment_log_dir=/usr/local/vufind/log/payments
