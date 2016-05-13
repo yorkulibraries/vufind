@@ -407,5 +407,34 @@ class YorkUnicorn extends Unicorn
         }
         return $items;
     }
+    
+    public function payBills($patron, $items, $pop)
+    {
+        global $configArray;
+        global $logger;
+        
+        // query sirsi
+        $errors = array();
+        foreach ($items as $item) {
+            $params = array(
+                'query' => 'pay_bill',
+                'user_barcode' => $item['user_barcode'],
+                'bill_number' => $item['bill_number'],
+                'amount' => number_format($item['balance'], 2, '.', ''),
+                'payment_type' => 'NONE',
+                'api_user' => 'SCVUFIND',
+                'api_station' => 'SCVUFIND',
+                'api_library' => 'YORK'
+            );
+            // check for ok response, if not, then add the error response in the errors array
+            $response = $this->querySirsi($params);
+            $expected = '^@01PYMA$(212)^MN212^UO' . $item['user_barcode'];
+            if (strpos($response, $expected) === false) {
+                $errors[$item['bill_key']] = $response;
+            }
+        }
+        
+        return $errors;
+    }
 }
 ?>

@@ -54,17 +54,19 @@ class PayFines extends MyResearch
 
         $group = $_REQUEST['g'];
         if (empty($group)) {
-            header('Location: ' . $configArray['Site']['url'] . '/MyResearch/Fines');
+            $this->redirectToDisplayFines();
             exit;
         }
         
         // Get My Fines
         if ($patron = UserAccount::catalogLogin()) {
             if (PEAR::isError($patron)) {
-                PEAR::raiseError($patron);
+                $this->redirectToDisplayFines();
+                exit;
             }
             if (empty($patron['cat_username'])) {
-                PEAR::raiseError('Received invalid patron information from catalogue.');
+                $this->redirectToDisplayFines();
+                exit;
             }
             
             // library patron/barcode
@@ -91,6 +93,10 @@ class PayFines extends MyResearch
             $this->displayItemsToPay();
             exit;
         }
+        
+        // redirect to the fines listing page
+        $this->redirectToDisplayFines();
+        exit;
     }
     
     private function doPayAction()
@@ -104,6 +110,7 @@ class PayFines extends MyResearch
         
         
         // TODO: process payment
+        $payment_auth_code = '1234';
         
         // Now that we got the payment, save the bills as PAID in VuFind db
         $this->logger->log('Recording the bills as PAID in VuFind db');
@@ -122,17 +129,25 @@ class PayFines extends MyResearch
             $paid->balance = $item['balance'];
             $paid->payment_amount = $item['balance'];
             $paid->payment_date = date('Y-m-d H:i:s');
-            $paid->payment_auth_code = '1234';
+            $paid->payment_auth_code = $payment_auth_code;
             $paid->user_key = $item['user_key'];
             $paid->bill_number = $item['bill_number'];
             $paid->insert();
         }
         
-        // TODO: send pay bill APIs to Symphony
+        // send pay bills transaction to Symphony
+        $pop = array('payment_auth_code' => $payment_auth_code);
+        $errors = $this->catalog->payBills($this->patron, $itemsToPay['items'], $pop);
+        
+        // deal with the errors
+        foreach ($errors as $key => $error) {
+            $this->logger->log("Got error while paying bill $key $error", PEAR_LOG_EMERG);
+            // TODO: flag this bill in VuFind db so someone can deal with it
+        }
 
         // and we're done
         $this->logger->log('All done. Redirecting to MyResearch/Fines page');
-        header('Location: ' . $configArray['Site']['url'] . '/MyResearch/Fines');
+        $this->redirectToDisplayFines();
         exit;
     }
     
@@ -177,6 +192,14 @@ class PayFines extends MyResearch
         $interface->setTemplate('pay-fines.tpl');
         $interface->setPageTitle('Pay Fines');
         $interface->display('layout.tpl');
+    }
+    
+    private function redirectToDisplayFines()
+    {
+        global $configArray;
+        
+        header('Location: ' . $configArray['Site']['url'] . '/MyResearch/Fines');
+        exit;
     }
 }
 
