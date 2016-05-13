@@ -19,6 +19,7 @@
 require_once 'Unicorn.php';
 require_once 'RecordDrivers/Factory.php';
 require_once 'sys/Resolver/ResolverConnection.php';
+require_once 'sys/PaidBill.php';
 
 class YorkUnicorn extends Unicorn
 {
@@ -367,7 +368,19 @@ class YorkUnicorn extends Unicorn
     {
         global $configArray;
         
+        // get all paid bills from VuFind DB
+        $paidBills = array();
+        $pb = new PaidBill();
+        $pb->user_barcode = $patron['barcode'];
+        $pb->find();
+        while ($pb->fetch()) {
+            $paidBills[] = $pb->bill_key;
+        }
+        
+        // get all the bills from ILS
         $items = parent::getMyFines($patron);
+        
+        // split the bills by library group (e.g.: YORK or YORK-LAW)
         if (isset($configArray['Fines']['groups'])) {
             $groups = array();
             foreach ($configArray['Fines']['groups'] as $s) {
@@ -376,12 +389,19 @@ class YorkUnicorn extends Unicorn
                 $groupItems = array();
                 $groupTotal = 0.00;
                 foreach ($items as $item) {
-                    if (in_array($item['library'], $groupLibs)) {
-                        $groupItems[] = $item;
-                        $groupTotal += $item['balance'];
+                    // if the bill is not in the list of paid bills, then include it
+                    if (!in_array($item['bill_key'], $paidBills)) {
+                        // include the bill if the bill's library is part of the group 
+                        // OR the item's library itself is part of the group
+                        if (in_array($item['library'], $groupLibs) || in_array($item['item_library'], $groupLibs)) {
+                            $groupItems[] = $item;
+                            $groupTotal += $item['balance'];
+                        }
                     }
                 }
-                $groups[$key] = array('groupTotal' => $groupTotal, 'items' => $groupItems);
+                if (!empty($groupItems)) {
+                    $groups[$key] = array('groupTotal' => $groupTotal, 'items' => $groupItems);
+                }
             }
             $items = $groups;
         }

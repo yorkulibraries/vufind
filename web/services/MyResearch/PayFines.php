@@ -27,6 +27,7 @@
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
 require_once 'services/MyResearch/MyResearch.php';
+require_once 'sys/PaidBill.php';
 
 /**
  * PayFines action for MyResearch module
@@ -102,6 +103,37 @@ class PayFines extends MyResearch
         $this->logger->log($itemsToPay);
         
         
+        // TODO: process payment
+        
+        // Now that we got the payment, save the bills as PAID in VuFind db
+        $this->logger->log('Recording the bills as PAID in VuFind db');
+        foreach ($itemsToPay['items'] as $item) {
+            $this->logger->log($item);
+            $paid = new PaidBill();
+            $paid->bib_id = $item['id'];
+            $paid->user_barcode = $item['user_barcode'];
+            $paid->item_barcode = $item['item_barcode'];
+            $paid->item_title = $item['title'];
+            $paid->bill_key = $item['bill_key'];
+            $paid->bill_date = date('Y-m-d H:i:s', $item['date_billed_raw']);
+            $paid->bill_reason = $item['fine'];
+            $paid->bill_library = $item['library'];
+            $paid->item_library = $item['item_library'];
+            $paid->balance = $item['balance'];
+            $paid->payment_amount = $item['balance'];
+            $paid->payment_date = date('Y-m-d H:i:s');
+            $paid->payment_auth_code = '1234';
+            $paid->user_key = $item['user_key'];
+            $paid->bill_number = $item['bill_number'];
+            $paid->insert();
+        }
+        
+        // TODO: send pay bill APIs to Symphony
+
+        // and we're done
+        $this->logger->log('All done. Redirecting to MyResearch/Fines page');
+        header('Location: ' . $configArray['Site']['url'] . '/MyResearch/Fines');
+        exit;
     }
     
     private function getItemsToPay()

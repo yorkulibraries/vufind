@@ -48,3 +48,26 @@ CREATE TABLE IF NOT EXISTS `resolver_ids` (
     UNIQUE KEY `record_id_UNIQUE` (`number`, `record_id`)
 ) ENGINE=InnoDB;
 CREATE INDEX resolver_ids_source_index ON resolver_ids(source);
+
+CREATE TABLE IF NOT EXISTS `paid_bill` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `bib_id` int(11),
+  `user_barcode` varchar(14) NOT NULL,
+  `item_barcode` varchar(14),
+  `item_title` varchar(200),
+  `bill_key` varchar(20) NOT NULL,
+  `bill_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `bill_reason` varchar(100),
+  `bill_library` varchar(20) NOT NULL,
+  `item_library` varchar(20),
+  `balance` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `payment_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `payment_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `payment_auth_code` varchar(100) NOT NULL,
+  `user_key` varchar(20) NOT NULL,
+  `bill_number` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `bill_key_UNIQUE` (`bill_key`)
+) ENGINE=InnoDB;
+CREATE INDEX paid_bill_user_barcode_index ON paid_bill (user_barcode);
+

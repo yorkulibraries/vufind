@@ -545,6 +545,8 @@ class Unicorn implements DriverInterface
      */
     public function getMyFines($patron)
     {
+        global $logger;
+        
         $username = $patron['cat_username'];
         $password = $patron['cat_password'];
 
@@ -559,9 +561,23 @@ class Unicorn implements DriverInterface
         $items = array();
         foreach ($lines as $item) {
             list($catkey, $amount, $balance, $date_billed, $number_of_payments,
-            $with_items, $reason, $date_charged, $duedate, $date_recalled, $library, $bill_key_1, $bill_key_2)
+            $with_items, $reason, $date_charged, $duedate, $date_recalled, $library, $bill_key_1, $bill_key_2,
+            $user_key, $user_barcode, $item_barcode, $item_library)
                 = explode('|', $item);
-
+                
+            // paranoia - make sure the barcode for the bill matches the patron barcode/cat_username
+            if (empty($user_barcode) || $user_barcode != $patron['cat_username']) {
+                // this is a very bad condition and needs immediate attention
+                $logger->log("Unexpected bills/fines returned from ILS - Logged in user: $username, ILS result: $item", PEAR_LOG_EMERG);
+                
+                // blow up before it gets worse
+                PEAR::RaiseError('Unexpected bills/fines returned from ILS');
+            }
+            
+            // preserve the raw (unformatted) amount/balance 
+            $amount_raw = $amount;
+            $balance_raw = $balance;
+            
             // the amount and balance are in cents, so we need to turn them into
             // dollars if configured
             if (!$this->ilsConfigArray['Catalog']['leaveFinesAmountsInCents']) {
@@ -576,16 +592,28 @@ class Unicorn implements DriverInterface
             $items[] = array(
                 'id' => $catkey,
                 'amount' => $amount,
+                'amount_raw' => $amount_raw,
                 'balance' => $balance,
+                'balance_raw' => $balance_raw,
                 'date_billed' => $this->_formatDateTime($date_billed),
+                'date_billed_raw' => $date_billed,
                 'number_of_payments' => $number_of_payments,
                 'with_items' => $with_items,
                 'fine' => $reason,
+                'bill_reason' => $reason,
                 'checkout' => $this->_formatDateTime($date_charged),
+                'date_charged_raw' => $date_charged,
                 'duedate' => $this->_formatDateTime($duedate),
+                'duedate_raw' => $duedate,
                 'date_recalled' => $this->_formatDateTime($date_recalled),
-                'library' => $library,
-                'bill_key' => $bill_key_1 . '|' . $bill_key_2
+                'date_recalled_raw' => $date_recalled,
+                'library' => trim($library),
+                'bill_key' => trim($bill_key_1) . '|' . trim($bill_key_2),
+                'item_barcode' => trim($item_barcode),
+                'item_library' => trim($item_library),
+                'user_barcode' => trim($user_barcode),
+                'user_key' => trim($user_key),
+                'bill_number' => trim($bill_key_2)
             );
         }
 
