@@ -1172,7 +1172,7 @@ class Unicorn implements DriverInterface
         if (!PEAR::isError($result)) {
             // Even if we get a response, make sure it's a 'good' one.
             if ($httpClient->getResponseCode() != 200) {
-                PEAR::raiseError("Error response code received from $url");
+                PEAR::raiseError("Error response code received from Symphony web server");
             }
         } else {
             PEAR::raiseError($result);
