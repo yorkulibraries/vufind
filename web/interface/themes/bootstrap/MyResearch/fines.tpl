@@ -18,7 +18,7 @@
     {if !empty($groupData.items)}
     <h2>{translate text=$group}</h2>
     <div class="table-responsive">
-      <table class="table table-condensed">
+      <table class="table table-condensed table-striped table-bordered table-hover">
       <caption class="sr-only">{translate text='Bills'}</caption>
       <thead>
       <tr>
@@ -29,7 +29,7 @@
         <th>{translate text='Title'}</th>
       </tr>
       </thead>
-      <tbody>
+      <tbody class="rowlink">
         {foreach from=$groupData.items item=record}
         <tr>
           <td>{$record.date_billed|escape}</td>
@@ -40,7 +40,7 @@
             {if empty($record.title)}
               {translate text='not_applicable'}
             {else}
-              <a href="{$path}/Record/{$record.id|escape}">{$record.title|trim:'/:'|escape}</a>
+              <a class="rowlink" title="{$record.title|trim:'/:'|escape}" href="{$path}/Record/{$record.id|escape}">{$record.title|trim:'/:'|truncate:80:'...'|escape}</a>
             {/if}
           </td>
         </tr>
@@ -59,7 +59,7 @@
   {if !empty($payments)}
     <h2>{translate text='Your Online Payments'}</h2>
     <div class="table-responsive">
-      <table class="table table-condensed">
+      <table class="table table-condensed table-striped table-bordered table-hover">
       <caption class="sr-only">{translate text='Your Online Payments'}</caption>
       <thead>
       <tr>
@@ -69,13 +69,13 @@
         <th>{translate text='Status'}</th>
       </tr>
       </thead>
-      <tbody>
+      <tbody class="rowlink">
         {foreach from=$payments item=p}
         <tr>
-          <td>{$p->payment_date|escape}</td>
+          <td>{$p->payment_date|strtotime|date_format:'%b %d, %Y'|escape}</td>
           <td>{$p->amount|safe_money_format|escape}</td>
           <td>{$p->fines_group|translate|escape}</td>
-          <td><a target="_blank" title="{translate text='View Receipt'}" href="{$receiptBaseURL}{$p->tokenid}">{$p->payment_status|escape}</a></td>
+          <td><a class="rowlink" target="_blank" title="{translate text='View Receipt'}" href="{$receiptBaseURL}{$p->tokenid}">{$p->payment_status|escape}</a></td>
         </tr>
         {/foreach}
       </tbody>

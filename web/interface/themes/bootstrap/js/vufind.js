@@ -76,7 +76,10 @@ $(document).ready(function() {
     setupUploadCoverForm();
     
     // setup more/less buttons
-    activateMoreLessButtons('.container');    
+    activateMoreLessButtons('.container');
+    
+    // activate table row links
+    activateTableRowLinks();
 });
 
 // handle logged out event
@@ -764,5 +767,13 @@ function setupZeroClipboard(elementId) {
         var message = $(event.target).data('copied-message');
         $(elementId).attr('data-original-title', message).tooltip('show');
       });
+    });
+}
+
+function activateTableRowLinks() {
+    $('.table > tbody.rowlink > tr').click(function() {
+        var url = $(this).find('a.rowlink').attr('href');
+        window.open(url);
+        return false;
     });
 }

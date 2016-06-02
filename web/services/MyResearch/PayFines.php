@@ -85,7 +85,7 @@ class PayFines extends MyResearch
                 $this->doCompleteAction();
                 exit;
             } else {
-                $this->logger->log('status is ' . $_POST['status']);
+                $this->logger->log('Payment not approved. Status is ' . $_POST['status']);
                 $this->logger->log('Redirecting to display fines page.');
                 $this->redirectToDisplayFines();
                 exit;
