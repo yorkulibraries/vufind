@@ -1,0 +1,7 @@
+[DB_DataObject]
+database          = mysql://baabaa:baabaa@localhost/vufind
+schema_location   = /usr/local/vufind/web/conf
+class_location    = /tmp
+require_prefix    =
+class_prefix      =
+debug             = 0

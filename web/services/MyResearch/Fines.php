@@ -26,7 +26,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
-require_once 'services/MyResearch/MyResearch.php';
+require_once 'services/MyResearch/PayFines.php';
 
 /**
  * Fines action for MyResearch module
@@ -38,8 +38,9 @@ require_once 'services/MyResearch/MyResearch.php';
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
-class Fines extends MyResearch
+class Fines extends PayFines
 {
+    
     /**
      * Process parameters and display the page.
      *
@@ -49,30 +50,34 @@ class Fines extends MyResearch
     public function launch()
     {
         global $interface;
-
-        // Get My Fines
-        if ($patron = UserAccount::catalogLogin()) {
-            if (PEAR::isError($patron)) {
-                PEAR::raiseError($patron);
-            }
-            $result = $this->catalog->getMyFines($patron);
-            if (!PEAR::isError($result)) {
-                foreach ($result as $group => $data) {
-                    $items = $data['items'];
-                    for ($i = 0; $i < count($items); $i++) {
-                        $record = $this->db->getRecord($items[$i]['id']);
-                        $result[$group]['items'][$i]['title'] = $record ? $record['title'] : null;
-                    }
+        global $configArray;
+            
+        // verify initiated payments and set appropriate status eg: APPROVED or CANCELLED
+        $this->verifyInitiatedPayments();
+        
+        // complete the approved payments
+        $this->completeApprovedPayments($this->getApprovedPayments());
+        
+        // get the bills from catalog
+        $result = $this->catalog->getMyFines($this->patron);
+        
+        if (!PEAR::isError($result)) {
+            foreach ($result as $group => $data) {
+                $items = $data['items'];
+                for ($i = 0; $i < count($items); $i++) {
+                    $record = $this->db->getRecord($items[$i]['id']);
+                    $result[$group]['items'][$i]['title'] = $record ? $record['title'] : null;
                 }
-                $interface->assign('finesData', $result);
             }
+            $interface->assign('finesData', $result);
         }
-
+        
+        $interface->assign('payments', $this->getPayments());
+        $interface->assign('receiptBaseURL', $this->getReceiptBaseURL());
         $interface->setTemplate('fines.tpl');
         $interface->setPageTitle('Your Fines');
         $interface->display('layout.tpl');
     }
-    
 }
 
 ?>

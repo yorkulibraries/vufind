@@ -55,4 +55,31 @@
       <strong>{translate text='You do not have any outstanding bills/fines'}.</strong>
     </div>
   {/if}
+  
+  {if !empty($payments)}
+    <h2>{translate text='Your Online Payments'}</h2>
+    <div class="table-responsive">
+      <table class="table table-condensed">
+      <caption class="sr-only">{translate text='Your Online Payments'}</caption>
+      <thead>
+      <tr>
+        <th>{translate text='Date'}</th>
+        <th>{translate text='Amount'}</th>
+        <th>{translate text='Library'}</th>
+        <th>{translate text='Status'}</th>
+      </tr>
+      </thead>
+      <tbody>
+        {foreach from=$payments item=p}
+        <tr>
+          <td>{$p->payment_date|escape}</td>
+          <td>{$p->amount|safe_money_format|escape}</td>
+          <td>{$p->fines_group|translate|escape}</td>
+          <td><a target="_blank" title="{translate text='View Receipt'}" href="{$receiptBaseURL}{$p->tokenid}">{$p->payment_status|escape}</a></td>
+        </tr>
+        {/foreach}
+      </tbody>
+      </table>
+    </div>
+  {/if}
 {/if}

@@ -19,7 +19,6 @@
 require_once 'Unicorn.php';
 require_once 'RecordDrivers/Factory.php';
 require_once 'sys/Resolver/ResolverConnection.php';
-require_once 'sys/PaidBill.php';
 
 class YorkUnicorn extends Unicorn
 {
@@ -368,39 +367,35 @@ class YorkUnicorn extends Unicorn
     {
         global $configArray;
         
-        // get all paid bills from VuFind DB
-        $paidBills = array();
-        $pb = new PaidBill();
-        $pb->user_barcode = $patron['barcode'];
-        $pb->find();
-        while ($pb->fetch()) {
-            $paidBills[] = $pb->bill_key;
-        }
-        
         // get all the bills from ILS
         $items = parent::getMyFines($patron);
         
         // split the bills by library group (e.g.: YORK or YORK-LAW)
         if (isset($configArray['Fines']['groups'])) {
-            $groups = array();
+            $groupLibs = array();
             foreach ($configArray['Fines']['groups'] as $s) {
                 list($key, $libs) = explode(':', $s);
-                $groupLibs = explode(',', $libs);
+                $groupLibs[$key] = explode(',', $libs);
+            }
+            $groups = array();
+            foreach ($groupLibs as $g => $l) {
                 $groupItems = array();
                 $groupTotal = 0.00;
                 foreach ($items as $item) {
-                    // if the bill is not in the list of paid bills, then include it
-                    if (!in_array($item['bill_key'], $paidBills)) {
-                        // include the bill if the bill's library is part of the group 
-                        // OR the item's library itself is part of the group
-                        if (in_array($item['library'], $groupLibs) || in_array($item['item_library'], $groupLibs)) {
-                            $groupItems[] = $item;
-                            $groupTotal += $item['balance'];
-                        }
+                    // include the bill if the item's library is part of the group
+                    if (in_array($item['item_library'], $l)) {
+                        $groupItems[] = $item;
+                        $groupTotal += $item['balance'];
+                    }
+                    // if no item associated with this bill, then
+                    // include the bill if the bill's library is part of the group 
+                    if (empty($item['item_library']) && in_array($item['library'], $l)) {
+                        $groupItems[] = $item;
+                        $groupTotal += $item['balance'];
                     }
                 }
                 if (!empty($groupItems)) {
-                    $groups[$key] = array('groupTotal' => $groupTotal, 'items' => $groupItems);
+                    $groups[$g] = array('groupTotal' => $groupTotal, 'items' => $groupItems);
                 }
             }
             $items = $groups;
@@ -408,33 +403,43 @@ class YorkUnicorn extends Unicorn
         return $items;
     }
     
-    public function payBills($patron, $items, $pop)
+    public function payBills($items, $paymentToken, $apiUser, $apiStation, $apiLibrary, $paymentType)
     {
         global $configArray;
         global $logger;
         
         // query sirsi
-        $errors = array();
+        $results = array();
         foreach ($items as $item) {
+            $user_barcode = is_array($item) ? $item['user_barcode'] : $item->user_barcode;
+            $bill_number = is_array($item) ? $item['bill_number'] : $item->bill_number;
+            $bill_key = is_array($item) ? $item['bill_key'] : $item->bill_key;
+            $bill_balance = is_array($item) ? $item['bill_balance'] : $item->bill_balance;
             $params = array(
                 'query' => 'pay_bill',
-                'user_barcode' => $item['user_barcode'],
-                'bill_number' => $item['bill_number'],
-                'amount' => number_format($item['balance'], 2, '.', ''),
-                'payment_type' => 'NONE',
-                'api_user' => 'SCVUFIND',
-                'api_station' => 'SCVUFIND',
-                'api_library' => 'YORK'
+                'user_barcode' => $user_barcode,
+                'bill_number' => $bill_number,
+                'amount' => number_format($bill_balance, 2, '.', ''),
+                'payment_type' => $paymentType,
+                'payment_token' => $paymentToken,
+                'api_user' => $apiUser,
+                'api_station' => $apiStation,
+                'api_library' => $apiLibrary
             );
-            // check for ok response, if not, then add the error response in the errors array
+            // decode response from API server
             $response = $this->querySirsi($params);
-            $expected = '^@01PYMA$(212)^MN212^UO' . $item['user_barcode'];
-            if (strpos($response, $expected) === false) {
-                $errors[$item['bill_key']] = $response;
-            }
+            $logger->log($response, PEAR_LOG_DEBUG);
+            list($api_request, $api_response) = explode("\n", $response);
+            $expected = '^@01PYMA$(212)^MN212^UO' . $user_barcode;
+            $result = array(
+                'api_successful' => (strpos($api_response, $expected) !== false),
+                'api_request' => $api_request,
+                'api_response' => $api_response
+            );
+            $results[$bill_key] = $result;
         }
         
-        return $errors;
+        return $results;
     }
 }
 ?>

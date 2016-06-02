@@ -24,6 +24,7 @@ web/images/covers/local/original/*
 web/images/covers/local/small/*
 web/images/covers/by-id/*
 web/conf/config.ini
+web/conf/create-tables.ini
 web/conf/Unicorn.ini
 web/conf/grad-reading-room.ini
 web/conf/las-room.ini

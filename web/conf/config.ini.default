@@ -700,6 +700,35 @@ test_user_alt_id = 1234567890
 apikey=ENTER_API_KEY_HERE
 
 [Fines]
+; group_key:LIBRARY_CODES_COMMA_SEP
 groups[]=fines_group_YORK:YORK,NELLIE,YORK-EDUC,YORK-YCISS
 groups[]=fines_group_LAW:YORK-LAW
 payment_log_dir=/usr/local/vufind/log/payments
+; group_key:appid,password
+ypb_accounts[]=fines_group_YORK:ApplicationId,ApplicationPassword
+ypb_accounts[]=fines_group_LAW:ApplicationId,ApplicationPassword
+; group_key:apiUser,apiStation,apiLibrary
+api_user[]=fines_group_YORK:SCVUFIND,SCVUFIND,YORK
+api_user[]=fines_group_LAW:LAWVUFIND,LAWVUFIND,YORK-LAW
+; payment type as configured in Symphony for all transactions
+payment_type="ONLINE"
+
+[YorkPaymentBroker]
+wsdl=https://xxx.uit.yorku.ca/ypbpaymentservice/?wsdl
+payment_url="https://xxx.uit.yorku.ca/ypbpaymentapp/Payment.aspx?tokenid="
+receipt_url="https://xxx.uit.yorku.ca/ypbpaymentapp/Receipt.aspx?tokenid="
+
+lang_en=enUS
+lang_fr=frCA
+
+approved_message_en="TRANSACTION APPROVED"
+auth_code_regex_en="/Auth Code:<\/th><td>([0-9a-zA-Z]+)<\/td>/"
+ref_num_regex_en="/Reference Number:<\/th><td>([0-9]+)<\/td>/"
+amount_regex_en="/Transaction Amount:<\/th><td>([0-9]+)\.[0-9][0-9]<\/td>/"
+ypborderid_regex_en="/Order Number:\s+([0-9]+)/"
+
+approved_message_fr="TRANSACTION APPROVED"
+auth_code_regex_fr="/Auth Code:<\/th><td>([0-9a-zA-Z]+)<\/td>/"
+ref_num_regex_fr="/Reference Number:<\/th><td>([0-9]+)<\/td>/"
+amount_regex_fr="/Transaction Amount:<\/th><td>([0-9]+)\.[0-9][0-9]<\/td>/"
+ypborderid_regex_fr="/Numéro de commande:\s+([0-9]+)/"
