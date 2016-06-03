@@ -679,7 +679,7 @@ class PayFines extends MyResearch
         }
     }
     
-    protected function getReceiptBaseURL()
+    static function getReceiptBaseURL()
     {
         global $configArray;
         return $configArray['YorkPaymentBroker']['receipt_url'];

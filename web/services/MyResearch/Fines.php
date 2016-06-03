@@ -73,7 +73,7 @@ class Fines extends PayFines
         }
         
         $interface->assign('payments', $this->getPayments());
-        $interface->assign('receiptBaseURL', $this->getReceiptBaseURL());
+        $interface->assign('receiptBaseURL', PayFines::getReceiptBaseURL());
         $interface->setTemplate('fines.tpl');
         $interface->setPageTitle('Your Fines');
         $interface->display('layout.tpl');
