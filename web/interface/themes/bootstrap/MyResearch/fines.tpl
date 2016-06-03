@@ -2,17 +2,7 @@
   <h1>{translate text='Fines'}</h1>  
   
   {if !empty($finesData)}
-    {foreach from=$finesData key=group item=groupData}
-      {if !empty($groupData.items)}
-        {assign var=groupTotal value=$groupData.groupTotal|safe_money_format}
-        {assign var=message value='you_owe_xxx_in_fines_to_library'|translate}
-        {assign var=library value=$group|translate}
-        <p class="text-danger">
-          <strong>{$message|replace:'###NUMBER###':$groupTotal|replace:'###LIBRARY###':$library}</strong>
-          <a class="btn btn-default" href="{$path}/MyResearch/PayFines?g={$group|escape}" role="button"><i class="fa fa-credit-card" aria-hidden="true"></i> {translate text='Pay Online'}</a>
-        </p>
-      {/if}
-    {/foreach}
+    {include file="MyResearch/fines-summary.tpl"}
     
     {foreach from=$finesData key=group item=groupData}
     {if !empty($groupData.items)}
@@ -58,6 +48,7 @@
   
   {if !empty($payments)}
     <h2>{translate text='Your Online Payments'}</h2>
+    <p class="help-block">{translate text='Click on each item to view/print receipt.'}</p>
     <div class="table-responsive">
       <table class="table table-condensed table-striped table-bordered table-hover">
       <caption class="sr-only">{translate text='Your Online Payments'}</caption>
@@ -71,7 +62,7 @@
       </thead>
       <tbody class="rowlink">
         {foreach from=$payments item=p}
-        <tr>
+        <tr {if $p->payment_status=='COMPLETE'}class="success"{elseif $p->payment_status=='APPROVED'}class="info"{elseif $p->payment_status=='CANCELLED'}class="danger"{/if}>
           <td>{$p->payment_date|strtotime|date_format:'%b %d, %Y'|escape}</td>
           <td>{$p->amount|safe_money_format|escape}</td>
           <td>{$p->fines_group|translate|escape}</td>
