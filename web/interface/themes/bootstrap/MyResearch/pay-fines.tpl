@@ -54,17 +54,17 @@
       
       <div class="form-actions pull-left">
         {if !$confirming}
-          <button class="btn btn-default" type="submit" name="update" value="update"><i class="fa fa-calculator" aria-hidden="true"></i> {translate text='Update Total'}</button>
-          <button class="btn btn-primary" type="submit" name="confirm" value="confirm"><i class="fa fa-check" aria-hidden="true"></i> {translate text='Confirm'}</button>
+          <button class="btn btn-default btn-sm" type="submit" name="update" value="update"><i class="fa fa-calculator" aria-hidden="true"></i> {translate text='Update Total'}</button>
+          <button class="btn btn-primary btn-sm" type="submit" name="confirm" value="confirm"><i class="fa fa-check" aria-hidden="true"></i> {translate text='Confirm'}</button>
         {else}
-          <button class="btn btn-success" type="submit" name="pay" value="pay"><i class="fa fa-credit-card" aria-hidden="true"></i> {translate text='Pay Now'}</button>
+          <button class="btn btn-success btn-sm" type="submit" name="pay" value="pay"><i class="fa fa-credit-card" aria-hidden="true"></i> {translate text='Pay Now'}</button>
         {/if}
       </div>
       
       <input type="hidden" name="g" value="{$group|escape}">
       
       <div class="form-actions pull-right">
-        <a class="btn btn-danger" href="{$path}/MyResearch/Fines" role="button"><i class="fa fa-times" aria-hidden="true"></i> {translate text='Cancel'}</a>
+        <a class="btn btn-danger btn-sm" href="{$path}/MyResearch/Fines" role="button"><i class="fa fa-times" aria-hidden="true"></i> {translate text='Cancel'}</a>
       </div>
       
     </form>
