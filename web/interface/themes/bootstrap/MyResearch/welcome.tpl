@@ -4,4 +4,4 @@
 
 {include file="MyResearch/fines-summary.tpl"}
 
-<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+<a class="btn btn-primary btn-sm" href="{$path}/MyResearch/CheckedOut" role="button">{translate text='Go to Your Account'}</a>
