@@ -258,6 +258,11 @@ class PayFines extends MyResearch
         // get items to pay
         $itemsToPay = $this->getItemsToPay($finesGroup);
         
+        if (empty($itemsToPay['items'])) {
+            $this->redirectToDisplayFines();
+            exit;
+        }
+        
         $interface->assign('confirming', (isset($_POST['confirm']) && !empty($_POST['confirm'])));
         $interface->assign('items', $itemsToPay['items']);
         $interface->assign('total', $itemsToPay['total']);
