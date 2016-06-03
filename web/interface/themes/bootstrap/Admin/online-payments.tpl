@@ -45,6 +45,9 @@
   <th>{translate text="Date"}</th>
   <th>{translate text="Amount"}</th>
   <th>{translate text="User ID"}</th>
+  <th>{translate text="YPB Order ID"}</th>
+  <th>{translate text="Authcode"}</th>
+  <th>{translate text="Refnum"}</th>
   <th>{translate text="Receipt"}</th>
 </tr>
 {foreach from=$payments item=payment}
@@ -52,7 +55,10 @@
     <td>{$payment->payment_date}</td>
     <td class="text-right">{$payment->amount|safe_money_format|escape}</td>
     <td>{$payment->user_barcode}</td>
-    <td><a class="rowlink" target="_blank" href="{$receiptBaseURL}{$payment->tokenid}">{$payment->tokenid}</a></td>
+    <td>{$payment->ypborderid}</td>
+    <td>{$payment->authcode}</td>
+    <td>{$payment->refnum}</td>
+    <td><a class="rowlink" target="_blank" href="{$receiptBaseURL}{$payment->tokenid}">{translate text="View"}</a></td>
   </tr>
 {/foreach}
 </tbody>
