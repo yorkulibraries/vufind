@@ -91,14 +91,25 @@ class OnlinePayments extends Action
         $db->orderBy('payment_date');
         $db->limit($recordStart, $limit);
         $db->find();
-        $total = 0.00;
+        $totalInitiated = $totalApproved = $totalComplete = $totalCancelled = 0.00;
         while ($db->fetch()) {
             $payment = clone($db);
             $request->payment_date = $dateFormat->convertToDisplayDate(
             		'Y-m-d H:i:s', $payment->payment_date
             );
             $payments[] = $payment;
-            $total += $payment->amount;
+            if ($payment->payment_status == Payment::STATUS_INITIATED) {
+                $totalInitiated += $payment->amount;
+            }
+            if ($payment->payment_status == Payment::STATUS_APPROVED) {
+                $totalApproved += $payment->amount;
+            }
+            if ($payment->payment_status == Payment::STATUS_COMPLETE) {
+                $totalComplete += $payment->amount;
+            }
+            if ($payment->payment_status == Payment::STATUS_CANCELLED) {
+                $totalCancelled += $payment->amount;
+            }
         }
         // build url for the pager
         $params = array(
@@ -124,7 +135,10 @@ class OnlinePayments extends Action
         $interface->assign('payments', $payments);
         $interface->assign('payment_status', $payment_status);
         $interface->assign('fines_group', $fines_group);
-        $interface->assign('total', $total);
+        $interface->assign('totalInitiated', $totalInitiated);
+        $interface->assign('totalApproved', $totalApproved);
+        $interface->assign('totalComplete', $totalComplete);
+        $interface->assign('totalCancelled', $totalCancelled);
         $interface->assign('receiptBaseURL', PayFines::getReceiptBaseURL());
         $interface->setPageTitle('Online Payments');
         $interface->setTemplate('online-payments.tpl');
