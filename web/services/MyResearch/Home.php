@@ -54,6 +54,13 @@ class Home extends MyResearch
         global $user;
         
         if ($_REQUEST['modal']) {
+            if ($patron = UserAccount::catalogLogin()) {
+                // get the bills from catalog
+                $result = $this->catalog->getMyFines($patron);
+                if (!PEAR::isError($result)) {
+                    $interface->assign('finesData', $result);
+                }
+            }
             $interface->setPageTitle('Welcome');
             $interface->setTemplate('welcome.tpl');
             $interface->display('modal.tpl');
