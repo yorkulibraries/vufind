@@ -470,6 +470,11 @@ class Unicorn implements DriverInterface
 
         list($last, $first) = explode(',', $name);
         $first = rtrim($first, " ");
+        if (isset($this->ilsConfigArray['Catalog']['remove_title_from_name'])) {
+            foreach ($this->ilsConfigArray['Catalog']['remove_title_from_name'] as $search) {
+                $first = str_ireplace($search, '', $first);
+            }
+        }
 
         if ($expiry != '0') {
         	$expiry = $this->_parseDateTime(trim($expiry));
