@@ -113,6 +113,12 @@ class Holds extends MyResearch
                 } else {
                     $interface->assign('recordList', false);
                 }
+                
+                // get the bills from catalog
+                $result = $this->catalog->getMyFines($patron);
+                if (!PEAR::isError($result)) {
+                    $interface->assign('finesData', $result);
+                }
             } else {
                 PEAR::raiseError($result);
             }

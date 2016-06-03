@@ -21,6 +21,8 @@
         {translate text=$errorMsg}
       </div>
   {/if}
+  
+  {include file="MyResearch/fines-summary.tpl"}
 
   {if is_array($recordList) && !empty($recordList)}
     <p>{translate text='You have ###NUMBER### hold request(s)'|replace:'###NUMBER###':$recordCount}.</p>
