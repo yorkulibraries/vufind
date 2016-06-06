@@ -6,8 +6,9 @@
     <label for="fines_group">{translate text="Library"}:</label>
     <select class="form-control" id="fines_group" name="fines_group">
       <option value="">{translate text="All"}</option>
-      <option value="fines_group_YORK"{if $fines_group=='fines_group_YORK'} selected="selected"{/if}>{translate text="fines_group_YORK"}</option>
-      <option value="fines_group_LAW"{if $fines_group=='fines_group_LAW'} selected="selected"{/if}>{translate text="fines_group_LAW"}</option>
+      {foreach from=$finesGroups item=fg}
+      <option value="{$fg}"{if $fines_group==$fg} selected="selected"{/if}>{$fg|translate|escape}</option>
+      {/foreach}
     </select>
     
     <label for="payment_status">{translate text="Status"}:</label>

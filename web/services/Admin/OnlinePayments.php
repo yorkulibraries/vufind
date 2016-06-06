@@ -127,6 +127,15 @@ class OnlinePayments extends Action
             $interface->assign('totalCancelled', $sumQuery->total);
         }
         
+        // get distinct list of fines groups from db
+        $finesGroupQuery = new Payment();
+        $finesGroupQuery->query("SELECT DISTINCT fines_group from {$finesGroupQuery->__table} ORDER BY fines_group");
+        $finesGroups = array();
+        while ($finesGroupQuery->fetch()) {
+            $finesGroups[] = $finesGroupQuery->fines_group;
+        }
+        $interface->assign('finesGroups', $finesGroups);
+        
         // build url for the pager
         $params = array(
             'from' => $from,
