@@ -110,21 +110,29 @@ class OnlinePayments extends Action
         if (!empty($fines_group)) {
             $sumSQL .=  " AND fines_group='" . $sumQuery->escape($fines_group) . "'";
         }
-        $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_INITIATED . "'");
-        if ($sumQuery->fetch()) {
-            $interface->assign('totalInitiated', $sumQuery->total);
+        if (empty($payment_status) || $payment_status == Payment::STATUS_INITIATED) {
+            $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_INITIATED . "'");
+            if ($sumQuery->fetch()) {
+                $interface->assign('totalInitiated', $sumQuery->total);
+            }
         }
-        $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_APPROVED . "'");
-        if ($sumQuery->fetch()) {
-            $interface->assign('totalApproved', $sumQuery->total);
+        if (empty($payment_status) || $payment_status == Payment::STATUS_APPROVED) {
+            $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_APPROVED . "'");
+            if ($sumQuery->fetch()) {
+                $interface->assign('totalApproved', $sumQuery->total);
+            }
         }
-        $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_COMPLETE . "'");
-        if ($sumQuery->fetch()) {
-            $interface->assign('totalComplete', $sumQuery->total);
+        if (empty($payment_status) || $payment_status == Payment::STATUS_COMPLETE) {
+            $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_COMPLETE . "'");
+            if ($sumQuery->fetch()) {
+                $interface->assign('totalComplete', $sumQuery->total);
+            }
         }
-        $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_CANCELLED . "'");
-        if ($sumQuery->fetch()) {
-            $interface->assign('totalCancelled', $sumQuery->total);
+        if (empty($payment_status) || $payment_status == Payment::STATUS_CANCELLED) {
+            $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_CANCELLED . "'");
+            if ($sumQuery->fetch()) {
+                $interface->assign('totalCancelled', $sumQuery->total);
+            }
         }
         
         // get distinct list of fines groups from db

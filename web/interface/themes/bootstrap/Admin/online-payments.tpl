@@ -34,10 +34,21 @@
 <div class="alert alert-success" role="alert">
   <p>There were <strong>{$count}</strong> {$payment_status|escape} payment(s) from <strong>{$fromDateDisplay|escape}</strong> to <strong>{$toDateDisplay|escape}</strong>.</p>
   
+  {if empty($payment_status) || $payment_status == 'INITIATED'}
   <p>Total INITIATED transaction amount is: <strong>{$totalInitiated|safe_money_format|escape}</strong></p>
+  {/if}
+  
+  {if empty($payment_status) || $payment_status == 'APPROVED'}
   <p>Total APPROVED (but not yet COMPLETE) transaction amount is: <strong>{$totalApproved|safe_money_format|escape}</strong></p>
+  {/if}
+  
+  {if empty($payment_status) || $payment_status == 'COMPLETE'}
   <p>Total COMPLETE transaction amount is: <strong>{$totalComplete|safe_money_format|escape}</strong></p>
+  {/if}
+  
+  {if empty($payment_status) || $payment_status == 'CANCELLED'}
   <p>Total CANCELLED transaction amount is: <strong>{$totalCancelled|safe_money_format|escape}</strong></p>
+  {/if}
 </div>
 
 {if !empty($payments)}
