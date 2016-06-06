@@ -20,10 +20,10 @@
     </select>
 
     <label for="from">{translate text="From"}:</label>
-    <input class="form-control" id="from" type="text" name="from" value="{if $from}{$from|escape}{/if}" size="10" />
+    <input size="10" data-date-language="{$userLang}" data-date-disable-touch-keyboard="true" data-provide="datepicker" placeholder="mm/dd/yyyy" data-date-format="mm/dd/yyyy"  data-date-autoclose="true" class="form-control" type="text" id="from" name="from" value="{if $from}{$from|escape}{/if}" />
     
     <label for="to">{translate text="To"}:</label>
-    <input class="form-control" id="to" type="text" name="to" value="{if $to}{$to|escape}{/if}" size="10" />
+    <input size="10" data-date-language="{$userLang}" data-date-disable-touch-keyboard="true" data-provide="datepicker" placeholder="mm/dd/yyyy" data-date-format="mm/dd/yyyy"  data-date-autoclose="true" class="form-control" type="text" id="to" name="to" value="{if $to}{$to|escape}{/if}" />
   
     <input type="submit" name="submit" value="{translate text='View'}"/>
   </div>
