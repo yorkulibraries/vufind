@@ -136,6 +136,15 @@ class OnlinePayments extends Action
         }
         $interface->assign('finesGroups', $finesGroups);
         
+        // get distinct list of payment statuses from db
+        $paymentStatusesQuery = new Payment();
+        $paymentStatusesQuery->query("SELECT DISTINCT payment_status from {$paymentStatusesQuery->__table} ORDER BY payment_status");
+        $paymentStatuses = array();
+        while ($paymentStatusesQuery->fetch()) {
+            $paymentStatuses[] = $paymentStatusesQuery->payment_status;
+        }
+        $interface->assign('paymentStatuses', $paymentStatuses);
+        
         // build url for the pager
         $params = array(
             'from' => $from,

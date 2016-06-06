@@ -14,10 +14,9 @@
     <label for="payment_status">{translate text="Status"}:</label>
     <select class="form-control" id="payment_status" name="payment_status">
       <option value="">{translate text="All"}</option>
-      <option value="CANCELLED"{if $payment_status=='CANCELLED'} selected="selected"{/if}>{translate text="CANCELLED"}</option>
-      <option value="COMPLETE"{if $payment_status=='COMPLETE'} selected="selected"{/if}>{translate text="COMPLETE"}</option>
-      <option value="APPROVED"{if $payment_status=='APPROVED'} selected="selected"{/if}>{translate text="APPROVED"}</option>
-      <option value="INITIATED"{if $payment_status=='INITIATED'} selected="selected"{/if}>{translate text="INITIATED"}</option>
+      {foreach from=$paymentStatuses item=ps}
+      <option value="{$ps}"{if $payment_status==$ps} selected="selected"{/if}>{$ps|translate|escape}</option>
+      {/foreach}
     </select>
 
     <label for="from">{translate text="From"}:</label>
