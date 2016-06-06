@@ -60,7 +60,7 @@ class OnlinePayments extends Action
         $from = date('Y-m-d');
         $to = date('Y-m-d');
         $page = 1;
-        $limit = 200;
+        $limit = 1000;
         if (isset($_REQUEST['from']) && !empty($_REQUEST['from'])) {
             $from = date('Y-m-d', strtotime($_REQUEST['from']));
         }
@@ -91,26 +91,37 @@ class OnlinePayments extends Action
         $db->orderBy('payment_date');
         $db->limit($recordStart, $limit);
         $db->find();
-        $totalInitiated = $totalApproved = $totalComplete = $totalCancelled = 0.00;
         while ($db->fetch()) {
             $payment = clone($db);
             $request->payment_date = $dateFormat->convertToDisplayDate(
             		'Y-m-d H:i:s', $payment->payment_date
             );
             $payments[] = $payment;
-            if ($payment->payment_status == Payment::STATUS_INITIATED) {
-                $totalInitiated += $payment->amount;
-            }
-            if ($payment->payment_status == Payment::STATUS_APPROVED) {
-                $totalApproved += $payment->amount;
-            }
-            if ($payment->payment_status == Payment::STATUS_COMPLETE) {
-                $totalComplete += $payment->amount;
-            }
-            if ($payment->payment_status == Payment::STATUS_CANCELLED) {
-                $totalCancelled += $payment->amount;
-            }
         }
+        
+        $sumQuery = new Payment();
+        $sumSQL = "SELECT SUM(amount) AS total FROM {$sumQuery->__table}" 
+            . " WHERE DATE(payment_date) >= '" . $sumQuery->escape($from) . "'"
+            . " AND DATE(payment_date) <= '" . $sumQuery->escape($to) . "'"
+            . " AND fines_group='" . $sumQuery->escape($fines_group) . "'"
+            . " AND payment_status=";
+        $sumQuery->query($sumSQL . "'" . Payment::STATUS_INITIATED . "'");
+        if ($sumQuery->fetch()) {
+            $interface->assign('totalInitiated', $sumQuery->total);
+        }
+        $sumQuery->query($sumSQL . "'" . Payment::STATUS_APPROVED . "'");
+        if ($sumQuery->fetch()) {
+            $interface->assign('totalApproved', $sumQuery->total);
+        }
+        $sumQuery->query($sumSQL . "'" . Payment::STATUS_COMPLETE . "'");
+        if ($sumQuery->fetch()) {
+            $interface->assign('totalComplete', $sumQuery->total);
+        }
+        $sumQuery->query($sumSQL . "'" . Payment::STATUS_CANCELLED . "'");
+        if ($sumQuery->fetch()) {
+            $interface->assign('totalCancelled', $sumQuery->total);
+        }
+        
         // build url for the pager
         $params = array(
             'from' => $from,
@@ -135,10 +146,6 @@ class OnlinePayments extends Action
         $interface->assign('payments', $payments);
         $interface->assign('payment_status', $payment_status);
         $interface->assign('fines_group', $fines_group);
-        $interface->assign('totalInitiated', $totalInitiated);
-        $interface->assign('totalApproved', $totalApproved);
-        $interface->assign('totalComplete', $totalComplete);
-        $interface->assign('totalCancelled', $totalCancelled);
         $interface->assign('receiptBaseURL', PayFines::getReceiptBaseURL());
         $interface->setPageTitle('Online Payments');
         $interface->setTemplate('online-payments.tpl');
