@@ -100,24 +100,29 @@ class OnlinePayments extends Action
         }
         
         $sumQuery = new Payment();
-        $sumSQL = "SELECT SUM(amount) AS total FROM {$sumQuery->__table}" 
-            . " WHERE DATE(payment_date) >= '" . $sumQuery->escape($from) . "'"
-            . " AND DATE(payment_date) <= '" . $sumQuery->escape($to) . "'"
-            . " AND fines_group='" . $sumQuery->escape($fines_group) . "'"
-            . " AND payment_status=";
-        $sumQuery->query($sumSQL . "'" . Payment::STATUS_INITIATED . "'");
+        $sumSQL = "SELECT SUM(amount) AS total FROM {$sumQuery->__table}";
+        if (!empty($from)) {
+            $sumSQL .= " WHERE DATE(payment_date) >= '" . $sumQuery->escape($from) . "'";
+        }
+        if (!empty($to)) {
+            $sumSQL .= " AND DATE(payment_date) <= '" . $sumQuery->escape($to) . "'";
+        }
+        if (!empty($fines_group)) {
+            $sumSQL .=  " AND fines_group='" . $sumQuery->escape($fines_group) . "'";
+        }
+        $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_INITIATED . "'");
         if ($sumQuery->fetch()) {
             $interface->assign('totalInitiated', $sumQuery->total);
         }
-        $sumQuery->query($sumSQL . "'" . Payment::STATUS_APPROVED . "'");
+        $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_APPROVED . "'");
         if ($sumQuery->fetch()) {
             $interface->assign('totalApproved', $sumQuery->total);
         }
-        $sumQuery->query($sumSQL . "'" . Payment::STATUS_COMPLETE . "'");
+        $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_COMPLETE . "'");
         if ($sumQuery->fetch()) {
             $interface->assign('totalComplete', $sumQuery->total);
         }
-        $sumQuery->query($sumSQL . "'" . Payment::STATUS_CANCELLED . "'");
+        $sumQuery->query($sumSQL . " AND payment_status='" . Payment::STATUS_CANCELLED . "'");
         if ($sumQuery->fetch()) {
             $interface->assign('totalCancelled', $sumQuery->total);
         }
