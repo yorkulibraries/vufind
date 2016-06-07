@@ -724,11 +724,11 @@ lang_fr=frCA
 approved_message_en="TRANSACTION APPROVED"
 auth_code_regex_en="/Auth Code:<\/th><td>([0-9a-zA-Z]+)<\/td>/"
 ref_num_regex_en="/Reference Number:<\/th><td>([0-9]+)<\/td>/"
-amount_regex_en="/Transaction Amount:<\/th><td>([0-9]+)\.[0-9][0-9]<\/td>/"
+amount_regex_en="/Transaction Amount:<\/th><td>([0-9]+\.[0-9][0-9])<\/td>/"
 ypborderid_regex_en="/Order Number:\s+([0-9]+)/"
 
 approved_message_fr="TRANSACTION APPROVED"
 auth_code_regex_fr="/Auth Code:<\/th><td>([0-9a-zA-Z]+)<\/td>/"
 ref_num_regex_fr="/Reference Number:<\/th><td>([0-9]+)<\/td>/"
-amount_regex_fr="/Transaction Amount:<\/th><td>([0-9]+)\.[0-9][0-9]<\/td>/"
+amount_regex_fr="/Transaction Amount:<\/th><td>([0-9]+\.[0-9][0-9])<\/td>/"
 ypborderid_regex_fr="/Numéro de commande:\s+([0-9]+)/"
