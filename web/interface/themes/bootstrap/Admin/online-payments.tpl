@@ -59,6 +59,7 @@
   <th>{translate text="Amount"}</th>
   <th>{translate text="User ID"}</th>
   <th>{translate text="Library"}</th>
+  <th>{translate text="Status"}</th>
   <th>{translate text="YPB Order ID"}</th>
   <th>{translate text="Receipt"}</th>
 </tr>
@@ -68,6 +69,7 @@
     <td class="text-right">{$payment->amount|safe_money_format|escape}</td>
     <td>{$payment->user_barcode}</td>
     <td>{$payment->fines_group|translate|escape}</td>
+    <td>{$payment->payment_status|escape}</td>
     <td>{$payment->ypborderid}</td>
     <td><a class="rowlink" target="_blank" href="{$receiptBaseURL}{$payment->tokenid}">{translate text="View"}</a></td>
   </tr>
