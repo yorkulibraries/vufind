@@ -27,7 +27,8 @@ class Payment extends DB_DataObject
     public $payment_status;                  // string(20)  not_null
     public $user_barcode;                    // string(14)  not_null
     public $fines_group;                     // string(40)  not_null
-    public $ypborderid;                      // string(50)  
+    public $ypborderid;                      // string(50)
+    public $notified_user;                   // int(6)  not_null
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE
@@ -43,4 +44,33 @@ class Payment extends DB_DataObject
         }
         return $paidBills;
     }
+    
+    public static function getApprovedPayments($userId, $order=null)
+    {   
+        return self::getPayments($userId, $order, Payment::STATUS_APPROVED);
+    }
+    
+    public static function getInitiatedPayments($userId, $order=null)
+    {   
+        return self::getPayments($userId, $order, Payment::STATUS_INITIATED);
+    }
+    
+    public static function getPayments($userId, $order=null, $status=null)
+    {
+        $payment = new Payment();
+        $payment->user_barcode = $userId;
+        if (!empty($status)) {
+            $payment->payment_status = $status;
+        }
+        if (!empty($order)) {
+            $payment->orderBy($order);
+        }
+        $payment->find();
+        $payments = array();
+        while ($payment->fetch()) {
+            $payments[] = clone($payment);
+        }
+        return $payments;
+    }
+    
 }

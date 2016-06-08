@@ -631,11 +631,8 @@ class PayFines extends MyResearch
     
     protected function verifyInitiatedPayments()
     {
-        $payment = new Payment();
-        $payment->user_barcode = $this->patron['cat_username'];
-        $payment->payment_status = Payment::STATUS_INITIATED;
-        $payment->find();
-        while ($payment->fetch()) {
+        $payments = Payment::getInitiatedPayments($this->patron['cat_username']);
+        foreach ($payments as $payment) {
             $tokenId = $payment->tokenid;
             $verified = $this->verifyPayment($tokenId);
             if ($verified !== false && is_array($verified)) {
@@ -648,28 +645,12 @@ class PayFines extends MyResearch
         
     protected function getApprovedPayments()
     {
-        $payments = array();
-        $payment = new Payment();
-        $payment->user_barcode = $this->patron['cat_username'];
-        $payment->payment_status = Payment::STATUS_APPROVED;
-        $payment->find();
-        while ($payment->fetch()) {
-            $payments[] = clone($payment);
-        }
-        return $payments;
+        return Payment::getApprovedPayments($this->patron['cat_username']);
     }
     
     protected function getPayments()
     {
-        $payment = new Payment();
-        $payment->user_barcode = $this->patron['cat_username'];
-        $payment->orderBy('payment_date DESC');
-        $payment->find();
-        $payments = array();
-        while ($payment->fetch()) {
-            $payments[] = clone($payment);
-        }
-        return $payments;
+        return Payment::getPayments($this->patron['cat_username'], 'payment_date DESC');
     }
     
     protected function completeApprovedPayments($payments)
