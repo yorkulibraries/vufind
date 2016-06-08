@@ -5,17 +5,17 @@
   {foreach from=$paymentNotifications item=p}
     {if $p->payment_status == 'COMPLETE'}
     <div class="alert alert-success" role="alert">
-      <p>{translate text='Your payment has been completed. Thank you.'}</strong>
+      <p>{translate text='Your payment is complete.'} {translate text='Thank you!'}</strong>
     </div>
     {/if}
     {if $p->payment_status == 'APPROVED'}
     <div class="alert alert-success" role="alert">
-      <p>{translate text='Your payment has been approved. Thank you.'}</strong>
+      <p>{translate text='Your payment is approved.'} {translate text='Thank you!'}</strong>
     </div>
     {/if}
     {if $p->payment_status == 'CANCELLED'}
     <div class="alert alert-danger" role="alert">
-      <p>{translate text='Your recent payment was cancelled.'}</strong>
+      <p>{translate text='Your payment is cancelled.'}</strong>
     </div>
     {/if}
   {/foreach}
