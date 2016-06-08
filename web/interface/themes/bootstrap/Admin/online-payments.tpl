@@ -52,30 +52,31 @@
 </div>
 
 {if !empty($payments)}
-<table class="table table-striped table-condensed table-bordered">
-<tbody class="rowlink">
-<tr>
-  <th>{translate text="Date"}</th>
-  <th>{translate text="Amount"}</th>
-  <th>{translate text="User ID"}</th>
-  <th>{translate text="Library"}</th>
-  <th>{translate text="Status"}</th>
-  <th>{translate text="YPB Order ID"}</th>
-  <th>{translate text="Receipt"}</th>
-</tr>
-{foreach from=$payments item=payment}
+<div class="table-responsive">
+  <p class="help-block">{translate text='Click on each item to view/print receipt.'}</p>
+  <table class="table table-striped table-condensed table-bordered">
+  <tbody class="rowlink">
   <tr>
-    <td>{$payment->payment_date}</td>
-    <td class="text-right">{$payment->amount|safe_money_format|escape}</td>
-    <td>{$payment->user_barcode}</td>
-    <td>{$payment->fines_group|translate|escape}</td>
-    <td>{$payment->payment_status|escape}</td>
-    <td>{$payment->ypborderid}</td>
-    <td><a class="rowlink" target="_blank" href="{$receiptBaseURL}{$payment->tokenid}">{translate text="View"}</a></td>
+    <th>{translate text="Date"}</th>
+    <th>{translate text="Amount"}</th>
+    <th>{translate text="User ID"}</th>
+    <th>{translate text="Library"}</th>
+    <th>{translate text="Status"}</th>
+    <th>{translate text="YPB Order ID"}</th>
   </tr>
-{/foreach}
-</tbody>
-</table>  
+  {foreach from=$payments item=payment}
+    <tr>
+      <td>{$payment->payment_date}</td>
+      <td class="text-right">{$payment->amount|safe_money_format|escape}</td>
+      <td>{$payment->user_barcode}</td>
+      <td>{$payment->fines_group|translate|escape}</td>
+      <td>{$payment->payment_status|escape}</td>
+      <td><a title="{translate text='View Receipt'}" class="rowlink" target="_blank" href="{$receiptBaseURL}{$payment->tokenid}">{$payment->ypborderid}</a></td>
+    </tr>
+  {/foreach}
+  </tbody>
+  </table>
+</div>  
 {/if}
 
 {include file="Search/result-pager.tpl"}
