@@ -55,7 +55,7 @@ class Payment extends DB_DataObject
         return self::getPayments($userId, $order, Payment::STATUS_INITIATED);
     }
     
-    public static function getPayments($userId, $order=null, $status=null)
+    public static function getPayments($userId, $order=null, $status=null, $notified=null)
     {
         $payment = new Payment();
         $payment->user_barcode = $userId;
@@ -65,6 +65,9 @@ class Payment extends DB_DataObject
         if (!empty($order)) {
             $payment->orderBy($order);
         }
+        if (!is_null($notified)) {
+            $payment->notified_user = $notified ? 1 : 0;
+        }
         $payment->find();
         $payments = array();
         while ($payment->fetch()) {
@@ -72,5 +75,4 @@ class Payment extends DB_DataObject
         }
         return $payments;
     }
-    
 }

@@ -1,6 +1,26 @@
 {if $user->cat_username}
   <h1>{translate text='Fines'}</h1>  
   
+  {if !empty($paymentNotifications)}
+  {foreach from=$paymentNotifications item=p}
+    {if $p->payment_status == 'COMPLETE'}
+    <div class="alert alert-success" role="alert">
+      <p>{translate text='Your payment has been completed. Thank you.'}</strong>
+    </div>
+    {/if}
+    {if $p->payment_status == 'APPROVED'}
+    <div class="alert alert-success" role="alert">
+      <p>{translate text='Your payment has been approved. Thank you.'}</strong>
+    </div>
+    {/if}
+    {if $p->payment_status == 'CANCELLED'}
+    <div class="alert alert-danger" role="alert">
+      <p>{translate text='Your recent payment was cancelled.'}</strong>
+    </div>
+    {/if}
+  {/foreach}
+  {/if}
+  
   {if !empty($finesData)}
     {include file="MyResearch/fines-summary.tpl"}
     

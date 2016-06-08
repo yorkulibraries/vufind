@@ -72,6 +72,14 @@ class Fines extends PayFines
             $interface->assign('finesData', $result);
         }
         
+        // get recently completed payments that we have not notified user
+        $paymentNotifications = Payment::getPayments($this->patron['cat_username'], 'payment_date DESC', null, 0);
+        foreach ($paymentNotifications as $p) {
+            $p->notified_user = 1;
+            $p->update();
+        }
+        
+        $interface->assign('paymentNotifications', $paymentNotifications);
         $interface->assign('payments', $this->getPayments());
         $interface->assign('receiptBaseURL', PayFines::getReceiptBaseURL());
         $interface->setTemplate('fines.tpl');
