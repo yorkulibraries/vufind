@@ -223,6 +223,17 @@ class PayFines extends MyResearch
             exit;
         }
         
+        $this->logger->log('YPB verified payment amount: ' . $verified['amount']);
+        $this->logger->log('Calculated payment amount: ' . $payment->amount);
+        
+        // just to make sure, check amount paid with amount we sent to YPB
+        if (floatval($verified['amount']) != floatval($payment->amount)) {
+            $this->logger->log('YPB payment amount is not equal calculated payment amount for payment ID: ' . $payment->id, PEAR_LOG_EMEG);
+            $this->logger->log('Redirecting to display fines page...');
+            $this->redirectToDisplayFines();
+            exit;
+        }
+        
         // payment has been approved, update status
         $this->paymentApproved($payment, $verified);
         
