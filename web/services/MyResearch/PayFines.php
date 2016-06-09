@@ -127,6 +127,10 @@ class PayFines extends MyResearch
             exit;
         }
         
+        // create this payment-in-progress record
+        $payment = $this->initPaymentRecord($hash, $itemsToPay['total']);
+        $this->logger->log('Payment ID: ' . $payment->id . ' inserted into VuFind DB.');
+        
         // get the application ID and password to the YPB store
         $paymentAppInfo = $this->getPaymentApplicationInfo($finesGroup);
         
@@ -147,6 +151,7 @@ class PayFines extends MyResearch
         $order->ConfigSettings->UrlFail = $this->getPayFinesURL();
         $order->ConfigSettings->Language = $ypbLanguage;
         $order->ConfigSettings->ShowOrderDetails = true;
+        $order->OrderDetails->OrderId = $payment->id;
 
         // list all the selected bills in this order
         $countItems = count($itemsToPay['items']);
@@ -161,13 +166,23 @@ class PayFines extends MyResearch
 
         // get the transaction token
         $tokenId = $broker->GetToken($order);
+        if (empty($tokenId)) {
+            $this->logger->log('Cannot get token from YPB Broker, redirecting to display fines.', PEAR_LOG_EMERG);
+            $this->redirectToDisplayFines();
+            exit;
+        }
         $this->logger->log('Got token ID: ' . $tokenId);
-
-        // create this payment-in-progress record
-        $paymentId = $this->initPaymentRecord($tokenId, $hash, $itemsToPay['total']);
+        $this->logger->log('Updating payment ID: ' . $payment->id . ' with new token: ' . $tokenId);
+        $payment->tokenid = $tokenId;
+        if (!$payment->update()) {
+            $this->logger->log('Unable to update payment ID: ' . $payment->id . ' with new token', PEAR_LOG_EMERG);
+            $this->logger->log('Redirect to display fines.');
+            $this->redirectToDisplayFines();
+            exit;
+        }
         
         // create the paid bill records
-        $this->initPaidBillRecords($paymentId, $itemsToPay);
+        $this->initPaidBillRecords($payment->id, $itemsToPay);
 
         // send the user to the YPB payment page 
         $this->logger->log('Redirecting to YPB payment page');
@@ -287,11 +302,12 @@ class PayFines extends MyResearch
         exit;
     }
     
-    private function initPaymentRecord($tokenId, $hash, $total)
+    private function initPaymentRecord($hash, $total)
     {
         $this->logger->log('Inserting payment-in-progress into VuFind db');
+        $this->logger->log('Using hash as tokenid: ' . $hash);
         $payment = new Payment();
-        $payment->tokenid = $tokenId;
+        $payment->tokenid = $hash;
         $payment->payment_hash = $hash;
         $payment->payment_date = date('Y-m-d H:i:s');
         $payment->amount = $total;
@@ -303,7 +319,7 @@ class PayFines extends MyResearch
             $this->logger->log("Got error while inserting into payment table", PEAR_LOG_EMERG);
             PEAR::raiseError('Unable to save payment to database.');
         }
-        return $paymentId;
+        return $payment;
     }
     
     private function initPaidBillRecords($paymentId, $itemsToPay)
@@ -405,16 +421,22 @@ class PayFines extends MyResearch
         $this->logger->log('Aborting/cancelling payment token: ' . $payment->tokenid);
         $pb = $payment->getPaidBills();
         foreach ($pb as $b) {
+            $this->logger->log('Setting payment status to ' . Payment::STATUS_CANCELLED . ' for Paid_bill ID: ' . $b->id);
             $b->payment_status = Payment::STATUS_CANCELLED;
             // because bill_key must be unique, we append the payment ID to the bill_key
             // this will ensure future payments for this bill will be possible
+            $this->logger->log('Appending payment id to bill_key for Paid_bill ID: ' . $b->id . ' to invalidate it.');
             $b->bill_key = $b->bill_key . '|' . $payment->id;
+            $this->logger->log('New bill_key will be: ' . $b->bill_key . ' for paid_bill ID: ' . $b->id);
             $b->update();
         }
+        $this->logger->log('Setting payment status to ' . Payment::STATUS_CANCELLED . ' Payment ID: ' . $payment->id);
         $payment->payment_status = Payment::STATUS_CANCELLED;
         // because payment hash must be unique, we append the payment ID to the payment hash
         // this will ensure future payments for the same bills will be possible
+        $this->logger->log('Appending payment id to payment_hash for Payment ID: ' . $payment->id . ' to invalidate it.');
         $payment->payment_hash = $payment->payment_hash . '|' . $payment->id;
+        $this->logger->log('New payment_hash will be: ' . $payment->payment_hash . ' for payment ID: ' . $payment->id);
         $payment->update();
     }
     
