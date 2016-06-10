@@ -43,6 +43,9 @@ class PayFines extends MyResearch
 {
     public function __construct()
     {
+        global $configArray;
+        global $interface;
+        
         parent::__construct();
         
         $patron = UserAccount::catalogLogin();
@@ -62,6 +65,8 @@ class PayFines extends MyResearch
         
         $this->patron = $patron;
         $this->logger = $this->getLogger();
+        
+        $interface->assign('showBillKey', $configArray['Fines']['show_bill_key']);
     }
     
     /**

@@ -712,6 +712,8 @@ api_user[]=fines_group_YORK:SCVUFIND,SCVUFIND,YORK
 api_user[]=fines_group_LAW:LAWVUFIND,LAWVUFIND,YORK-LAW
 ; payment type as configured in Symphony for all transactions
 payment_type="ONLINE"
+; show/not show the bill key in bill lists
+show_bill_key=true
 
 [YorkPaymentBroker]
 wsdl=https://xxx.uit.yorku.ca/ypbpaymentservice/?wsdl

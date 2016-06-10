@@ -32,6 +32,9 @@
       <caption class="sr-only">{translate text='Bills'}</caption>
       <thead>
       <tr>
+        {if $showBillKey}
+        <th>{translate text='ID'}</th>
+        {/if}
         <th>{translate text='Date'}</th>
         {*<th>{translate text='Amount'}</th>*}
         <th>{translate text='Balance'}</th>
@@ -42,6 +45,9 @@
       <tbody class="rowlink">
         {foreach from=$groupData.items item=record}
         <tr>
+          {if $showBillKey}
+          <td>{$record.bill_key|escape}</td>
+          {/if}
           <td>{$record.date_billed|escape}</td>
           {*<td>{$record.amount|safe_money_format|escape}</td>*}
           <td>{$record.balance|safe_money_format|escape}</td>
