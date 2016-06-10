@@ -80,6 +80,7 @@
       <caption class="sr-only">{translate text='Your Online Payments'}</caption>
       <thead>
       <tr>
+        <th>{translate text='ID'}</th>
         <th>{translate text='Date'}</th>
         <th>{translate text='Amount'}</th>
         <th>{translate text='Library'}</th>
@@ -89,6 +90,7 @@
       <tbody class="rowlink">
         {foreach from=$payments item=p}
         <tr {if $p->payment_status=='COMPLETE'}class="success"{elseif $p->payment_status=='APPROVED'}class="info"{elseif $p->payment_status=='CANCELLED'}class="danger"{/if}>
+          <td>{$p->id|escape}</td>
           <td>{$p->payment_date|strtotime|date_format:'%b %d, %Y'|escape}</td>
           <td>{$p->amount|safe_money_format|escape}</td>
           <td>{$p->fines_group|translate|escape}</td>
