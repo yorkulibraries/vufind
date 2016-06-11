@@ -94,7 +94,7 @@ function sendPayBillsToSymphony($job)
     $apiUser = $apiStation = $apiLibrary = null;
     foreach ($configArray['Fines']['api_user'] as $s) {
         list($group, $values) = explode(':', $s);
-        if ($group == $finesGroup) {
+        if ($group == $payment->fines_group) {
             list($apiUser, $apiStation, $apiLibrary) = explode(',', $values);
             break;
         }

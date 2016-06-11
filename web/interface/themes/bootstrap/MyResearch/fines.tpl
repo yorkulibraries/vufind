@@ -13,6 +13,11 @@
       <p>{translate text='Your payment is approved.'} {translate text='Thank you!'}</strong>
     </div>
     {/if}
+    {if $p->payment_status == 'PROCESSING'}
+    <div class="alert alert-info" role="alert">
+      <p>{translate text='Your payment is being processed.'}</strong>
+    </div>
+    {/if}
     {if $p->payment_status == 'CANCELLED'}
     <div class="alert alert-danger" role="alert">
       <p>{translate text='Your payment is cancelled.'}</strong>
