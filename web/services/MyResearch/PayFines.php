@@ -497,18 +497,40 @@ class PayFines extends MyResearch
         if ($hash !== $payment->payment_hash) {
             $this->logger->log('Saved payment hash !== generated hash. Something went very wrong.', PEAR_LOG_EMERG);
             $this->logger->log('Cannot complete payment ID: ' . $payment->id);
-        } else {            
-            // send pay bills transaction to Symphony
-            $this->sendPayBillsToSymphony($payment->fines_group, $paidBills, $payment->tokenid);
-            
-            // update payment status to COMPLETE
-            $payment->payment_status = Payment::STATUS_COMPLETE;
-            $payment->update();
-            
-            // tell YPB we got it
+        } else {
+            // tell YPB we got the payment
             $this->acknowledgeComplete($payment->fines_group, $payment->ypborderid, $payment->tokenid);
             
-            $this->logger->log('Payment ID: ' . $payment->id . ' is COMPLETE.');
+            // send pay bills transactions to Symphony as a Gearman background job
+            $client = new GearmanClient();
+            $client->addServer();
+            $workload = json_encode(
+                array(
+                    'finesGroup' => $payment->fines_group,
+                    'paymentId' => $payment->id,
+                    'paymentHash' => $payment->payment_hash,
+                    'tokenId' => $payment->tokenid,
+                    'userBarcode' => $this->patron['cat_username'],
+                    'userKey' => $this->patron['user_key']
+                )
+            );
+            $this->logger->log('Sending sendPayBillsToSymphony task to Gearman for payment: ' . $payment->id);
+            $this->logger->log('workload: ' . $workload); 
+            $jobHandle = $client->doBackground('sendPayBillsToSymphony', $workload, $payment->tokenid);               
+            $returnCode = $client->returnCode();
+            if ($returnCode === GEARMAN_SUCCESS) {
+                $this->logger->log('Gearman job successfully submitted for payment: ' . $payment->id);
+                
+                // update payment status to PROCESSING
+                $payment->payment_status = Payment::STATUS_PROCESSING;
+                $payment->notified_user = 0;
+                $payment->update();
+                
+                $this->logger->log('Payment ID: ' . $payment->id . ' status updated to: ' . $payment->payment_status);
+            } else {
+                $this->logger->log('Cannot submit Gearman job for payment: ' . $payment->id . '. Return code: ' . $returnCode);
+                $this->logger->log('Payment ID: ' . $payment->id . ' status is: ' . $payment->payment_status);
+            }
         }
     }
     
@@ -623,50 +645,7 @@ class PayFines extends MyResearch
         $this->logger->log("Cannot verify token: $tokenId");
         return false;
     }
-    
-    protected function sendPayBillsToSymphony($finesGroup, $paidBills, $tokenId)
-    {
-        global $configArray;
         
-        $this->logger->log('Sending pay bill requests to Symphony...');
-        
-        // extract required configuration values
-        $apiUser = $apiStation = $apiLibrary = null;
-        foreach ($configArray['Fines']['api_user'] as $s) {
-            list($group, $values) = explode(':', $s);
-            if ($group == $finesGroup) {
-                list($apiUser, $apiStation, $apiLibrary) = explode(',', $values);
-                break;
-            }
-        }
-        $paymentType = $configArray['Fines']['payment_type'];
-        
-        $this->logger->log("Using configured apiUser: $apiUser, apiStation: $apiStation, apiLibrary: $apiLibrary, paymentType: $paymentType");
-        
-        $results = $this->catalog->payBills($paidBills, $tokenId, $apiUser, $apiStation, $apiLibrary, $paymentType);
-        
-        $this->logger->log($results);
-        
-        // deal with the results
-        foreach ($results as $key => $result) {            
-            if (!$result['api_successful']) {
-                $api_response = $result['api_response'];
-                $this->logger->log("Got error while paying bill $key $api_response", PEAR_LOG_EMERG);
-            }
-            $pb = new Paid_bill();
-            $pb->bill_key = $key;
-            if($pb->find(true)) {
-                $pb->api_request = $result['api_request'];
-                $pb->api_response = $result['api_response'];
-                $pb->api_successful = $result['api_successful'];
-                $pb->payment_status = Payment::STATUS_COMPLETE;
-                $pb->update();
-            } else {
-                $this->logger->log("paid bill $key not found in db", PEAR_LOG_EMERG);
-            }
-        }
-    }
-    
     protected function verifyInitiatedPayments()
     {
         $payments = Payment::getInitiatedPayments($this->patron['cat_username']);

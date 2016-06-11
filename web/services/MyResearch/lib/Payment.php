@@ -11,6 +11,7 @@ class Payment extends DB_DataObject
     const STATUS_INITIATED = 'INITIATED';
     const STATUS_APPROVED = 'APPROVED';
     const STATUS_COMPLETE = 'COMPLETE';
+    const STATUS_PROCESSING = 'PROCESSING';
     const STATUS_CANCELLED = 'CANCELLED';
     
     ###START_AUTOCODE
