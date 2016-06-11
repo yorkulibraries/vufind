@@ -156,7 +156,7 @@ class PayFines extends MyResearch
         $order->ConfigSettings->UrlFail = $this->getPayFinesURL();
         $order->ConfigSettings->Language = $ypbLanguage;
         $order->ConfigSettings->ShowOrderDetails = true;
-        $order->OrderDetails->OrderId = $payment->id;
+        $order->OrderDetails->OrderId = $configArray['Fines']['payment_id_prefix'] . $payment->id;
 
         // list all the selected bills in this order
         $countItems = count($itemsToPay['items']);
