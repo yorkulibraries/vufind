@@ -31,4 +31,19 @@ class Paid_bill extends DB_DataObject
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE
+    
+    public static function getConfirmedPaidBills($userKey)
+    {
+        $paidBills = array();
+        $p = new Paid_bill();
+        $p->user_key = $userKey;
+        $p->find();
+        while ($p->fetch()) {
+            if ($p->payment_status != Payment::STATUS_CANCELLED && $p->payment_status != Payment::STATUS_INITIATED) {
+                $paidBills[] = clone($p);
+            }
+        }
+        
+        return $paidBills;
+    }
 }

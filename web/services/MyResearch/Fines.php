@@ -58,21 +58,9 @@ class Fines extends PayFines
         // complete the approved payments
         $this->completeApprovedPayments($this->getApprovedPayments());
         
-        // get the bills from catalog
-        $result = $this->catalog->getMyFines($this->patron);
+        $interface->assign('finesData', $this->getUnpaidBills());
         
-        if (!PEAR::isError($result)) {
-            foreach ($result as $group => $data) {
-                $items = $data['items'];
-                for ($i = 0; $i < count($items); $i++) {
-                    $record = $this->db->getRecord($items[$i]['id']);
-                    $result[$group]['items'][$i]['title'] = $record ? $record['title'] : null;
-                }
-            }
-            $interface->assign('finesData', $result);
-        }
-        
-        // get recently completed payments that we have not notified user
+        // get recently payments that we have not notified user
         $paymentNotifications = Payment::getPayments($this->patron['cat_username'], 'payment_date DESC', null, 0);
         foreach ($paymentNotifications as $p) {
             if ($p->payment_status != Payment::STATUS_PROCESSING) {
@@ -87,6 +75,43 @@ class Fines extends PayFines
         $interface->setTemplate('fines.tpl');
         $interface->setPageTitle('Your Fines');
         $interface->display('layout.tpl');
+    }
+    
+    private function getUnpaidBills()
+    {
+        // get the bills from catalog
+        $result = $this->catalog->getMyFines($this->patron);
+        if (!PEAR::isError($result)) {
+            $paid = Paid_bill::getConfirmedPaidBills($this->patron['user_key']);
+            $paidKeys = array();
+            foreach ($paid as $p) {
+                $paidKeys[] = $p->bill_key;
+            }
+            $filtered = array();
+            foreach ($result as $group => $data) {
+                if (!isset($filtered[$group])) {
+                    $filtered[$group] = array(
+                        'items' => array(),
+                        'groupTotal' => 0.00
+                    );
+                }
+                $items = $data['items'];
+                for ($i = 0, $j = 0; $i < count($items); $i++) {
+                    if (!in_array($items[$i]['bill_key'], $paidKeys)) {
+                        $filtered[$group]['items'][] = $items[$i];
+                        $filtered[$group]['groupTotal'] += $items[$i]['balance'];
+                        
+                        // get the title from the solr index
+                        $record = $this->db->getRecord($filtered[$group]['items'][$j]['id']);
+                        $filtered[$group]['items'][$j]['title'] = $record ? $record['title'] : null;
+                        
+                        $j++;
+                    }
+                }
+            }
+            return $filtered;
+        }
+        return $result;
     }
 }
 

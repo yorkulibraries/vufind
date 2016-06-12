@@ -416,6 +416,7 @@ class PayFines extends MyResearch
     protected function paymentApproved($payment, $verified)
     {
         $this->logger->log('Payment APPROVED. Updating payment record for token: ' . $payment->tokenid);
+        $this->logger->log('Setting payment status to ' . Payment::STATUS_APPROVED . ' Payment ID: ' . $payment->id);
         $payment->payment_status = Payment::STATUS_APPROVED;
         if (isset($verified['authcode'])) {
             $payment->authcode = $verified['authcode'];
@@ -430,6 +431,14 @@ class PayFines extends MyResearch
             $payment->ypborderid = $verified['ypborderid'];
         }
         $payment->update();
+        
+        // update the status of the paid bill records for this payment
+        $pb = $payment->getPaidBills();
+        foreach ($pb as $b) {
+            $this->logger->log('Setting payment status to ' . $payment->payment_status . ' for Paid_bill ID: ' . $b->id);
+            $b->payment_status = $payment->payment_status;
+            $b->update();
+        }
     }
     
     protected function abortPayment($payment)
@@ -527,6 +536,14 @@ class PayFines extends MyResearch
                 $payment->update();
                 
                 $this->logger->log('Payment ID: ' . $payment->id . ' status updated to: ' . $payment->payment_status);
+                
+                // update the status of the paid bill records for this payment
+                $pb = $payment->getPaidBills();
+                foreach ($pb as $b) {
+                    $b->payment_status = $payment->payment_status;
+                    $b->update();
+                    $this->logger->log('Payment status updated to ' . $payment->payment_status . ' for Paid_bill ID: ' . $b->id);
+                }
             } else {
                 $this->logger->log('Cannot submit Gearman job for payment: ' . $payment->id . '. Return code: ' . $returnCode);
                 $this->logger->log('Payment ID: ' . $payment->id . ' status is: ' . $payment->payment_status);
