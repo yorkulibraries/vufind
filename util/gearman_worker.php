@@ -56,6 +56,7 @@ while ($worker->work());
 function sendPayBillsToSymphony($job)
 {
     global $configArray;
+    global $logger;
     
     // Setup Local Database Connection
     ConnectionManager::connectToDatabase();
