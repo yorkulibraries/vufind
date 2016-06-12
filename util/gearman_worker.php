@@ -38,6 +38,7 @@ require_once 'services/MyResearch/lib/Payment.php';
 
 // Read Config file
 $configArray = readConfig();
+date_default_timezone_set($configArray['Site']['timezone']);
 
 // get a logger
 $logFile = $configArray['Fines']['payment_log_dir'] . '/' . date('Ymd') . '/gearman.log';
