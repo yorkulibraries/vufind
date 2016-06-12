@@ -1,3 +1,9 @@
+source /opt/rh/php54/enable
+yum install gearmand libgearman-devel
+pecl install gearman
+echo 'extension=gearman.so' > /opt/rh/php54/root/etc/php.d/gearman.ini 
+
+
 yum install python-setuptools
 easy_install supervisor
 echo_supervisord_conf > /etc/supervisor.conf
