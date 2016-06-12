@@ -416,8 +416,11 @@ class PayFines extends MyResearch
     protected function paymentApproved($payment, $verified)
     {
         $this->logger->log('Payment APPROVED. Updating payment record for token: ' . $payment->tokenid);
-        $this->logger->log('Setting payment status to ' . Payment::STATUS_APPROVED . ' Payment ID: ' . $payment->id);
-        $payment->payment_status = Payment::STATUS_APPROVED;
+        
+        // update payment status to APPROVED
+        $this->updatePaymentStatus($payment, Payment::STATUS_APPROVED);
+        
+        // update other info if available
         if (isset($verified['authcode'])) {
             $payment->authcode = $verified['authcode'];
         }
@@ -431,14 +434,6 @@ class PayFines extends MyResearch
             $payment->ypborderid = $verified['ypborderid'];
         }
         $payment->update();
-        
-        // update the status of the paid bill records for this payment
-        $pb = $payment->getPaidBills();
-        foreach ($pb as $b) {
-            $this->logger->log('Setting payment status to ' . $payment->payment_status . ' for Paid_bill ID: ' . $b->id);
-            $b->payment_status = $payment->payment_status;
-            $b->update();
-        }
     }
     
     protected function abortPayment($payment)
@@ -472,7 +467,7 @@ class PayFines extends MyResearch
         // start logger using username as file name
         $logFile = $configArray['Fines']['payment_log_dir'] . '/' . date('Ymd') . '/' . $this->patron['cat_username'] . '.log';
         $logger = Log::singleton('file', $logFile);
-        
+        $logger->setMask(Log::UPTO($logger->stringToPriority($configArray['Fines']['log_level'])));
         return $logger;
     }
     
@@ -510,6 +505,9 @@ class PayFines extends MyResearch
             // tell YPB we got the payment
             $this->acknowledgeComplete($payment->fines_group, $payment->ypborderid, $payment->tokenid);
             
+            // update payment status to PROCESSING
+            $this->updatePaymentStatus($payment, Payment::STATUS_PROCESSING);
+            
             // send pay bills transactions to Symphony as a Gearman background job
             $client = new GearmanClient();
             $client->addServer();
@@ -529,26 +527,33 @@ class PayFines extends MyResearch
             $returnCode = $client->returnCode();
             if ($returnCode === GEARMAN_SUCCESS) {
                 $this->logger->log('Gearman job successfully submitted for payment: ' . $payment->id);
-                
-                // update payment status to PROCESSING
-                $payment->payment_status = Payment::STATUS_PROCESSING;
-                $payment->notified_user = 0;
-                $payment->update();
-                
-                $this->logger->log('Payment ID: ' . $payment->id . ' status updated to: ' . $payment->payment_status);
-                
-                // update the status of the paid bill records for this payment
-                $pb = $payment->getPaidBills();
-                foreach ($pb as $b) {
-                    $b->payment_status = $payment->payment_status;
-                    $b->update();
-                    $this->logger->log('Payment status updated to ' . $payment->payment_status . ' for Paid_bill ID: ' . $b->id);
-                }
             } else {
                 $this->logger->log('Cannot submit Gearman job for payment: ' . $payment->id . '. Return code: ' . $returnCode);
-                $this->logger->log('Payment ID: ' . $payment->id . ' status is: ' . $payment->payment_status);
+                $this->updatePaymentStatus($payment, Payment::STATUS_APPROVED);
             }
         }
+    }
+    
+    protected function updatePaymentStatus($payment, $status)
+    {
+        $previousStatus = $payment->payment_status;
+        
+        // update payment status
+        $payment->payment_status = $status;
+        $payment->notified_user = 0;
+        $payment->update();
+        
+        $this->logger->log('Payment ID: ' . $payment->id . ' status updated to: ' . $payment->payment_status);
+        
+        // update the status of the paid bill records for this payment
+        $pb = $payment->getPaidBills();
+        foreach ($pb as $b) {
+            $b->payment_status = $payment->payment_status;
+            $b->update();
+            $this->logger->log('Payment status updated to ' . $payment->payment_status . ' for Paid_bill ID: ' . $b->id);
+        }
+        
+        return $previousStatus;
     }
     
     protected function generatePaymentHashFromBills($finesGroup, $bills) 

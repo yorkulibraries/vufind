@@ -716,6 +716,8 @@ payment_type="ONLINE"
 show_bill_key=true
 ; a prefix to add to payment id - leave blank unless in dev
 payment_id_prefix=0
+; logging level
+log_level=info
 
 [YorkPaymentBroker]
 wsdl=https://xxx.uit.yorku.ca/ypbpaymentservice/?wsdl

@@ -43,6 +43,7 @@ date_default_timezone_set($configArray['Site']['timezone']);
 // get a logger
 $logFile = $configArray['Fines']['payment_log_dir'] . '/' . date('Ymd') . '/gearman.log';
 $logger = Log::singleton('file', $logFile);
+$logger->setMask(Log::UPTO($logger->stringToPriority($configArray['Fines']['log_level'])));
 
 $logger->log('VuFind gearman worker starting.');
 $worker = new GearmanWorker();

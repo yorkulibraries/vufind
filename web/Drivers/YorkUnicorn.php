@@ -426,9 +426,12 @@ class YorkUnicorn extends Unicorn
                 'api_station' => $apiStation,
                 'api_library' => $apiLibrary
             );
-            // decode response from API server
+            
+            $logger->log('Sending pay bill API transaction for bill key: ' . $bill_key);
             $response = $this->querySirsi($params);
             $logger->log($response, PEAR_LOG_DEBUG);
+            
+            // decode response from API server
             list($api_request, $api_response) = explode("\n", $response);
             $expected = '^@01PYMA$(212)^MN212^UO' . $user_barcode;
             $result = array(
