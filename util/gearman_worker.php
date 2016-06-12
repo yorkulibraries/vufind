@@ -44,12 +44,7 @@ date_default_timezone_set($configArray['Site']['timezone']);
 $logFile = $configArray['Fines']['payment_log_dir'] . '/' . date('Ymd') . '/gearman.log';
 $logger = Log::singleton('file', $logFile);
 
-// Setup Local Database Connection
-ConnectionManager::connectToDatabase();
-
-// Connect to ILS
-$catalog = ConnectionManager::connectToCatalog();
-
+$logger->log('VuFind gearman worker starting.');
 $worker = new GearmanWorker();
 $worker->addServer();
 
@@ -61,8 +56,12 @@ while ($worker->work());
 function sendPayBillsToSymphony($job)
 {
     global $configArray;
-    global $catalog;
-    global $logger;
+    
+    // Setup Local Database Connection
+    ConnectionManager::connectToDatabase();
+
+    // Connect to ILS
+    $catalog = ConnectionManager::connectToCatalog();
         
     $logger->log('Begin processing job ID: ' . $job->unique());
     
