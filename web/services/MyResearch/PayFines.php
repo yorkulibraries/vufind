@@ -667,12 +667,52 @@ class PayFines extends MyResearch
         $this->logger->log("Cannot verify token: $tokenId");
         return false;
     }
+    
+    protected function isPaymentTokenActive($tokenId)
+    {
+         global $configArray;
+         global $interface;
+
+        // there is no documented SOAP API to verify that a transaction is still active
+        // so we have to resort to screen scraping the YPB payment page for this, at least for now.
+        $paymentURL = $configArray['YorkPaymentBroker']['payment_url'] . $tokenId;
+        $paymentActiveRegex = $configArray['YorkPaymentBroker']['payment_active_regex_' . $interface->getLanguage()];
         
+        $this->logger->log('Checking if payment token is still active for token ' . $tokenId);        
+        $this->logger->log("Requesting YPB payment page at: $paymentURL");
+        $html = file_get_contents($paymentURL);
+        $this->logger->log($html, PEAR_LOG_DEBUG);
+        if(preg_match($paymentActiveRegex, $html, $matches)) {
+            $match = $matches[1];
+            $this->logger->log($matches, PEAR_LOG_DEBUG);
+            if (strpos($match, $tokenId) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     protected function verifyInitiatedPayments()
     {
+        global $configArray;
+        
         $payments = Payment::getInitiatedPayments($this->patron['cat_username']);
         foreach ($payments as $payment) {
             $tokenId = $payment->tokenid;
+            
+            // if the payment transaction is still active, then 
+            // send the user to the payment screen
+            if ($this->isPaymentTokenActive($tokenId)) {
+                $this->logger->log("Payment token $tokenId is still active.");
+                
+                // send the user to the YPB payment page 
+                $this->logger->log('Redirecting to YPB payment page');
+                header('Location: ' . $configArray['YorkPaymentBroker']['payment_url'] . $tokenId);
+                exit;
+            }
+            
+            $this->logger->log("Payment token $tokenId is NOT active.");
+            
             $verified = $this->verifyPayment($tokenId);
             if ($verified !== false && is_array($verified)) {
                 $this->paymentApproved($payment, $verified);
