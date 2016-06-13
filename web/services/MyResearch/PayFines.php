@@ -700,24 +700,19 @@ class PayFines extends MyResearch
         foreach ($payments as $payment) {
             $tokenId = $payment->tokenid;
             
-            // if the payment transaction is still active, then 
-            // send the user to the payment screen
             if ($this->isPaymentTokenActive($tokenId)) {
-                $this->logger->log("Payment token $tokenId is still active.");
-                
-                // send the user to the YPB payment page 
-                $this->logger->log('Redirecting to YPB payment page');
-                header('Location: ' . $configArray['YorkPaymentBroker']['payment_url'] . $tokenId);
-                exit;
-            }
-            
-            $this->logger->log("Payment token $tokenId is NOT active.");
-            
-            $verified = $this->verifyPayment($tokenId);
-            if ($verified !== false && is_array($verified)) {
-                $this->paymentApproved($payment, $verified);
+                // the payment token is still active, don't do anything
+                $this->logger->log("Payment token $tokenId is still active. Leaving it alone.");
             } else {
-                $this->abortPayment($payment);
+                // the payment token is not active, either it is either approved or cancelled/aborted
+                $this->logger->log("Payment token $tokenId is NOT active.");
+            
+                $verified = $this->verifyPayment($tokenId);
+                if ($verified !== false && is_array($verified)) {
+                    $this->paymentApproved($payment, $verified);
+                } else {
+                    $this->abortPayment($payment);
+                }
             }
         }
     }
