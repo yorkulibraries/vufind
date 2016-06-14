@@ -30,6 +30,8 @@ class Payment extends DB_DataObject
     public $fines_group;                     // string(40)  not_null
     public $ypborderid;                      // string(50)
     public $notified_user;                   // int(6)  not_null
+    public $status;                          // string(50)  
+    public $message;                         // string(100)
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE

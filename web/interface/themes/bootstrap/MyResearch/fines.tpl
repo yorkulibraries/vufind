@@ -5,22 +5,33 @@
   {foreach from=$paymentNotifications item=p}
     {if $p->payment_status == 'COMPLETE'}
     <div class="alert alert-success" role="alert">
-      <p>{translate text='Your payment is complete.'} {translate text='Thank you!'}</strong>
+      <p>{translate text='Your payment is complete.'} {translate text='Thank you!'}</p>
     </div>
     {/if}
     {if $p->payment_status == 'APPROVED'}
     <div class="alert alert-success" role="alert">
-      <p>{translate text='Your payment is approved.'} {translate text='Thank you!'}</strong>
+      <p>{translate text='Your payment is approved.'} {translate text='Thank you!'}</p>
     </div>
     {/if}
     {if $p->payment_status == 'PROCESSING'}
     <div class="alert alert-info" role="alert">
-      <p>{translate text='Your payment is being processed.'}</strong>
+      <p>{translate text='Your payment is being processed.'}</p>
     </div>
     {/if}
     {if $p->payment_status == 'CANCELLED'}
     <div class="alert alert-danger" role="alert">
-      <p>{translate text='Your payment is cancelled.'}</strong>
+      <p>{translate text='Your payment is cancelled.'}</p>
+      {if !empty($p->status)}
+        <p>{translate text='The credit card transaction status is:'} {$p->status|escape}</p>
+      {/if}
+      {if !empty($p->message)}
+        <p>{translate text='The credit card transaction message is:'} {$p->message|escape}</p>
+      {/if}
+    </div>
+    {/if}
+    {if $p->payment_status == 'INITIATED'}
+    <div class="alert alert-info" role="alert">
+      <p>{translate text='You have initiated the payment process, but have not yet made the payment.'}</p>
     </div>
     {/if}
   {/foreach}

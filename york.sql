@@ -62,6 +62,8 @@ CREATE TABLE IF NOT EXISTS `payment` (
   `user_barcode` varchar(14) NOT NULL,
   `fines_group` varchar(40) NOT NULL,
   `notified_user` SMALLINT NOT NULL DEFAULT 0,
+  `status` varchar(50),
+  `message` varchar(100),
   PRIMARY KEY (`id`),
   UNIQUE KEY `tokenid_UNIQUE` (`tokenid`),
   UNIQUE KEY `authcode_UNIQUE` (`authcode`),

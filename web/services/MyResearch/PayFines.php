@@ -86,15 +86,8 @@ class PayFines extends MyResearch
         }
         
         if (isset($_POST['status']) && !empty($_POST['status'])) {
-            if ($_POST['status'] == 'APPROVED') {
-                $this->doCompleteAction();
-                exit;
-            } else {
-                $this->logger->log('Payment not approved. Status is ' . $_POST['status']);
-                $this->logger->log('Redirecting to display fines page.');
-                $this->redirectToDisplayFines();
-                exit;
-            }
+            $this->doCompleteAction();
+            exit;
         }
 
         // default
@@ -215,19 +208,28 @@ class PayFines extends MyResearch
             $this->redirectToDisplayFines();
             exit;
         }
-
-        // verify that the payment has been processed successfully, otherwise abort/cancel the payment
-        $verified = $this->verifyPayment($payment->tokenid);
-        if ($verified === false || !is_array($verified)) {
-            $this->logger->log('Payment cannot be verified for token: ' . $payment->tokenid, PEAR_LOG_EMERG);
-            
-            $this->abortPayment($payment);
-            
+        
+        // when we come back from payment page, the status for this payment record
+        // SHOULD still be INITIATED, if it isn't then the user may have clicked 
+        // back or refresh. In this case, we redirect back to display fines
+        if ($payment->payment_status != Payment::STATUS_INITIATED) {
+            $this->logger->log('Found payment record with ID: ' . $payment->id . '. Status should be: ' . Payment::STATUS_INITIATED . ', but got: ' . $payment->payment_status);
             $this->logger->log('Redirecting to display fines page...');
             $this->redirectToDisplayFines();
             exit;
         }
+
+        // verify that the payment has been processed successfully, otherwise abort/cancel the payment
+        $verified = $this->verifyPayment($payment->tokenid);
         
+        if (!$verified['approved']) {
+            $this->logger->log('Payment cannot be verified for token: ' . $payment->tokenid, PEAR_LOG_EMERG);
+            $this->abortPayment($payment, $verified);
+            $this->displayErrorMessage('Transaction not approved.', $verified);
+            exit;
+        }
+        
+        $this->logger->log('Message is ' . $verified['message']);
         $this->logger->log('YPB verified payment amount: ' . $verified['amount']);
         $this->logger->log('Calculated payment amount: ' . $payment->amount);
         
@@ -299,6 +301,19 @@ class PayFines extends MyResearch
         $interface->assign('total', $itemsToPay['total']);
         $interface->assign('group', $itemsToPay['group']);
         $interface->setTemplate('pay-fines.tpl');
+        $interface->setPageTitle('Pay Fines');
+        $interface->display('layout.tpl');
+        exit;
+    }
+    
+    private function displayErrorMessage($message, $paymentStatus=false)
+    {
+        global $interface;
+        global $configArray;
+        
+        $interface->assign('message', $message);
+        $interface->assign('paymentStatus', $paymentStatus);
+        $interface->setTemplate('pay-fines-error.tpl');
         $interface->setPageTitle('Pay Fines');
         $interface->display('layout.tpl');
         exit;
@@ -433,10 +448,16 @@ class PayFines extends MyResearch
         if (isset($verified['ypborderid'])) {
             $payment->ypborderid = $verified['ypborderid'];
         }
+        if (isset($verified['status'])) {
+            $payment->status = $verified['status'];
+        }
+        if (isset($verified['message'])) {
+            $payment->message = $verified['message'];
+        }
         $payment->update();
     }
     
-    protected function abortPayment($payment)
+    protected function abortPayment($payment, $paymentResult)
     {
         $this->logger->log('Aborting/cancelling payment token: ' . $payment->tokenid);
         $pb = $payment->getPaidBills();
@@ -457,6 +478,11 @@ class PayFines extends MyResearch
         $this->logger->log('Appending payment id to payment_hash for Payment ID: ' . $payment->id . ' to invalidate it.');
         $payment->payment_hash = $payment->payment_hash . '|' . $payment->id;
         $this->logger->log('New payment_hash will be: ' . $payment->payment_hash . ' for payment ID: ' . $payment->id);
+        
+        // save the credit card status and message
+        $payment->status = $paymentResult['status'];
+        $payment->message = $paymentResult['message'];
+        
         $payment->update();
     }
     
@@ -628,14 +654,30 @@ class PayFines extends MyResearch
         $authCodeRegex = $configArray['YorkPaymentBroker']['auth_code_regex_' . $interface->getLanguage()];
         $amountRegex = $configArray['YorkPaymentBroker']['amount_regex_' . $interface->getLanguage()];
         $ypbOrderIdRegex = $configArray['YorkPaymentBroker']['ypborderid_regex_' . $interface->getLanguage()];
-
+        $statusRegex = $configArray['YorkPaymentBroker']['status_regex_' . $interface->getLanguage()];
+        $messageRegex = $configArray['YorkPaymentBroker']['message_regex_' . $interface->getLanguage()];
+        
+        // get the ypborderid from Payment page
+        $this->logger->log('Trying to get the ypborderid from YPB payment page');
+        $paymentURL = $configArray['YorkPaymentBroker']['payment_url'] . $tokenId;
+        $this->logger->log("Requesting YPB payment page at: $paymentURL");
+        $html = file_get_contents($paymentURL);
+        $this->logger->log($html, PEAR_LOG_DEBUG);
+        preg_match($ypbOrderIdRegex, $html, $ypbOrderIdMatches);
+        $ypborderid = $ypbOrderIdMatches[1];
+        
+        // get the rest of the info from the receipt page
         $this->logger->log("Verifying token $tokenId with YPB receipt page.");
         $this->logger->log("Requesting YPB receipt page at: $receiptURL");
         $html = file_get_contents($receiptURL);
         $this->logger->log($html, PEAR_LOG_DEBUG);
+        preg_match($messageRegex, $html, $messageMatches);
+        $message = $messageMatches[1];
+        preg_match($statusRegex, $html, $statusMatches);
+        $status = $statusMatches[1];
         
+        // approved if the html contains the approval message
         $approved = (stripos($html, $approvedMessage) !== false);
-        
         if ($approved) {
             $this->logger->log("$tokenId status is APPROVED");
             preg_match($refNumRegex, $html, $refNumMatches);
@@ -644,28 +686,24 @@ class PayFines extends MyResearch
             $refnum = $refNumMatches[1];
             $authcode = $authCodeMatches[1];
             $amount = $amountMatches[1];
-
-            // get the ypborderid from Payment page
-            $this->logger->log('Trying to get the ypborderid from YPB payment page');
-            $paymentURL = $configArray['YorkPaymentBroker']['payment_url'] . $tokenId;
-            $this->logger->log("Requesting YPB payment page at: $paymentURL");
-            $html = file_get_contents($paymentURL);
-            $this->logger->log($html, PEAR_LOG_DEBUG);
-            preg_match($ypbOrderIdRegex, $html, $ypbOrderIdMatches);
-            $ypborderid = $ypbOrderIdMatches[1];
             
             $result = array(
                 'refnum' => $refnum,
                 'authcode' => $authcode,
                 'amount' => $amount,
                 'ypborderid' => $ypborderid,
+                'message' => $message,
+                'approved' => true,
+                'status' => $status,
             );
             
-            $this->logger->log($result);
+            $this->logger->log(print_r($result, true));
             return $result;
         }
         $this->logger->log("Cannot verify token: $tokenId");
-        return false;
+        $result = array('approved' => false, 'message' => $message, 'status' => $status);
+        $this->logger->log(print_r($result, true));
+        return $result;
     }
     
     protected function isPaymentTokenActive($tokenId)
@@ -704,14 +742,14 @@ class PayFines extends MyResearch
                 // the payment token is still active, don't do anything
                 $this->logger->log("Payment token $tokenId is still active. Leaving it alone.");
             } else {
-                // the payment token is not active, either it is either approved or cancelled/aborted
+                // the payment token is not active, either it is approved or cancelled/aborted
                 $this->logger->log("Payment token $tokenId is NOT active.");
             
                 $verified = $this->verifyPayment($tokenId);
-                if ($verified !== false && is_array($verified)) {
+                if ($verified['approved']) {
                     $this->paymentApproved($payment, $verified);
                 } else {
-                    $this->abortPayment($payment);
+                    $this->abortPayment($payment, $verified);
                 }
             }
         }

@@ -63,7 +63,7 @@ class Fines extends PayFines
         // get recently payments that we have not notified user
         $paymentNotifications = Payment::getPayments($this->patron['cat_username'], 'payment_date DESC', null, 0);
         foreach ($paymentNotifications as $p) {
-            if ($p->payment_status != Payment::STATUS_PROCESSING) {
+            if (!($p->payment_status == Payment::STATUS_INITIATED || $p->payment_status == Payment::STATUS_PROCESSING)) {
                 $p->notified_user = 1;
                 $p->update();
             }
