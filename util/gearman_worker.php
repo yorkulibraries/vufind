@@ -43,7 +43,7 @@ date_default_timezone_set($configArray['Site']['timezone']);
 
 // use VuFind logger for the worker general logging
 $workerLogger = new Logger();
-$workerLogger->log('VuFind gearman worker starting');
+$workerLogger->log('VuFind gearman worker starting', PEAR_LOG_NOTICE);
 
 $worker = new GearmanWorker();
 $worker->addServer();

@@ -245,7 +245,7 @@ class Logger
      * @return void
      * @access public
      */
-    public function log($msg, $pearLevel=PEAR_LOG_INFO)
+    public function log($msg, $pearLevel)
     {
         // Evaluate each possible logging method separately; we may have different
         // verbosity and mask settings at each level.
