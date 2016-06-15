@@ -35,17 +35,16 @@ require_once 'util.inc.php';
 require_once 'sys/ConnectionManager.php';
 require_once 'services/MyResearch/lib/Paid_bill.php';
 require_once 'services/MyResearch/lib/Payment.php';
+require_once 'sys/Logger.php';
 
 // Read Config file
 $configArray = readConfig();
 date_default_timezone_set($configArray['Site']['timezone']);
 
-// get a logger
-$logFile = $configArray['Fines']['payment_log_dir'] . '/' . date('Ymd') . '/gearman.log';
-$logger = Log::singleton('file', $logFile);
-$logger->setMask(Log::UPTO($logger->stringToPriority($configArray['Fines']['log_level'])));
+// use VuFind logger for the worker general logging
+$workerLogger = new Logger();
+$workerLogger->log('VuFind gearman worker starting');
 
-$logger->log('VuFind gearman worker starting.');
 $worker = new GearmanWorker();
 $worker->addServer();
 
@@ -59,16 +58,21 @@ function sendPayBillsToSymphony($job)
     global $configArray;
     global $logger;
     
+    // get the workload and decode it
+    $workload = json_decode($job->workload());
+    
+    // for each job, use a logger with file name based on date/userid
+    $logFile = $configArray['Fines']['payment_log_dir'] . '/' . date('Ymd') . '/' . $workload->userBarcode . '.log';
+    $logger = Log::singleton('file', $logFile);
+    $logger->setMask(Log::UPTO($logger->stringToPriority($configArray['Fines']['log_level'])));
+        
+    $logger->log('Begin processing job ID: ' . $job->unique());
+    
     // Setup Local Database Connection
     ConnectionManager::connectToDatabase();
 
     // Connect to ILS
     $catalog = ConnectionManager::connectToCatalog();
-        
-    $logger->log('Begin processing job ID: ' . $job->unique());
-    
-    // get the workload
-    $workload = json_decode($job->workload());
     
     // find the payment record
     $logger->log('Looking for payment ID: ' . $workload->paymentId . ' in VuFind DB');
