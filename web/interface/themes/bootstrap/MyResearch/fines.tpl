@@ -5,33 +5,34 @@
   {foreach from=$paymentNotifications item=p}
     {if $p->payment_status == 'COMPLETE'}
     <div class="alert alert-success" role="alert">
-      <p>{translate text='Your payment is complete.'} {translate text='Thank you!'}</p>
+      <p>{translate text='payment_complete_message'} <a target="_blank" class="alert-link" href="{$receiptBaseURL}{$p->tokenid}">{translate text='view_transaction_receipt'}</a>.</p>
     </div>
     {/if}
     {if $p->payment_status == 'APPROVED'}
     <div class="alert alert-success" role="alert">
-      <p>{translate text='Your payment is approved.'} {translate text='Thank you!'}</p>
+      <p>{translate text='payment_approved_message'}</p>
     </div>
     {/if}
     {if $p->payment_status == 'PROCESSING'}
     <div class="alert alert-info" role="alert">
-      <p>{translate text='Your payment is being processed.'}</p>
+      <p>{translate text='payment_processing_message'}</p>
     </div>
     {/if}
     {if $p->payment_status == 'CANCELLED'}
     <div class="alert alert-danger" role="alert">
-      <p>{translate text='Your payment is cancelled.'}</p>
+      <p>{translate text='payment_cancelled_message'}</p>
       {if !empty($p->status)}
-        <p>{translate text='The credit card transaction status is:'} {$p->status|escape}</p>
+        <p>{translate text='credit_card_auth_status'}: <strong>{$p->status|escape}</strong></p>
       {/if}
       {if !empty($p->message)}
-        <p>{translate text='The credit card transaction message is:'} {$p->message|escape}</p>
+        <p>{translate text='credit_card_auth_message'}: <strong>{$p->message|escape}</strong></p>
       {/if}
     </div>
     {/if}
     {if $p->payment_status == 'INITIATED'}
-    <div class="alert alert-info" role="alert">
-      <p>{translate text='You have initiated the payment process, but have not yet made the payment.'}</p>
+    <div class="alert alert-warning" role="alert">
+      <p>{translate text='payment_initiated_message'}</p>
+      <p>{translate text='payment_will_be_cancelled_message'} <a class="alert-link" href="{$paymentBaseURL}{$p->tokenid}">{translate text='complete_this_payment'}</a>.</p>
     </div>
     {/if}
   {/foreach}
@@ -84,7 +85,7 @@
     {/foreach}
   {else}
     <div class="alert alert-success" role="alert">
-      <strong>{translate text='You do not have any outstanding bills/fines'}.</strong>
+      <p>{translate text='You do not have any outstanding bills/fines'}.</p>
     </div>
   {/if}
   
@@ -105,12 +106,12 @@
       </thead>
       <tbody class="rowlink">
         {foreach from=$payments item=p}
-        <tr {if $p->payment_status=='COMPLETE'}class="success"{elseif $p->payment_status=='APPROVED'}class="info"{elseif $p->payment_status=='CANCELLED'}class="danger"{/if}>
+        <tr {if $p->payment_status=='COMPLETE' || $p->payment_status=='APPROVED'}class="success"{elseif $p->payment_status=='PROCESSING'}class="info"{elseif $p->payment_status=='CANCELLED'}class="danger"{elseif $p->payment_status=='INITIATED'}class="warning"{/if}>
           <td>{$p->id|escape}</td>
           <td>{$p->payment_date|strtotime|date_format:'%b %d, %Y'|escape}</td>
           <td>{$p->amount|safe_money_format|escape}</td>
           <td>{$p->fines_group|translate|escape}</td>
-          <td><a class="rowlink" target="_blank" title="{translate text='View Receipt'}" href="{$receiptBaseURL}{$p->tokenid}">{$p->payment_status|escape}</a></td>
+          <td><a class="rowlink" target="_blank" title="{translate text='view_transaction_receipt'}" href="{$receiptBaseURL}{$p->tokenid}">{$p->payment_status|escape}</a></td>
         </tr>
         {/foreach}
       </tbody>

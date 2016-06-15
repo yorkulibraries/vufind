@@ -225,7 +225,8 @@ class PayFines extends MyResearch
         if (!$verified['approved']) {
             $this->logger->log('Payment cannot be verified for token: ' . $payment->tokenid, PEAR_LOG_EMERG);
             $this->abortPayment($payment, $verified);
-            $this->displayErrorMessage('Transaction not approved.', $verified);
+            $this->logger->log('Redirecting to display fines page...');
+            $this->redirectToDisplayFines();
             exit;
         }
         
@@ -301,19 +302,6 @@ class PayFines extends MyResearch
         $interface->assign('total', $itemsToPay['total']);
         $interface->assign('group', $itemsToPay['group']);
         $interface->setTemplate('pay-fines.tpl');
-        $interface->setPageTitle('Pay Fines');
-        $interface->display('layout.tpl');
-        exit;
-    }
-    
-    private function displayErrorMessage($message, $paymentStatus=false)
-    {
-        global $interface;
-        global $configArray;
-        
-        $interface->assign('message', $message);
-        $interface->assign('paymentStatus', $paymentStatus);
-        $interface->setTemplate('pay-fines-error.tpl');
         $interface->setPageTitle('Pay Fines');
         $interface->display('layout.tpl');
         exit;
@@ -776,6 +764,12 @@ class PayFines extends MyResearch
     {
         global $configArray;
         return $configArray['YorkPaymentBroker']['receipt_url'];
+    }
+    
+    static function getPaymentBaseURL()
+    {
+        global $configArray;
+        return $configArray['YorkPaymentBroker']['payment_url'];
     }
 }
 
