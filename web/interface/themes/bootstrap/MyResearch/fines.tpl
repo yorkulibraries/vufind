@@ -106,7 +106,7 @@
       </thead>
       <tbody class="rowlink">
         {foreach from=$payments item=p}
-        <tr {if $p->payment_status=='COMPLETE' || $p->payment_status=='APPROVED'}class="success"{elseif $p->payment_status=='PROCESSING'}class="info"{elseif $p->payment_status=='CANCELLED'}class="danger"{elseif $p->payment_status=='INITIATED'}class="warning"{/if}>
+        <tr {if $p->payment_status=='COMPLETE' || $p->payment_status=='APPROVED'}class="success"{elseif $p->payment_status=='PROCESSING' || $p->payment_status=='PARTIALLY COMPLETED'}class="info"{elseif $p->payment_status=='CANCELLED'}class="danger"{elseif $p->payment_status=='INITIATED'}class="warning"{/if}>
           <td>{$p->id|escape}</td>
           <td>{$p->payment_date|strtotime|date_format:'%b %d, %Y'|escape}</td>
           <td>{$p->amount|safe_money_format|escape}</td>

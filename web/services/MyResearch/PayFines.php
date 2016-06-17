@@ -489,10 +489,13 @@ class PayFines extends MyResearch
     {
         $this->logger->log('Begin completion process for payment ID: ' . $payment->id);
         
-        if ($payment->payment_status != Payment::STATUS_APPROVED) {
+        if (!($payment->payment_status == Payment::STATUS_APPROVED || $payment->payment_status == Payment::STATUS_PARTIALLY_COMPLETED)) {
             $this->logger->log('Cannot complete a payment with status ' . $payment->payment_status);
             return;
         }
+        
+        // save the payment status before we process it
+        $oldStatus = $payment->payment_status;
         
         // get the bills associated with this payment
         $this->logger->log('Fetching bills associated with payment ID:' . $payment->id);
@@ -543,9 +546,21 @@ class PayFines extends MyResearch
                 $this->logger->log('Gearman job successfully submitted for payment: ' . $payment->id);
             } else {
                 $this->logger->log('Cannot submit Gearman job for payment: ' . $payment->id . '. Return code: ' . $returnCode);
-                $this->updatePaymentStatus($payment, Payment::STATUS_APPROVED);
+                $this->updatePaymentStatus($payment, $oldStatus);
             }
         }
+    }
+    
+    protected function retryPartiallyCompletedPayment($payment)
+    {
+        $this->logger->log('Retry completion process for payment ID: ' . $payment->id);
+        
+        if ($payment->payment_status != Payment::STATUS_PARTIALLY_COMPLETED) {
+            $this->logger->log('Cannot retry a payment with status ' . $payment->payment_status);
+            return;
+        }
+        
+        $this->completeApprovedPayment($payment);
     }
     
     protected function updatePaymentStatus($payment, $status)
@@ -748,6 +763,11 @@ class PayFines extends MyResearch
         return Payment::getApprovedPayments($this->patron['cat_username']);
     }
     
+    protected function getPartiallyCompletedPayments()
+    {
+        return Payment::getPartiallyCompletedPayments($this->patron['cat_username']);
+    }
+    
     protected function getPayments()
     {
         return Payment::getPayments($this->patron['cat_username'], 'payment_date DESC');
@@ -757,6 +777,13 @@ class PayFines extends MyResearch
     {
         foreach ($payments as $payment) {
             $this->completeApprovedPayment($payment);
+        }
+    }
+    
+    protected function retryPartiallyCompletedPayments($payments)
+    {
+        foreach ($payments as $payment) {
+            $this->retryPartiallyCompletedPayment($payment);
         }
     }
     

@@ -94,7 +94,8 @@ function sendPayBillsToSymphony($job)
     // get the bills associated with this payment
     $logger->log('Fetching bills associated with payment ID:' . $payment->id);
     $paidBills = $payment->getPaidBills();
-    $logger->log('There are ' . count($paidBills) . ' bills associated with this payment record.');
+    $billCount = count($paidBills);
+    $logger->log('There are ' . $billCount . ' bills associated with this payment record.');
     
     // extract required configuration values
     $apiUser = $apiStation = $apiLibrary = null;
@@ -114,28 +115,33 @@ function sendPayBillsToSymphony($job)
     $logger->log($results);
     
     // deal with the results
-    $success = is_array($results);
+    $successCount = 0;
     foreach ($results as $key => $result) {
-        if (!$result['api_successful']) {
-            $api_response = $result['api_response'];
-            $logger->log("Got error while paying bill $key $api_response", PEAR_LOG_EMERG);
-            $success = false;
+        $api_response = $result['api_response'];
+        if ($result['api_successful']) {
+            $successCount++;
+            $logger->log("Pay bill API successful for bill $key");
+        } else {
+            $logger->log("Pay bill API NOT successful for bill $key");
         }
+        $logger->log($api_response);
         $pb = new Paid_bill();
         $pb->bill_key = $key;
         if($pb->find(true)) {
             $pb->api_request = $result['api_request'];
             $pb->api_response = $result['api_response'];
             $pb->api_successful = $result['api_successful'];
-            $pb->payment_status = Payment::STATUS_COMPLETE;
+            if ($result['api_successful']) {
+                $pb->payment_status = Payment::STATUS_COMPLETE;
+            }
             $pb->update();
         } else {
-            $logger->log("paid bill $key not found in db", PEAR_LOG_EMERG);
+            $logger->log("paid bill $key not found in db");
         }
     }
     
-    if ($success) {
-        $logger->log('All transactions successfully sent to Symphony.');
+    if ($successCount > 0 && $successCount == $billCount) {
+        $logger->log("All $billCount transactions successfully sent to Symphony.");
         
         // update payment status to COMPLETE
         $payment->payment_status = Payment::STATUS_COMPLETE;
@@ -145,6 +151,14 @@ function sendPayBillsToSymphony($job)
         $logger->log('Payment ID: ' . $payment->id . ' status updated to: ' . $payment->payment_status);
     } else {
         $logger->log('There were errors while sending pay bill transactions to Symphony.');
+        $logger->log("$successCount out of $billCount transactions were successful");
+        
+        // update payment status to PARTIALLY COMPLETED
+        $payment->payment_status = Payment::STATUS_PARTIALLY_COMPLETED;
+        $payment->notified_user = 0;
+        $payment->update();
+        
+        $logger->log('Payment ID: ' . $payment->id . ' status updated to: ' . $payment->payment_status);
     }
     
     $logger->log('Finished processing job ID: ' . $job->unique());

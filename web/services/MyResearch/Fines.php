@@ -58,6 +58,9 @@ class Fines extends PayFines
         // complete the approved payments
         $this->completeApprovedPayments($this->getApprovedPayments());
         
+        // retry the partially completed payments
+        $this->retryPartiallyCompletedPayments($this->getPartiallyCompletedPayments());
+        
         $interface->assign('finesData', $this->getUnpaidBills());
         
         // get recently payments that we have not notified user

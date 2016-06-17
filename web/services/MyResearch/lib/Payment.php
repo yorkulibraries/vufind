@@ -11,6 +11,7 @@ class Payment extends DB_DataObject
     const STATUS_INITIATED = 'INITIATED';
     const STATUS_APPROVED = 'APPROVED';
     const STATUS_COMPLETE = 'COMPLETE';
+    const STATUS_PARTIALLY_COMPLETED = 'PARTIALLY COMPLETED';
     const STATUS_PROCESSING = 'PROCESSING';
     const STATUS_CANCELLED = 'CANCELLED';
     
@@ -51,6 +52,11 @@ class Payment extends DB_DataObject
     public static function getApprovedPayments($userId, $order=null)
     {   
         return self::getPayments($userId, $order, Payment::STATUS_APPROVED);
+    }
+    
+    public static function getPartiallyCompletedPayments($userId, $order=null)
+    {   
+        return self::getPayments($userId, $order, Payment::STATUS_PARTIALLY_COMPLETED);
     }
     
     public static function getInitiatedPayments($userId, $order=null)
