@@ -403,7 +403,7 @@ class YorkUnicorn extends Unicorn
         return $items;
     }
     
-    public function payBills($items, $paymentToken, $apiUser, $apiStation, $apiLibrary, $paymentType)
+    public function payBills($items, $paymentToken, $apiUser, $apiStation, $apiLibrary, $apiUserAccess, $paymentType)
     {
         global $configArray;
         global $logger;
@@ -424,7 +424,8 @@ class YorkUnicorn extends Unicorn
                 'payment_token' => $paymentToken,
                 'api_user' => $apiUser,
                 'api_station' => $apiStation,
-                'api_library' => $apiLibrary
+                'api_library' => $apiLibrary,
+                'api_user_access' => $apiUserAccess,
             );
             
             $logger->log('Sending pay bill API transaction for bill key: ' . $bill_key);
