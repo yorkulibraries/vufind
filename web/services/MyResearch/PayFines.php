@@ -601,7 +601,7 @@ class PayFines extends MyResearch
     {
         sort($billKeys);
         $hashData = $finesGroup . ',' . $this->patron['cat_username'] 
-            . ',' . implode($billKeys) . ',' . number_format($total, 2);
+            . ',' . implode('/', $billKeys) . ',' . number_format($total, 2);
         
         $this->logger->log("Generating hash from input string: $hashData");
         return hash('sha256', $hashData);
