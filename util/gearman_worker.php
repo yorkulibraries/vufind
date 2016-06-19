@@ -116,12 +116,10 @@ function sendPayBillsToSymphony($job)
         foreach ($configArray['Fines']['api_user'] as $s) {
             list($group, $values) = explode(':', $s);
             if ($group == $payment->fines_group) {
-                list($apiUser, $apiStation, $apiLibrary, $apiUserAccess) = explode(',', $values);
+                list($apiUser, $apiStation, $apiLibrary, $apiUserAccess, $paymentType) = explode(',', $values);
                 break;
             }
-        }
-        $paymentType = $configArray['Fines']['payment_type'];
-    
+        }    
         $logger->log('Sending pay bill requests to Symphony...');
         $logger->log("Using configured apiUser: $apiUser, apiStation: $apiStation, apiLibrary: $apiLibrary, apiUserAccess: $apiUserAccess, paymentType: $paymentType");
         $results = $catalog->payBills($billsToSend, $payment->tokenid, $apiUser, $apiStation, $apiLibrary, $apiUserAccess, $paymentType);

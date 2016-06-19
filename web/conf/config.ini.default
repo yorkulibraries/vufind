@@ -707,9 +707,9 @@ payment_log_dir=/usr/local/vufind/log/payments
 ; group_key:appid,password
 ypb_accounts[]=fines_group_YORK:ApplicationId,ApplicationPassword
 ypb_accounts[]=fines_group_LAW:ApplicationId,ApplicationPassword
-; group_key:apiUser,apiStation,apiLibrary,apiUserAccess
-api_user[]=fines_group_YORK:SCVUFIND,SCVUFIND,YORK,YCIR1
-api_user[]=fines_group_LAW:LAWVUFIND,LAWVUFIND,YORK-LAW,LAWCIRC
+; group_key:apiUser,apiStation,apiLibrary,apiUserAccess,paymentType
+api_user[]=fines_group_YORK:SCVUFIND,SCVUFIND,YORK,YCIR1,YPBYORK
+api_user[]=fines_group_LAW:LAWVUFIND,LAWVUFIND,YORK-LAW,LAWCIRC,YPBLAW
 ; payment type as configured in Symphony for all transactions
 payment_type="ONLINE"
 ; show/not show the bill key in bill lists
