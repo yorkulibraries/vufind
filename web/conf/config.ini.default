@@ -698,3 +698,49 @@ test_user_alt_id = 1234567890
 
 [TMDB]
 apikey=ENTER_API_KEY_HERE
+
+[Fines]
+; group_key:LIBRARY_CODES_COMMA_SEP
+groups[]=fines_group_YORK:YORK,NELLIE,YORK-EDUC,YORK-YCISS
+groups[]=fines_group_LAW:YORK-LAW
+payment_log_dir=/usr/local/vufind/log/payments
+; group_key:appid,password
+ypb_accounts[]=fines_group_YORK:ApplicationId,ApplicationPassword
+ypb_accounts[]=fines_group_LAW:ApplicationId,ApplicationPassword
+; group_key:apiUser,apiStation,apiLibrary,apiUserAccess,paymentType
+api_user[]=fines_group_YORK:SCVUFIND,SCVUFIND,YORK,YCIR1,YPBYORK
+api_user[]=fines_group_LAW:LAWVUFIND,LAWVUFIND,YORK-LAW,LAWCIRC,YPBLAW
+; payment type as configured in Symphony for all transactions
+payment_type="ONLINE"
+; show/not show the bill key in bill lists
+show_bill_key=true
+; a prefix to add to payment id - leave blank unless in dev
+payment_id_prefix=0
+; logging level
+log_level=info
+
+[YorkPaymentBroker]
+wsdl=https://xxx.uit.yorku.ca/ypbpaymentservice/?wsdl
+payment_url="https://xxx.uit.yorku.ca/ypbpaymentapp/Payment.aspx?tokenid="
+receipt_url="https://xxx.uit.yorku.ca/ypbpaymentapp/Receipt.aspx?tokenid="
+
+lang_en=enUS
+lang_fr=frCA
+
+approved_message_en="TRANSACTION APPROVED"
+auth_code_regex_en="/Auth Code:<\/th><td>([0-9a-zA-Z]+)<\/td>/"
+ref_num_regex_en="/Reference Number:<\/th><td>([0-9]+)<\/td>/"
+amount_regex_en="/Transaction Amount:<\/th><td>([0-9]+\.[0-9][0-9])<\/td>/"
+message_regex_en="/Message:<\/th><td>([^<>]*)<\/td>/"
+ypborderid_regex_en="/order_id=([0-9]+)/"
+status_regex_en="/>([A-Z\/ ]+)<\/h3>/"
+payment_active_regex_en="/(<iframe [^<>]+><\/iframe>)/i"
+
+approved_message_fr="TRANSACTION APPROVED"
+auth_code_regex_fr="/Auth Code:<\/th><td>([0-9a-zA-Z]+)<\/td>/"
+ref_num_regex_fr="/Reference Number:<\/th><td>([0-9]+)<\/td>/"
+amount_regex_fr="/Transaction Amount:<\/th><td>([0-9]+\.[0-9][0-9])<\/td>/"
+message_regex_fr="/Message:<\/th><td>([^<>]*)<\/td>/"
+ypborderid_regex_fr="/order_id=([0-9]+)/"
+status_regex_fr="/>([A-Z\/ ]+)<\/h3>/"
+payment_active_regex_fr="/(<iframe [^<>]+><\/iframe>)/i"

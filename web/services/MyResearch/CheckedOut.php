@@ -91,6 +91,12 @@ class CheckedOut extends MyResearch
             $interface->assign('recordListHTML', $html);
             $interface->assign('recordList', $recordList);
             $interface->assign('recordCount', count($recordList));
+            
+            // get the bills from catalog
+            $result = $this->catalog->getMyFines($patron);
+            if (!PEAR::isError($result)) {
+                $interface->assign('finesData', $result);
+            }
         }
         
         $interface->setTemplate('checkedout.tpl');

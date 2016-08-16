@@ -26,7 +26,7 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
-require_once 'services/MyResearch/MyResearch.php';
+require_once 'services/MyResearch/PayFines.php';
 
 /**
  * Fines action for MyResearch module
@@ -38,8 +38,9 @@ require_once 'services/MyResearch/MyResearch.php';
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
-class Fines extends MyResearch
+class Fines extends PayFines
 {
+    
     /**
      * Process parameters and display the page.
      *
@@ -49,31 +50,73 @@ class Fines extends MyResearch
     public function launch()
     {
         global $interface;
-        global $finesIndexEngine;
-
-        // Get My Fines
-        if ($patron = UserAccount::catalogLogin()) {
-            if (PEAR::isError($patron)) {
-                PEAR::raiseError($patron);
-            }
-            $result = $this->catalog->getMyFines($patron);
-            $totalBalance = 0.00;
-            if (!PEAR::isError($result)) {
-                for ($i = 0; $i < count($result); $i++) {
-                    $record = $this->db->getRecord($result[$i]['id']);
-                    $result[$i]['title'] = $record ? $record['title'] : null;
-                    $totalBalance += $result[$i]['balance'];
-                }
-                $interface->assign('rawFinesData', $result);
-                $interface->assign('totalBalance', $totalBalance);
+        global $configArray;
+            
+        // verify initiated payments and set appropriate status eg: APPROVED or CANCELLED
+        $this->verifyInitiatedPayments();
+        
+        // complete the approved payments
+        $this->completeApprovedPayments($this->getApprovedPayments());
+        
+        // retry the partially completed payments
+        $this->retryPartiallyCompletedPayments($this->getPartiallyCompletedPayments());
+        
+        $interface->assign('finesData', $this->getUnpaidBills());
+        
+        // get recently payments that we have not notified user
+        $paymentNotifications = Payment::getPayments($this->patron['cat_username'], 'payment_date DESC', null, 0);
+        foreach ($paymentNotifications as $p) {
+            if (!($p->payment_status == Payment::STATUS_INITIATED || $p->payment_status == Payment::STATUS_PROCESSING)) {
+                $p->notified_user = 1;
+                $p->update();
             }
         }
-
+        
+        $interface->assign('paymentNotifications', $paymentNotifications);
+        $interface->assign('payments', $this->getPayments());
+        $interface->assign('receiptBaseURL', PayFines::getReceiptBaseURL());
+        $interface->assign('paymentBaseURL', PayFines::getPaymentBaseURL());
         $interface->setTemplate('fines.tpl');
         $interface->setPageTitle('Your Fines');
         $interface->display('layout.tpl');
     }
     
+    private function getUnpaidBills()
+    {
+        // get the bills from catalog
+        $result = $this->catalog->getMyFines($this->patron);
+        if (!PEAR::isError($result)) {
+            $paid = Paid_bill::getConfirmedPaidBills($this->patron['user_key']);
+            $paidKeys = array();
+            foreach ($paid as $p) {
+                $paidKeys[] = $p->bill_key;
+            }
+            $filtered = array();
+            foreach ($result as $group => $data) {
+                if (!isset($filtered[$group])) {
+                    $filtered[$group] = array(
+                        'items' => array(),
+                        'groupTotal' => 0.00
+                    );
+                }
+                $items = $data['items'];
+                for ($i = 0, $j = 0; $i < count($items); $i++) {
+                    if (!in_array($items[$i]['bill_key'], $paidKeys)) {
+                        $filtered[$group]['items'][] = $items[$i];
+                        $filtered[$group]['groupTotal'] += $items[$i]['balance'];
+                        
+                        // get the title from the solr index
+                        $record = $this->db->getRecord($filtered[$group]['items'][$j]['id']);
+                        $filtered[$group]['items'][$j]['title'] = $record ? $record['title'] : null;
+                        
+                        $j++;
+                    }
+                }
+            }
+            return $filtered;
+        }
+        return $result;
+    }
 }
 
 ?>

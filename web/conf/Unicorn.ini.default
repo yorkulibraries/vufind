@@ -11,6 +11,12 @@ leaveFinesAmountsInCents = false
 ; default is DD/MM/YYYY
 server_date_format = "d/m/Y"
 
+; list of titles to remove from name
+remove_title_from_name[]="(ms)"
+remove_title_from_name[]="(mrs)"
+remove_title_from_name[]="(mr)"
+remove_title_from_name[]="(dr)"
+
 ; file containing list of record IDs that have been suppressed (not in SOLR)
 suppressed_records_file = "suppressed-records.txt"
 

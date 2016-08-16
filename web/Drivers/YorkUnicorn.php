@@ -362,5 +362,88 @@ class YorkUnicorn extends Unicorn
         }
         return $results;
     }
+    
+    public function getMyFines($patron)
+    {
+        global $configArray;
+        
+        // get all the bills from ILS
+        $items = parent::getMyFines($patron);
+        
+        // split the bills by library group (e.g.: YORK or YORK-LAW)
+        if (isset($configArray['Fines']['groups'])) {
+            $groupLibs = array();
+            foreach ($configArray['Fines']['groups'] as $s) {
+                list($key, $libs) = explode(':', $s);
+                $groupLibs[$key] = explode(',', $libs);
+            }
+            $groups = array();
+            foreach ($groupLibs as $g => $l) {
+                $groupItems = array();
+                $groupTotal = 0.00;
+                foreach ($items as $item) {
+                    // include the bill if the item's library is part of the group
+                    if (in_array($item['item_library'], $l)) {
+                        $groupItems[] = $item;
+                        $groupTotal += $item['balance'];
+                    }
+                    // if no item associated with this bill, then
+                    // include the bill if the bill's library is part of the group 
+                    if (empty($item['item_library']) && in_array($item['library'], $l)) {
+                        $groupItems[] = $item;
+                        $groupTotal += $item['balance'];
+                    }
+                }
+                if (!empty($groupItems)) {
+                    $groups[$g] = array('groupTotal' => $groupTotal, 'items' => $groupItems);
+                }
+            }
+            $items = $groups;
+        }
+        return $items;
+    }
+    
+    public function payBills($items, $paymentToken, $apiUser, $apiStation, $apiLibrary, $apiUserAccess, $paymentType)
+    {
+        global $configArray;
+        global $logger;
+        
+        // query sirsi
+        $results = array();
+        foreach ($items as $item) {
+            $user_barcode = is_array($item) ? $item['user_barcode'] : $item->user_barcode;
+            $bill_number = is_array($item) ? $item['bill_number'] : $item->bill_number;
+            $bill_key = is_array($item) ? $item['bill_key'] : $item->bill_key;
+            $bill_balance = is_array($item) ? $item['bill_balance'] : $item->bill_balance;
+            $params = array(
+                'query' => 'pay_bill',
+                'user_barcode' => $user_barcode,
+                'bill_number' => $bill_number,
+                'amount' => number_format($bill_balance, 2, '.', ''),
+                'payment_type' => $paymentType,
+                'payment_token' => $paymentToken,
+                'api_user' => $apiUser,
+                'api_station' => $apiStation,
+                'api_library' => $apiLibrary,
+                'api_user_access' => $apiUserAccess,
+            );
+            
+            $logger->log('Sending pay bill API transaction for bill key: ' . $bill_key);
+            $response = $this->querySirsi($params);
+            $logger->log($response, PEAR_LOG_DEBUG);
+            
+            // decode response from API server
+            list($api_request, $api_response) = explode("\n", $response);
+            $expected = '^@01PYMA$(212)^MN212^UO' . $user_barcode;
+            $result = array(
+                'api_successful' => (strpos($api_response, $expected) !== false),
+                'api_request' => $api_request,
+                'api_response' => $api_response
+            );
+            $results[$bill_key] = $result;
+        }
+        
+        return $results;
+    }
 }
 ?>

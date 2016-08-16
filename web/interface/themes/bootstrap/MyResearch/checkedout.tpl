@@ -13,9 +13,11 @@
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
       {translate text=$errorMsg}
     </div>
-  {/if}    
+  {/if}
 
   <h1>{translate text='Checkouts'}</h1>
+  
+  {include file="MyResearch/fines-summary.tpl"}
   
   {if !empty($recordList)}
     <p>{translate text='You have ###NUMBER### item(s) checked out'|replace:'###NUMBER###':$recordCount}.</p>
