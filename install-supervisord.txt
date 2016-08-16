@@ -6,7 +6,7 @@ echo 'extension=gearman.so' > /opt/rh/php54/root/etc/php.d/gearman.ini
 
 yum install python-setuptools
 easy_install supervisor
-echo_supervisord_conf > /etc/supervisor.conf
+echo_supervisord_conf > /etc/supervisord.conf
 
 Setup the VuFind gearman worker by appending the following to /etc/supervisor.conf
 
