@@ -52,7 +52,7 @@ CREATE INDEX resolver_ids_source_index ON resolver_ids(source);
 CREATE TABLE IF NOT EXISTS `payment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `amount` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `tokenid` varchar(50) NOT NULL,
+  `tokenid` varchar(100) NOT NULL,
   `authcode` varchar(8),
   `refnum` varchar(18),
   `ypborderid` varchar(50),
