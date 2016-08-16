@@ -170,10 +170,13 @@ class Resolver_Sfx implements ResolverInterface
         $url = $configArray['UsageRightsApi']['url'] . '/' . $name . '/api';
         $logger->log('Requesting Usage rights API URL: ' . $url, PEAR_LOG_DEBUG);
         $xmlstr = file_get_contents($url);
-        if ($memcache && $memcache->set($cacheKey, $xmlstr, 0, $configArray['Caching']['memcache_expiry'])) {
-            $logger->log('Cache set - ' . $cacheKey, PEAR_LOG_DEBUG);
+        $rights = $this->parseUsageRights($xmlstr);
+        if (!empty($rights)) {
+            if ($memcache && $memcache->set($cacheKey, $xmlstr, 0, $configArray['Caching']['memcache_expiry'])) {
+                $logger->log('Cache set - ' . $cacheKey, PEAR_LOG_DEBUG);
+            }
         }
-        return $this->parseUsageRights($xmlstr);
+        return $rights;
     }
     
     private function parseUsageRights($xmlstr) 
@@ -186,11 +189,11 @@ class Resolver_Sfx implements ResolverInterface
             $root = $xml->xpath("//license");
             $xml = $root[0];
             $rights = $xml->children();
+            foreach ($rights as $right) {
+                $right->addChild('status', $map[(string)$right->usage]);
+            }
         } catch (Exception $e) {
             $logger->log('Can not parse usage rights XML: ' . $xmlstr, PEAR_LOG_ERR);
-        }
-        foreach ($rights as $right) {
-            $right->addChild('status', $map[(string)$right->usage]);
         }
         return $rights;
     }
