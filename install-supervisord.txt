@@ -6,6 +6,13 @@
     chkconfig gearmand on
 
 ## setup gearmand to use MYSQL
+    CREATE TABLE gearman_queue ( unique_key VARCHAR(64),
+                       function_name VARCHAR(255),
+                       priority INT,
+                       data LONGBLOB,
+                       when_to_run BIGINT,
+                       unique key (unique_key, function_name));
+                       
 Edit /etc/sysconfig/gearmand and add the following OPTIONS
     OPTIONS="--listen=localhost -q MySQL --mysql-host=localhost --mysql-port=3306 --mysql-user=gearman --mysql-password=baabaa --mysql-db=gearman --mysql-table=gearman_queue"
 
