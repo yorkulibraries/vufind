@@ -1,14 +1,21 @@
-source /opt/rh/php54/enable
-yum install gearmand libgearman-devel
-pecl install gearman
-echo 'extension=gearman.so' > /opt/rh/php54/root/etc/php.d/gearman.ini 
+## Install gearmand 
+    source /opt/rh/php54/enable
+    yum install gearmand libgearman-devel
+    pecl install gearman
+    echo 'extension=gearman.so' > /opt/rh/php54/root/etc/php.d/gearman.ini 
+    chkconfig gearmand on
 
+## setup gearmand to use MYSQL
+Edit /etc/sysconfig/gearmand and add the following OPTIONS
+    OPTIONS="--listen=localhost -q MySQL --mysql-host=localhost --mysql-port=3306 --mysql-user=gearman --mysql-password=baabaa --mysql-db=gearman --mysql-table=gearman_queue"
 
-yum install python-setuptools
-easy_install supervisor
-echo_supervisord_conf > /etc/supervisord.conf
+## Install supervisord
+    yum install python-setuptools
+    easy_install supervisor
+    echo_supervisord_conf > /etc/supervisord.conf
 
-Setup the VuFind gearman worker by appending the following to /etc/supervisor.conf
+## Setup VuFind gearman worker
+Appending the following to /etc/supervisor.conf
 
 [program:vufind_gearman_worker]
 command=/opt/rh/php54/root/usr/bin/php /usr/local/vufind/util/gearman_worker.php
@@ -22,8 +29,9 @@ logfile=/usr/local/vufind/log/gearman-worker.log
 numprocs=10
 process_name = %(program_name)s_%(process_num)02d
 
-
-Setup init.d script by copying the supervisord to /etc/init.d/supervisord
+## Setup init.d script for supervisord
+    cp supervisord /etc/init.d/
+    chkconfig supervisord on
 
 To setup logrotate, add the following /etc/logrotate.d/supervisor
 /var/log/supervisor/*.log {
