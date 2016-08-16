@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `payment` (
   `refnum` varchar(18),
   `ypborderid` varchar(50),
   `payment_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `payment_hash` varchar(256) NOT NULL,
+  `payment_hash` varchar(100) NOT NULL,
   `payment_status` varchar(20) NOT NULL,
   `user_barcode` varchar(14) NOT NULL,
   `fines_group` varchar(40) NOT NULL,
