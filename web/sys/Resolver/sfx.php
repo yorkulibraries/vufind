@@ -168,6 +168,7 @@ class Resolver_Sfx implements ResolverInterface
             }
         }
         $url = $configArray['UsageRightsApi']['url'] . '/' . $name . '/api';
+        $logger->log('Requesting Usage rights API URL: ' . $url, PEAR_LOG_DEBUG);
         $xmlstr = file_get_contents($url);
         if ($memcache && $memcache->set($cacheKey, $xmlstr, 0, $configArray['Caching']['memcache_expiry'])) {
             $logger->log('Cache set - ' . $cacheKey, PEAR_LOG_DEBUG);
