@@ -46,7 +46,6 @@
   }
   .yul-tab-content .fines-group-heading {
     font-size: 12pt;
-    line-height: 2.4;
   }
   {/literal}
 </style>
