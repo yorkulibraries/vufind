@@ -77,15 +77,19 @@
   {/if}
   {if !empty($fines)}
   <fines>
-    {foreach from=$fines item=item}
-    <item>
-      <title><![CDATA[{if empty($item.title)}N/A{else}{$item.title}{/if} ]]></title>
-      <dates>
-        <date_billed>{$item.date_billed}</date_billed>
-      </dates>
-      <amount_billed>{$item.balance}</amount_billed>
-      <bill_reason>{$item.fine}</bill_reason>
-    </item>
+    {foreach from=$fines key=group item=groupData}
+      {if !empty($groupData.items)}
+      {foreach from=$groupData.items item=item}
+      <item>
+        <title><![CDATA[{if empty($item.title)}N/A{else}{$item.title}{/if} ]]></title>
+        <dates>
+          <date_billed>{$item.date_billed}</date_billed>
+        </dates>
+        <amount_billed>{$item.balance}</amount_billed>
+        <bill_reason>{$item.fine}</bill_reason>
+      </item>
+      {/foreach}
+      {/if}
     {/foreach}
   </fines>
   {/if}
