@@ -131,13 +131,6 @@ class MyAccount extends Action
             $interface->assign('loans', $loans);
             $interface->assign('fines', $fines);
             $interface->assign('holds', $holds);
-            $totalFinesBalance = 0.00;
-            if (!empty($fines)) {
-                foreach ($fines as $item) {
-                    $totalFinesBalance += $item['balance'];
-                }
-            }
-            $interface->assign('totalFinesBalance', $totalFinesBalance);
         } else {
             $interface->assign('status', 'ERROR: user account not found.');
             $interface->assign('patron', null);
@@ -236,15 +229,27 @@ class MyAccount extends Action
     {
         $result = $this->catalog->getMyFines($patron);
         if (!PEAR::isError($result)) {
-            // assign the "raw" fines data to the template so it can be formatted
-            // by the smarty template instead of using DataGrid
-            // NOTE: could use foreach($result as &$row) here but it only works
-            // with PHP5
-            for ($i = 0; $i < count($result); $i++) {
-                $row = &$result[$i];
-                $record = $this->index->getRecord($row['id']);
-                $row['title'] = $record ? $record['title_short'] : null;
+            $filtered = array();
+            foreach ($result as $group => $data) {
+                if (!isset($filtered[$group])) {
+                    $filtered[$group] = array(
+                        'items' => array(),
+                        'groupTotal' => 0.00
+                    );
+                }
+                $items = $data['items'];
+                for ($i = 0, $j = 0; $i < count($items); $i++) {
+                    $filtered[$group]['items'][] = $items[$i];
+                    $filtered[$group]['groupTotal'] += $items[$i]['balance'];
+                
+                    // get the title from the solr index
+                    $record = $this->index->getRecord($filtered[$group]['items'][$j]['id']);
+                    $filtered[$group]['items'][$j]['title'] = $record ? $record['title'] : null;
+                
+                    $j++;
+                }
             }
+            return $filtered;
         }
         return $result;
     }

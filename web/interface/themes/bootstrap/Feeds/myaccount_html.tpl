@@ -124,31 +124,39 @@
   </div>
   <div id="yul-fines" class="yul-tab-content clear hidden">
     {if  !empty($fines)}
-      <h2>{translate text='Fines Due'}: {$totalFinesBalance|safe_money_format}</h2>
-      <div class="yul-table-responsive">
-        <table class="yul-table">
-        <thead>
+      {foreach from=$fines key=group item=groupData}
+        {if !empty($groupData.items)}
+        <h2>{translate text=$group}</h2>
+        <div class="yul-table-responsive">
+          <table class="yul-table">
+          <thead>
           <tr>
-            <th>{translate text='Item'}</th>
-            <th>{translate text='Date Billed'}</th>
-            <th>{translate text='Amount'}</th>
+            <th>{translate text='Date'}</th>
             <th>{translate text='Balance'}</th>
             <th>{translate text='Reason'}</th>
+            <th>{translate text='Title'}</th>
           </tr>
-        </thead>
-        <tbody>
-          {foreach from=$fines item=item}
+          </thead>
+          <tbody class="rowlink">
+            {foreach from=$groupData.items item=record}
             <tr>
-              <td>{$item.title|escape}</td>
-              <td>{$item.date_billed|strtotime|date_format:'%b %d, %Y'}</td>
-              <td>{$item.amount|safe_money_format}</td>
-              <td>{$item.balance|safe_money_format}</td>
-              <td>{$item.fine|translate}</td>
-            <tr>
-          {/foreach}
-        </tbody>
-        </table>
-      </div>
+              <td>{$record.date_billed|escape}</td>
+              <td>{$record.balance|safe_money_format|escape}</td>
+              <td>{$record.fine|translate|escape}</td>
+              <td>
+                {if empty($record.title)}
+                  {translate text='not_applicable'}
+                {else}
+                  <a class="rowlink" title="{$record.title|trim:'/:'|escape}" href="{$url}/Record/{$record.id|escape}">{$record.title|trim:'/:'|truncate:80:'...'|escape}</a>
+                {/if}
+              </td>
+            </tr>
+            {/foreach}
+          </tbody>
+          </table>
+        </div>
+        {/if}
+      {/foreach}
     {else}
       <p>{translate text='You do not have any fines'}.</p>
     {/if}
