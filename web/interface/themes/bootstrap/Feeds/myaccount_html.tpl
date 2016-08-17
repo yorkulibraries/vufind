@@ -126,6 +126,18 @@
     {if  !empty($fines)}
       {foreach from=$fines key=group item=groupData}
         {if !empty($groupData.items)}
+          {assign var=groupTotal value=$groupData.groupTotal|safe_money_format}
+          {assign var=message value='you_owe_xxx_in_fines_to_library'|translate}
+          {assign var=library value=$group|translate}
+          <p>
+            <span class="text-danger">{$message|replace:'###NUMBER###':$groupTotal|replace:'###LIBRARY###':$library}</span>
+            <a target="_blank" href="{$url}/MyResearch/PayFines?g={$group|escape}">{translate text='Pay Online'}</a>
+          </p>
+        {/if}
+      {/foreach}
+      
+      {foreach from=$fines key=group item=groupData}
+        {if !empty($groupData.items)}
         <h2>{translate text=$group}</h2>
         <div class="yul-table-responsive">
           <table class="yul-table">
@@ -147,7 +159,7 @@
                 {if empty($record.title)}
                   {translate text='not_applicable'}
                 {else}
-                  <a class="rowlink" title="{$record.title|trim:'/:'|escape}" href="{$url}/Record/{$record.id|escape}">{$record.title|trim:'/:'|truncate:80:'...'|escape}</a>
+                  <a target="_blank" title="{$record.title|trim:'/:'|escape}" href="{$url}/Record/{$record.id|escape}">{$record.title|trim:'/:'|truncate:80:'...'|escape}</a>
                 {/if}
               </td>
             </tr>
