@@ -152,7 +152,7 @@
           <tbody class="rowlink">
             {foreach from=$groupData.items item=record}
             <tr>
-              <td>{$record.date_billed|escape}</td>
+              <td>{$record.date_billed|strtotime|date_format:'%b %d, %Y'}</td>
               <td>{$record.balance|safe_money_format|escape}</td>
               <td>{$record.fine|translate|escape}</td>
               <td>
