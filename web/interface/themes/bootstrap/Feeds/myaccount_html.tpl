@@ -44,6 +44,10 @@
   .yul-tab-content .yul-table td {
     padding: 2px 0;
   }
+  .yul-tab-content .fines-group-heading {
+    font-size: 12pt;
+    line-height: 2.4;
+  }
   {/literal}
 </style>
 <div class="yul-portlet yul-my-library-account">
@@ -138,7 +142,7 @@
       
       {foreach from=$fines key=group item=groupData}
         {if !empty($groupData.items)}
-        <h2>{translate text=$group}</h2>
+        <h2 class="fines-group-heading">{translate text=$group}</h2>
         <div class="yul-table-responsive">
           <table class="yul-table">
           <thead>
