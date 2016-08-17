@@ -45,7 +45,8 @@
     padding: 2px 0;
   }
   .yul-tab-content .fines-group-heading {
-    font-size: 12pt;
+    font-size: 14pt;
+    margin-bottom: 0;
   }
   {/literal}
 </style>
