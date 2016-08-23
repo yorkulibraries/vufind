@@ -111,6 +111,14 @@ class PayFines extends MyResearch
         $itemsToPay = $this->getItemsToPay($finesGroup);
         $this->logger->log($itemsToPay);
         
+        // make sure total is more than 0
+        if (!($itemsToPay['total'] > 0.00)) {
+            $this->logger->log('total not more than 0: ' . $itemsToPay['total']);
+            $this->logger->log('Do nothing, redirect to display fines.');
+            $this->redirectToDisplayFines();
+            exit;
+        }
+        
         // generate a hash to make sure items being paid for are not tempered with
         $hash = $this->generatePaymentHashFromBills($finesGroup, $itemsToPay['items']);
         $this->logger->log('generated payment hash: ' . $hash);
