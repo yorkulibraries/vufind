@@ -4,7 +4,7 @@
   <h1>{$heading|replace:'###LIBRARY###':$library}</h1>  
 
   {if !empty($items)}
-    <form class="pay-fines-form" role="form" action="{$path}/MyResearch/PayFines" method="post">
+    <form class="pay-fines-form {if $confirming}long-wait{/if}" role="form" action="{$path}/MyResearch/PayFines" method="post">
       <div class="table-responsive">
         <table class="table table-condensed">
         <caption class="sr-only">{translate text='Bills'}</caption>
