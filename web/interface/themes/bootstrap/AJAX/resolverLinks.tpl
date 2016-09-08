@@ -5,6 +5,7 @@
       <span class="label bg-success online-label">{translate text='Online'}</span>
       <a title="{translate text='Click to access this resource'}" target="_blank" class="online-access" data-proxy="{$link.proxy}" data-service-id="{$link.service_id}" data-target-name="{$link.target_name}" href="{$link.href}">{$link.title|trim|escape}
         {if $link.coverage}- <span class="coverage">{$link.coverage|replace:'Available':''|escape}</span>{/if}
+        {if $link.notes}<span class="notes">({$link.notes|escape})</span>{/if}
       </a>
       
       {if $link.usage_rights}

@@ -1270,6 +1270,7 @@ class JSON extends Action
                     'title' => $linkText,
                     'href' => $href,
                     'coverage' => $url->holdings,
+                    'notes' => $url->notes
                 );
                 if ($url->license_url) {
                     $licenseName = OURUtils::getLicenseNameFromURL($url->license_url);
