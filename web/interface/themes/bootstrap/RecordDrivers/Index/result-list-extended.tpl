@@ -51,7 +51,7 @@
   </div>
   {/if}
 
-  <button data-toggle="more-less" class="btn btn-default btn-xs hidden" data-threshold="3" data-target=".online-access-container" data-target-name="online access"><span class="fa fa-plus"></span> <span class="more-less-label" data-alt="{translate text='Less'}">{translate text="More"}</span></button>
+  <button data-toggle="more-less" class="btn btn-default btn-xs hidden" data-threshold="5" data-target=".online-access-container" data-target-name="online access"><span class="fa fa-plus"></span> <span class="more-less-label" data-alt="{translate text='Less'}">{translate text="More"}</span></button>
 </div>
 {/if}
 
