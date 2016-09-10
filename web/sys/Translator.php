@@ -207,6 +207,14 @@ class I18N_Translator
                 return "translate_index_not_found($phrase)";
             } else {
                 //@file_put_contents('/tmp/vufind-lang-strings.txt', $phrase . '=' . $phrase . "\n", FILE_APPEND);
+                $db = new Translation();
+                $db->lang = $this->langCode;
+                $db->key = $phrase;
+                if (!$db->find()) {
+                    $db->value = $phrase;
+                    $db->verified = 0;
+                    $db->insert();
+                }
                 return $phrase;
             }
         }

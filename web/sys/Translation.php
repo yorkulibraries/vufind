@@ -11,10 +11,11 @@ class Translation extends DB_DataObject
 
     public $__table = 'translation';         // table name
     public $id;                              // int(11)  not_null primary_key auto_increment
-    public $lang;                            // string(2)  unique_key
-    public $key;                             // string(250)  unique_key
+    public $lang;                            // string(2)  not_null
+    public $key;                             // string(250)  not_null multiple_key
     public $value;                           // string(4000)  
     public $last_modified_by;                // string(14)  
+    public $verified;                        // int(6)  not_null
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE
