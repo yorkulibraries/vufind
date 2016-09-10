@@ -46,7 +46,7 @@
     <td>
       {if $item.availability}
         {if $item.recirculate_flag == 'N'}
-     	 		<span class="checkedout">Non-circulating</span>
+     	 		<span class="checkedout">{translate text='Non-circulating'|escape}</span>
       	{else}
           <span class="available">{if $item.reserve=='Y' && $item.current_location != 'Osgoode Core Collection'}{translate text="On Reserve"} - {$item.circulation_rule|escape}{else}{translate text="Available"}{/if}</span>
         {/if}	

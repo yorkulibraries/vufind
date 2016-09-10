@@ -1,5 +1,9 @@
 <p class="text-success">
-  {translate text='You have successfully authenticated as'} <strong>{$user->firstname|lower|regex_replace:'/\([a-z]+\.\)/':''|ucwords|escape} {$user->lastname|lower|ucwords|escape}.</strong>
+  {assign var=userFirstName value=$user->firstname|lower|ucwords}
+  {assign var=userLastName value=$user->lastname|lower|ucwords}
+  {assign var=userFullName value=$userFirstName|cat:' '|cat:$userLastName}
+  {assign var=welcomeMessage value='you_have_successfully_authenticated_as_xyz'|translate}
+  {$welcomeMessage|replace:'###USERNAME###':$userFullName}
 </p>
 
 {include file="MyResearch/fines-summary.tpl"}

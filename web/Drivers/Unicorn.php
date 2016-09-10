@@ -480,6 +480,8 @@ class Unicorn implements DriverInterface
         	$expiry = $this->_parseDateTime(trim($expiry));
         }
         $expired = ($expiry == '0') ? false : $expiry < time();
+        // remove title from name
+        $first = preg_replace('/\([a-z]+\.\)/i', '', $first);
         return array(
             'id' => $username,
             'firstname' => $first,
