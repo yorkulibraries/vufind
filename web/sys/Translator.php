@@ -203,18 +203,18 @@ class I18N_Translator
             //@file_put_contents('/tmp/vufind-lang-strings.txt', $phrase . '=' . $this->words[$phrase] . "\n", FILE_APPEND);
             return $this->words[$phrase];
         } else {
+            $db = new Translation();
+            $db->lang = $this->langCode;
+            $db->key = $phrase;
+            if (!$db->find()) {
+                $db->value = $phrase;
+                $db->verified = 0;
+                $db->insert();
+            }
             if ($this->debug) {
                 return "translate_index_not_found($phrase)";
             } else {
                 //@file_put_contents('/tmp/vufind-lang-strings.txt', $phrase . '=' . $phrase . "\n", FILE_APPEND);
-                $db = new Translation();
-                $db->lang = $this->langCode;
-                $db->key = $phrase;
-                if (!$db->find()) {
-                    $db->value = $phrase;
-                    $db->verified = 0;
-                    $db->insert();
-                }
                 return $phrase;
             }
         }
