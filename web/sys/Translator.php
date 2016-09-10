@@ -95,7 +95,7 @@ class I18N_Translator
      *
      * @access public
      */
-    public function __construct($path, $langCode, $debug = false)
+    public function __construct($path, $langCode, $debug = false, $useDB = false)
     {
         $this->path = $path;
         $this->langCode = preg_replace('/[^\w\-]/', '', $langCode);
@@ -103,18 +103,48 @@ class I18N_Translator
         if ($debug) {
             $this->debug = true;
         }
-
-        // Load file in specified path
-        if (is_dir($path)) {
-            $file = $path . '/' . $this->langCode . '.ini';
-            if ($this->langCode != '' && is_file($file)) {
-                $this->words = $this->_parseLanguageFile($file);
-            } else {
-                $this->error = "Unknown language file";
+        
+        if ($useDB) {
+            // load the 'en' translation as the base 
+            $words = $this->_loadFromDB('en');
+            
+            // load the currently chosen language
+            $override = $this->_loadFromDB($this->langCode);
+            
+            // override the base 'en' words with the selected language
+            foreach ($override as $key => $value) {
+                $words[$key] = $value;
             }
-        } else {
-            $this->error = "Cannot open $path for reading";
+            
+            $this->words = $words;
         }
+
+        // fallback to using .ini files
+        if (empty($this->words)) {
+            // Load file in specified path
+            if (is_dir($path)) {
+                $file = $path . '/' . $this->langCode . '.ini';
+                if ($this->langCode != '' && is_file($file)) {
+                    $this->words = $this->_parseLanguageFile($file);
+                } else {
+                    $this->error = "Unknown language file";
+                }
+            } else {
+                $this->error = "Cannot open $path for reading";
+            }
+        }
+    }
+    
+    private function _loadFromDB($langCode)
+    {
+        $words = array();
+        $db = new Translation();
+        $db->lang = $langCode;
+        $db->find();
+        while ($db->fetch()) {
+            $words[$db->key] = $db->value;
+        }
+        return $words;
     }
 
     /**

@@ -44,6 +44,7 @@ require_once 'PEAR.php';
 require_once 'sys/Interface.php';
 require_once 'sys/Logger.php';
 require_once 'sys/User.php';
+require_once 'sys/Translation.php';
 require_once 'sys/Translator.php';
 require_once 'sys/SearchObject/Factory.php';
 require_once 'sys/ConnectionManager.php';
@@ -120,6 +121,9 @@ if (isset($configArray['Proxy']['host'])) {
     stream_context_get_default($proxy);
 }
 
+// Setup Local Database Connection
+ConnectionManager::connectToDatabase();
+
 // Setup Translator
 if (isset($_REQUEST['mylang'])) {
     $language = $_REQUEST['mylang'];
@@ -134,7 +138,7 @@ if (!in_array($language, $validLanguages)) {
     $language = $configArray['Site']['language'];
 }
 $translator = new I18N_Translator(
-    'lang', $language, $configArray['System']['debug']
+    'lang', $language, $configArray['System']['debug'], $configArray['Site']['use_i18n_database']
 );
 $interface->setLanguage($language);
 
@@ -150,9 +154,6 @@ if (isset($configArray['Caching'])) {
         $memcache = false;
     }
 }
-
-// Setup Local Database Connection
-ConnectionManager::connectToDatabase();
 
 // Initiate Session State
 $session_type = $configArray['Session']['type'];

@@ -27,6 +27,8 @@ theme           = bootstrap
 mobile_theme    = bootstrap
 language        = en    ; default -- more options available in [Languages] below.
 locale          = en_CA
+use_i18n_database = true
+
 ; Find valid timezone values here:
 ;   http://www.php.net/manual/en/timezones.php
 timezone        = "America/New_York"
