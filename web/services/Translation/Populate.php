@@ -41,9 +41,9 @@ class Populate extends TranslationBase
             $translation->last_modified_by = $user->id;
             
             if ($exists) {
-                $translation->insert();
-            } else {
                 $translation->update();
+            } else {
+                $translation->insert();
             }
         }
     }
