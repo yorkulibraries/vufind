@@ -19,4 +19,19 @@ class Translation extends DB_DataObject
 
     /* the code above is auto generated do not remove the tag below */
     ###END_AUTOCODE
+    
+    public static function search($q)
+    {
+        $q = strtolower($q);
+        $result = array();
+        $db = new Translation();
+        $db->whereAdd("LOWER(`key`) LIKE '%" . $db->escape($q) . "%'");
+        $db->whereAdd("LOWER(`value`) LIKE '%" . $db->escape($q) . "%'", 'OR');
+        $db->orderBy('`key`');
+        $db->find();
+        while ($db->fetch()) {
+            $result[] = clone($db);
+        }
+        return $result;
+    }
 }

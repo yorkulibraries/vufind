@@ -1,3 +1,5 @@
+<h1>{'Edit Translation'|translate|escape}</h1>
+
 <form class="form-horizontal" role="form" action="{$path}/Translation/Edit" method="post">
   <input type="hidden" name="id" value="{$id}" />
   

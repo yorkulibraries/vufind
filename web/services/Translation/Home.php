@@ -14,22 +14,34 @@ class Home extends TranslationBase
         global $interface;
         global $configArray;
         
-        $index = array();
-        $translation = new Translation();
-        $translation->orderBy('`key`');
-        $translation->find();
-        while ($translation->fetch()) {
-            if (!isset($index[$translation->key])) {
-                $index[$translation->key] = array();
+        $results = array();
+        
+        $q = $_REQUEST['q'];
+        if ($q) {
+            $r = Translation::search($q);
+            foreach ($r as $translation) {
+                if (!isset($results[$translation->key])) {
+                    $results[$translation->key] = array();
+                }
+                $results[$translation->key][$translation->lang] = $translation;
             }
-            $index[$translation->key][$translation->lang] = clone($translation);
+        } else {
+            $translation = new Translation();
+            $translation->orderBy('`key`');
+            $translation->find();
+            while ($translation->fetch()) {
+                if (!isset($results[$translation->key])) {
+                    $results[$translation->key] = array();
+                }
+                $results[$translation->key][$translation->lang] = clone($translation);
+            }
         }
-
+        
         // default display all keys
-        $interface->assign('index', $index);
+        $interface->assign('results', $results);
         $interface->setPageTitle('Translations');
         $interface->setTemplate('home.tpl');
         $interface->display('layout.tpl');
-    }
+    }    
 }
 ?>
