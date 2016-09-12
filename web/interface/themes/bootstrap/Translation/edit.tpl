@@ -20,13 +20,15 @@
   <div class="form-group">
     <label class="col-sm-3 control-label" for="key">{translate text='Language'}</label>
     <div class="col-sm-9">
-      <input type="text" class="form-control" name="lang" id="lang" value="{$lang|escape}" {if $id}disabled="disabled"{/if} />
+      <input type="text" class="form-control" name="lang" id="lang" value="{$lang|escape}" disabled="disabled" />
+      <input type="hidden" name="lang" value="{$lang|escape}" />
     </div>
   </div>
   <div class="form-group">
     <label class="col-sm-3 control-label" for="key">{translate text='Key'}</label>
     <div class="col-sm-9">
-      <input type="text" class="form-control" name="key" id="key" value="{$key|escape}" {if $id}disabled="disabled"{/if} />
+      <input type="text" class="form-control" name="key" id="key" value="{$key|escape}" disabled="disabled" />
+      <input type="hidden" name="key" value="{$key|escape}" />
     </div>
   </div>
   <div class="form-group">
