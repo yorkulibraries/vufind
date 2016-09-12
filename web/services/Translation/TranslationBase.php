@@ -16,7 +16,7 @@ class TranslationBase extends Action
         }
         
         if (!(UserAuthorization::hasRole($user, UserAuthorization::ROLE_ADMIN)
-                || UserAuthorization::hasRole($user, UserAuthorization::ROLE_ADMIN)
+                || UserAuthorization::hasRole($user, UserAuthorization::ROLE_TRANSLATOR)
         )) {
             PEAR::raiseError('not_authorized');
         }
