@@ -109,3 +109,12 @@ CREATE TABLE IF NOT EXISTS `translation` (
 ) ENGINE=InnoDB;
 
 
+CREATE TABLE IF NOT EXISTS `role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `role` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY(`user_id`) REFERENCES user(`id`),
+  UNIQUE KEY `user_id_role_UNIQUE` (`user_id`, `role`)
+) ENGINE=InnoDB;
+
