@@ -16,7 +16,7 @@
           {if $translation}
             <a class="btn {if $translation->verified}btn-success{else}btn-warning{/if} btn-sm" href="{$path}/Translation/Edit?id={$translation->id}" role="button">{$languageCode|escape}</a>
           {else}
-            <a class="btn btn-danger btn-sm" href="{$path}/Translation/Add?lang={$languageCode|escape:'url'}&key={$key|escape:'url'}" role="button">{$languageCode|escape}</a>
+            <a class="btn btn-danger btn-sm" href="{$path}/Translation/Edit?lang={$languageCode|escape:'url'}&key={$key|escape:'url'}" role="button">{$languageCode|escape}</a>
           {/if}
         {/foreach}
       </div>
