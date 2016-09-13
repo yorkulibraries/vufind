@@ -14,6 +14,8 @@ class Edit extends TranslationBase
         global $interface;
         global $configArray;
         global $user;
+        global $logger;
+        global $memcache;
         
         $id = trim($_REQUEST['id']);
         $lang = trim($_REQUEST['lang']);
@@ -42,6 +44,13 @@ class Edit extends TranslationBase
                     $translation->verified = 1;
                     $translation->last_modified_by = $user->id;
                     $translation->update();
+                    
+                    if ($memcache) {
+                        $cacheKey = I18N_Translator::getCacheKey($lang);
+                        $memcache->delete($cacheKey);    
+                        $logger->log('Cache delete key - ' . $cacheKey, PEAR_LOG_DEBUG);
+                    }
+                    
                     $this->redirectToIndex();
                 }
             } else {
@@ -52,6 +61,13 @@ class Edit extends TranslationBase
                 $translation->verified = 1;
                 $translation->last_modified_by = $user->id;
                 $translation->insert();
+                
+                if ($memcache) {
+                    $cacheKey = I18N_Translator::getCacheKey($lang);
+                    $memcache->delete($cacheKey);    
+                    $logger->log('Cache delete key - ' . $cacheKey, PEAR_LOG_DEBUG);
+                }
+                
                 $this->redirectToIndex();
             }
         } else if (isset($_POST['cancel'])) {

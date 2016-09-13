@@ -108,7 +108,7 @@ class I18N_Translator
         }
         
         if ($useDB) {
-            $cacheKey = 'translator_words_' . $this->langCode;
+            $cacheKey = self::getCacheKey($this->langCode);
             
             $words = $memcache->get($cacheKey);
             if ($words !== false) {
@@ -233,6 +233,11 @@ class I18N_Translator
                 return $phrase;
             }
         }
+    }
+    
+    public static function getCacheKey($langCode) 
+    {
+        return 'translator_words_' . $langCode;
     }
 }
 ?>
