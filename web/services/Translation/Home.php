@@ -23,7 +23,14 @@ class Home extends TranslationBase
                 if (!isset($results[$translation->key])) {
                     $results[$translation->key] = array();
                 }
-                $results[$translation->key][$translation->lang] = $translation;
+                foreach (array_keys($configArray['Languages']) as $language) {
+                    $t = new Translation();
+                    $t->key = $translation->key;
+                    $t->lang = $language;
+                    if ($t->find(true)) {
+                        $results[$translation->key][$language] = clone($t);
+                    }
+                }
             }
         } else {
             $translation = new Translation();
