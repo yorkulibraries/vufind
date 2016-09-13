@@ -124,6 +124,19 @@ if (isset($configArray['Proxy']['host'])) {
 // Setup Local Database Connection
 ConnectionManager::connectToDatabase();
 
+// Setup memcached interface if configured
+global $memcache;
+if (isset($configArray['Caching'])) {
+    $host = isset($configArray['Caching']['memcache_host']) ? $configArray['Caching']['memcache_host'] : 'localhost';
+    $port = isset($configArray['Caching']['memcache_port']) ? $configArray['Caching']['memcache_port'] : 11211;
+    $timeout = isset($configArray['Caching']['memcache_connection_timeout']) ? $configArray['Caching']['memcache_connection_timeout'] : 1;
+    $memcache = new Memcache();
+    if (!@$memcache->pconnect($host, $port, $timeout)) {
+        $logger->log("Could not connect to Memcache (host = {$host}, port = {$port}).", PEAR_LOG_ERR);
+        $memcache = false;
+    }
+}
+
 // Setup Translator
 if (isset($_REQUEST['mylang'])) {
     $language = $_REQUEST['mylang'];
@@ -141,19 +154,6 @@ $translator = new I18N_Translator(
     'lang', $language, $configArray['System']['debug'], $configArray['Site']['use_i18n_database']
 );
 $interface->setLanguage($language);
-
-// Setup memcached interface if configured
-global $memcache;
-if (isset($configArray['Caching'])) {
-    $host = isset($configArray['Caching']['memcache_host']) ? $configArray['Caching']['memcache_host'] : 'localhost';
-    $port = isset($configArray['Caching']['memcache_port']) ? $configArray['Caching']['memcache_port'] : 11211;
-    $timeout = isset($configArray['Caching']['memcache_connection_timeout']) ? $configArray['Caching']['memcache_connection_timeout'] : 1;
-    $memcache = new Memcache();
-    if (!@$memcache->pconnect($host, $port, $timeout)) {
-        $logger->log("Could not connect to Memcache (host = {$host}, port = {$port}).", PEAR_LOG_ERR);
-        $memcache = false;
-    }
-}
 
 // Initiate Session State
 $session_type = $configArray['Session']['type'];

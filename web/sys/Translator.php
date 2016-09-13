@@ -97,6 +97,9 @@ class I18N_Translator
      */
     public function __construct($path, $langCode, $debug = false, $useDB = false)
     {
+        global $logger;
+        global $memcache;
+        
         $this->path = $path;
         $this->langCode = preg_replace('/[^\w\-]/', '', $langCode);
 
@@ -105,18 +108,30 @@ class I18N_Translator
         }
         
         if ($useDB) {
-            // load the 'en' translation as the base 
-            $words = $this->_loadFromDB('en');
+            $cacheKey = 'translator_words_' . $this->langCode;
             
-            // load the currently chosen language
-            $override = $this->_loadFromDB($this->langCode);
+            $words = $memcache->get($cacheKey);
+            if ($words !== false) {
+                $logger->log('Cache hit - ' . $cacheKey, PEAR_LOG_DEBUG);
+                $this->words = $words;
+            } else {
+                // load the 'en' translation as the base 
+                $words = $this->_loadFromDB('en');
             
-            // override the base 'en' words with the selected language
-            foreach ($override as $key => $value) {
-                $words[$key] = $value;
+                // load the currently chosen language
+                $override = $this->_loadFromDB($this->langCode);
+            
+                // override the base 'en' words with the selected language
+                foreach ($override as $key => $value) {
+                    $words[$key] = $value;
+                }
+            
+                $this->words = $words;
+            
+                if ($memcache && $memcache->set($cacheKey, $words, 0, $configArray['Caching']['memcache_expiry'])) {
+                    $logger->log('Cache set - ' . $cacheKey, PEAR_LOG_DEBUG);
+                }
             }
-            
-            $this->words = $words;
         }
 
         // fallback to using .ini files
