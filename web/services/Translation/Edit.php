@@ -15,16 +15,30 @@ class Edit extends TranslationBase
         global $configArray;
         global $user;
         
-        $id = $_REQUEST['id'];
+        $id = trim($_REQUEST['id']);
+        $lang = trim($_REQUEST['lang']);
+        $key = trim($_REQUEST['key']);
+        $value = trim($_REQUEST['value']);
         
         if (isset($_POST['save'])) {
-            // TODO: validate input
+            $interface->assign('lang', $lang);
+            $interface->assign('key', $key);
+            
+            if (empty($lang)) {
+                $interface->assign('errorMsg', 'Language is required.');
+                $this->displayForm();
+            }
+            
+            if (empty($key)) {
+                $interface->assign('errorMsg', 'Key is required.');
+                $this->displayForm();
+            }
             
             if ($id) {
                 $translation = new Translation();
                 $translation->id = $id;
                 if ($translation->find(true)) {
-                    $translation->value = $_POST['value'];
+                    $translation->value = $value;
                     $translation->verified = 1;
                     $translation->last_modified_by = $user->id;
                     $translation->update();
@@ -32,9 +46,9 @@ class Edit extends TranslationBase
                 }
             } else {
                 $translation = new Translation();
-                $translation->lang = $_POST['lang'];
-                $translation->key = $_POST['key'];
-                $translation->value = $_POST['value'];
+                $translation->lang = $lang;
+                $translation->key = $key;
+                $translation->value = $value;
                 $translation->verified = 1;
                 $translation->last_modified_by = $user->id;
                 $translation->insert();
@@ -51,15 +65,29 @@ class Edit extends TranslationBase
                     $interface->assign('key', $translation->key);
                     $interface->assign('value', $translation->value);
                     $interface->assign('id', $translation->id);
-                }                
+                    $this->displayForm(); 
+                } else {
+                    $this->redirectToIndex();
+                }
             } else {
-                $interface->assign('lang', $_REQUEST['lang']);
-                $interface->assign('key', $_REQUEST['key']);
+                if (!empty($lang) && !empty($key)) {
+                    $interface->assign('lang', $lang);
+                    $interface->assign('key', $key);
+                    $this->displayForm();
+                }
             }
-            $interface->setPageTitle('Edit Translation');
-            $interface->setTemplate('edit.tpl');
-            $interface->display('layout.tpl');
+            $this->redirectToIndex();
         }
+    }
+    
+    private function displayForm() 
+    {
+        global $interface;
+        
+        $interface->setPageTitle('Edit Translation');
+        $interface->setTemplate('edit.tpl');
+        $interface->display('layout.tpl');
+        exit;
     }
 }
 ?>

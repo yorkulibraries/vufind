@@ -7,13 +7,7 @@
     {if $errorMsg}
     <div class="alert alert-danger alert-dismissable">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      {if $error}{$errorMsg|translate}{/if}
-    </div>
-    {/if}
-    {if $infoMsg}
-    <div class="alert alert-info alert-dismissable">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      {if $error}{$infoMsg|translate}{/if}
+      {$errorMsg|translate}
     </div>
     {/if}
   </div>
