@@ -95,7 +95,7 @@ class I18N_Translator
      *
      * @access public
      */
-    public function __construct($path, $langCode, $debug = false)
+    public function __construct($path, $langCode, $debug = false, $useDB = false)
     {
         $this->path = $path;
         $this->langCode = preg_replace('/[^\w\-]/', '', $langCode);
@@ -103,18 +103,48 @@ class I18N_Translator
         if ($debug) {
             $this->debug = true;
         }
-
-        // Load file in specified path
-        if (is_dir($path)) {
-            $file = $path . '/' . $this->langCode . '.ini';
-            if ($this->langCode != '' && is_file($file)) {
-                $this->words = $this->_parseLanguageFile($file);
-            } else {
-                $this->error = "Unknown language file";
+        
+        if ($useDB) {
+            // load the 'en' translation as the base 
+            $words = $this->_loadFromDB('en');
+            
+            // load the currently chosen language
+            $override = $this->_loadFromDB($this->langCode);
+            
+            // override the base 'en' words with the selected language
+            foreach ($override as $key => $value) {
+                $words[$key] = $value;
             }
-        } else {
-            $this->error = "Cannot open $path for reading";
+            
+            $this->words = $words;
         }
+
+        // fallback to using .ini files
+        if (empty($this->words)) {
+            // Load file in specified path
+            if (is_dir($path)) {
+                $file = $path . '/' . $this->langCode . '.ini';
+                if ($this->langCode != '' && is_file($file)) {
+                    $this->words = $this->_parseLanguageFile($file);
+                } else {
+                    $this->error = "Unknown language file";
+                }
+            } else {
+                $this->error = "Cannot open $path for reading";
+            }
+        }
+    }
+    
+    private function _loadFromDB($langCode)
+    {
+        $words = array();
+        $db = new Translation();
+        $db->lang = $langCode;
+        $db->find();
+        while ($db->fetch()) {
+            $words[$db->key] = $db->value;
+        }
+        return $words;
     }
 
     /**
@@ -173,6 +203,14 @@ class I18N_Translator
             //@file_put_contents('/tmp/vufind-lang-strings.txt', $phrase . '=' . $this->words[$phrase] . "\n", FILE_APPEND);
             return $this->words[$phrase];
         } else {
+            $db = new Translation();
+            $db->lang = $this->langCode;
+            $db->key = $phrase;
+            if (!$db->find()) {
+                $db->value = $phrase;
+                $db->verified = 0;
+                $db->insert();
+            }
             if ($this->debug) {
                 return "translate_index_not_found($phrase)";
             } else {

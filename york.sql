@@ -97,3 +97,24 @@ CREATE TABLE IF NOT EXISTS `paid_bill` (
 ) ENGINE=InnoDB;
 
 
+CREATE TABLE IF NOT EXISTS `translation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `lang` varchar(2) NOT NULL,
+  `key` varchar(250) NOT NULL,
+  `value` varchar(4000),
+  `last_modified_by` varchar(14),
+  `verified` smallint NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key_lang_UNIQUE` (`key`, `lang`)
+) ENGINE=InnoDB;
+
+
+CREATE TABLE IF NOT EXISTS `role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `role` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY(`user_id`) REFERENCES user(`id`),
+  UNIQUE KEY `user_id_role_UNIQUE` (`user_id`, `role`)
+) ENGINE=InnoDB;
+

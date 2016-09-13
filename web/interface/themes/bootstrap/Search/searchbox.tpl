@@ -1,3 +1,4 @@
+{if !$hideSearchBox}
 {if $pageTemplate != 'advanced.tpl' && $pageTemplate != 'login.tpl'}
   {if $searchType=='advanced'}
     <h1>{translate text='Advanced Search'}</h1>
@@ -54,4 +55,5 @@
       <input type="hidden" name="mylang" value="{$userLang}" />
     </form>
   {/if}
+{/if}
 {/if}

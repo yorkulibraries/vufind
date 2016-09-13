@@ -65,6 +65,10 @@ export JETTY_PID=/tmp/$USER.pid
 
 - the slave will begin replicating the index from the master instance
 
+Adding/Modifying db schema configuration
+==========================================
+whenever a table structure is modified or new table added, web/conf/vufind.ini needs to be updated. This can be done automatically with the following command:
+php [path_to]/share/pear/DB/DataObject/createTables.php ./web/conf/create-tables.ini
 
 
 Files to pay attention to when merging with upstream
