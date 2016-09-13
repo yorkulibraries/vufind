@@ -1,5 +1,15 @@
 <h1>{translate text="Translations"}</h1>
 
+<form class="print-hidden" role="form" method="get" action="{$path}/Translation/Home">
+  <div class="input-group">
+    <input type="text" name="q" value="{$q|escape}" class="form-control" placeholder="{'Search for Key or Value'|translate|escape}" />
+    <div class="input-group-btn">
+    <button class="btn btn-default" type="submit"><span class="fa fa-search"></span></button>
+    </div>
+  </div>
+</form>
+<br>
+
 {if !empty($results)}
   {foreach from=$results key=key item=translations}
   <div class="panel panel-default">

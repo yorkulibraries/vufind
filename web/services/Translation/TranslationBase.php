@@ -23,6 +23,7 @@ class TranslationBase extends Action
         
         $interface->assign('enabledLanguages', $configArray['Languages']);
         $interface->assign('enabledLanguageCodes', array_keys($configArray['Languages']));
+        $interface->assign('hideSearchBox', true);
     }
     
     protected function redirectToIndex()

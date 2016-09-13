@@ -16,7 +16,7 @@ class Home extends TranslationBase
         
         $results = array();
         
-        $q = $_REQUEST['q'];
+        $q = trim($_REQUEST['q']);
         if ($q) {
             $r = Translation::search($q);
             foreach ($r as $translation) {
@@ -38,6 +38,7 @@ class Home extends TranslationBase
         }
         
         // default display all keys
+        $interface->assign('q', $q);
         $interface->assign('results', $results);
         $interface->setPageTitle('Translations');
         $interface->setTemplate('home.tpl');
