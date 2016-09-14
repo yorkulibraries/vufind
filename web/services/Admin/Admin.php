@@ -27,6 +27,7 @@
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
 require_once 'Action.php';
+require_once 'sys/UserAuthorization.php';
 
 /**
  * Parent for all actions in the Admin module.
@@ -49,6 +50,16 @@ abstract class Admin extends Action
     {
         global $configArray;
         global $interface;
+        
+        if (!UserAccount::isLoggedIn()) {
+            $this->redirectToLogin();
+        }
+        
+        if (!(UserAuthorization::hasRole($user, UserAuthorization::ROLE_ADMIN))) {
+            PEAR::raiseError('not_authorized');
+        }
+        
+        $interface->assign('hideSearchBox', true);
 
         // If the Admin module is disabled, die now with an appropriate message:
         if (!isset($configArray['Site']['admin_enabled'])
@@ -59,6 +70,14 @@ abstract class Admin extends Action
             $interface->display('layout-admin.tpl');
             die();
         }
+    }
+    
+    protected function redirectToLogin()
+    {
+        global $configArray;
+        global $action;
+        header('Location: ' . $configArray['Site']['path'] . '/MyResearch/Home?followup=1&followupModule=Admin&followupAction=' . $action);
+        exit;
     }
 }
 

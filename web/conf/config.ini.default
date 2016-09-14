@@ -50,7 +50,7 @@ defaultRecordTab= Holdings
 defaultAccountPage = CheckedOut
 ; Allow access to the Admin module? (Potentially dangerous, since it allows editing
 ; of configuration files and deleting of records).
-admin_enabled = false
+admin_enabled = true
 ; Show sidebar on the left side instead of right
 sidebarOnLeft = true
 ; Show book covers on the left instead of right

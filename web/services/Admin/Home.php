@@ -53,21 +53,6 @@ class Home extends Admin
         global $configArray;
         global $interface;
 
-        // Load SOLR Statistics
-        if ($configArray['Index']['engine'] == 'Solr') {
-            $xml = @file_get_contents(
-                $configArray['Index']['url'] . '/admin/multicore'
-            );
-
-            if ($xml) {
-                $options = array('parseAttributes' => 'true',
-                                 'keyAttribute' => 'name');
-                $unxml = new XML_Unserializer($options);
-                $unxml->unserialize($xml);
-                $data = $unxml->getUnserializedData();
-                $interface->assign('data', $data['status']);
-            }
-        }
 
         $interface->setTemplate('home.tpl');
         $interface->setPageTitle('Home');

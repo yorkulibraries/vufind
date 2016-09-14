@@ -26,7 +26,7 @@
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
 
-require_once 'Action.php';
+require_once 'Admin.php';
 require_once 'services/MyResearch/lib/Payment.php';
 require_once 'services/MyResearch/PayFines.php';
 require_once 'sys/VuFindDate.php';
@@ -41,7 +41,7 @@ require_once 'sys/Pager.php';
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
-class OnlinePayments extends Action
+class OnlinePayments extends Admin
 {
     /**
      * Process parameters and display the response.
