@@ -25,7 +25,7 @@
   {include file="MyResearch/fines-summary.tpl"}
 
   {if is_array($recordList) && !empty($recordList)}
-    <p>{translate text='You have ###NUMBER### hold request(s)'|replace:'###NUMBER###':$recordCount}.</p>
+    <p>{'You have ###NUMBER### hold request(s)'|translate|replace:'###NUMBER###':$recordCount}.</p>
   
     <form class="cancel-hold-form" role="form" action="{$path}/MyResearch/Holds" method="post">
       {if $cancelable}
