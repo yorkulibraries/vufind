@@ -20,7 +20,7 @@
   {include file="MyResearch/fines-summary.tpl"}
   
   {if !empty($recordList)}
-    <p>{translate text='you_have_xxx_items_checked_out'|replace:'###NUMBER###':$recordCount}.</p>
+    <p>{'you_have_xxx_items_checked_out'|translate|replace:'###NUMBER###':$recordCount}.</p>
     
     <form {if !$renewForm}disabled="disabled"{/if} class="renewal-form long-wait" role="form" action="{$path}/MyResearch/CheckedOut" method="post">
       {if $renewForm}
