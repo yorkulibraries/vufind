@@ -252,12 +252,12 @@ class UserAccount
                 $user = new User();
                 $user->cat_username = $patron['barcode'];
                 if ($user->find(true)) {
-                    $logger->log('Found a matching VuFind user. Logging in automatically.');
+                    $logger->log('Found a matching VuFind user. Logging in automatically.', PEAR_LOG_NOTICE);
                     self::updateSession($user);
                     return $user;
                 }
                 $logger->log('No VuFind user record found for cat_username: ' . $patron['barcode'], PEAR_LOG_NOTICE);
-                $logger->log('User not automatically logged in.');
+                $logger->log('User not automatically logged in.', PEAR_LOG_NOTICE);
                 return false;
             } 
         }
