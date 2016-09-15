@@ -236,7 +236,7 @@ class UserAccount
 
         if (!PEAR::isError($response)) {
             $json = json_decode($req->getResponseBody());
-            if (!empty($json->HTTP_PYORK_CYIN)) {
+            if ($json && is_object($json) && !empty($json->HTTP_PYORK_CYIN)) {
                 $logger->log('Yes, got CYIN from Passport York JSON: ' . $json->HTTP_PYORK_CYIN, PEAR_LOG_NOTICE);
                 $catalog = ConnectionManager::connectToCatalog();
                 if (!($catalog && $catalog->status)) {
