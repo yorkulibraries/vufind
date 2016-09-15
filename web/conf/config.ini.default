@@ -746,3 +746,8 @@ message_regex_fr="/Message:<\/th><td>([^<>]*)<\/td>/"
 ypborderid_regex_fr="/order_id=([0-9]+)/"
 status_regex_fr="/>([A-Z\/ ]+)<\/h3>/"
 payment_active_regex_fr="/(<iframe [^<>]+><\/iframe>)/i"
+
+[PassportYorkJSONFeed]
+url = https://passportyorkjsonurl
+
+
