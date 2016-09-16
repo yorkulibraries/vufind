@@ -252,7 +252,7 @@ class UserAccount
                 $user = new User();
                 $user->cat_username = $patron['barcode'];
                 if ($user->find(true)) {
-                    $logger->log('Found a matching VuFind user. Logging in automatically.', PEAR_LOG_NOTICE);
+                    $logger->log('Found a matching VuFind user. Logging in automatically. Referer: ' . $_SERVER['HTTP_REFERER'], PEAR_LOG_NOTICE);
                     self::updateSession($user);
                     return $user;
                 }
