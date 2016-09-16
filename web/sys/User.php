@@ -224,7 +224,7 @@ class UserAccount
 
         $jsonURL = $configArray['PassportYorkJSONFeed']['url'];
         
-        $logger->log('Checking if user is logged in with Passport York.', PEAR_LOG_NOTICE);
+        $logger->log('Checking if user is logged in with Passport York.', PEAR_LOG_DEBUG);
         
         $req = new HTTP_Request($jsonURL);
         
@@ -262,7 +262,7 @@ class UserAccount
             } 
         }
         
-        $logger->log('No, user NOT logged in with Passport York.', PEAR_LOG_NOTICE);
+        $logger->log('No, user NOT logged in with Passport York.', PEAR_LOG_DEBUG);
         return false;
     }
 }
