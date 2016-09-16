@@ -35,6 +35,8 @@ require_once 'services/MyResearch/lib/User.php';
 
 require_once 'services/MyResearch/lib/FailedLogins.php';
 
+require_once "HTTP/Request.php";
+
 /**
  * Wrapper class for handling logged-in user in session.
  *
@@ -56,8 +58,8 @@ class UserAccount
     {
         if (isset($_SESSION['userinfo'])) {
             return unserialize($_SESSION['userinfo']);
-        }
-        return false;
+        }        
+        return self::ppyGetLoggedInUser();
     }
 
     /**
@@ -212,6 +214,55 @@ class UserAccount
             self::updateSession($user);
             return true;
         }
+        return false;
+    }
+    
+    private static function ppyGetLoggedInUser()
+    {
+        global $configArray;
+        global $logger;
+
+        $jsonURL = $configArray['PassportYorkJSONFeed']['url'];
+        
+        $logger->log('Checking if user is logged in with Passport York.', PEAR_LOG_NOTICE);
+        
+        $req = new HTTP_Request($jsonURL);
+        
+        foreach ($_COOKIE as $name => $value) {
+            $req->addCookie($name, $value);
+        }
+        
+        $response = $req->sendRequest();
+
+        if (!PEAR::isError($response)) {
+            $json = json_decode($req->getResponseBody());
+            if ($json && is_object($json) && !empty($json->HTTP_PYORK_CYIN)) {
+                $logger->log('Yes, got CYIN from Passport York JSON: ' . $json->HTTP_PYORK_CYIN, PEAR_LOG_NOTICE);
+                $catalog = ConnectionManager::connectToCatalog();
+                if (!($catalog && $catalog->status)) {
+                    return false;
+                }
+                $patron = $catalog->getPatronByAltId($json->HTTP_PYORK_CYIN);
+                $logger->log('Looking for a patron record by alt_id: ' . $json->HTTP_PYORK_CYIN, PEAR_LOG_NOTICE);
+                if (!$patron || PEAR::isError($patron)) {
+                    $logger->log('No patron record found for alt_id: ' . $json->HTTP_PYORK_CYIN, PEAR_LOG_NOTICE);
+                    return false;
+                }
+                $logger->log('Looking for a VuFind user record by cat_username: ' . $patron['barcode'], PEAR_LOG_NOTICE);
+                $user = new User();
+                $user->cat_username = $patron['barcode'];
+                if ($user->find(true)) {
+                    $logger->log('Found a matching VuFind user. Logging in automatically.', PEAR_LOG_NOTICE);
+                    self::updateSession($user);
+                    return $user;
+                }
+                $logger->log('No VuFind user record found for cat_username: ' . $patron['barcode'], PEAR_LOG_NOTICE);
+                $logger->log('User not automatically logged in.', PEAR_LOG_NOTICE);
+                return false;
+            } 
+        }
+        
+        $logger->log('No, user NOT logged in with Passport York.', PEAR_LOG_NOTICE);
         return false;
     }
 }
