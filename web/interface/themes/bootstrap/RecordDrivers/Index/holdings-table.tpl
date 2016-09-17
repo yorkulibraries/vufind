@@ -36,7 +36,14 @@
       <div class="btn-group">
         <a title="{translate text='Locate this item'}" class="btn btn-default btn-xs print-hidden" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}" role="button"><i class="yul-map-icon"></i></a>
       </div>
-      {$item.current_location|replace:'- 204 Founders College':''|translate|escape}
+      {assign var=curloc value=$item.current_location|replace:'- 204 Founders College':''}
+      {assign var=curloc value=$curloc|replace:'Osgoode':''}
+      {assign var=curloc value=$curloc|replace:'Law':''}
+      {assign var=curloc value=$curloc|replace:'Bronfman':''}
+      {assign var=curloc value=$curloc|replace:'Scott':''}
+      {assign var=curloc value=$curloc|replace:'Steacie':''}
+      {assign var=curloc value=$curloc|replace:'Frost':''}
+      {$curloc|translate|escape}
     </td>
     <td>
       <span class="hidden-xs">{$item.callnumber|escape}</span>
