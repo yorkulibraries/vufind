@@ -38,17 +38,17 @@
       {$item.current_location|replace:'- 204 Founders College':''|translate|escape}
     </td>
     <td>
-      {$item.callnumber|escape}
+      <span class="hidden-xs">{$item.callnumber|escape}</span>
       
       {* display a "label" for in/out status on xs screens instead of a full status column *}
       {if $item.availability}
         {if $item.recirculate_flag == 'N'}
-     	 		<span class="visible-xs label-warning">{'IN'|translate|escape}</span>
+     	 		<span class="visible-xs label-warning">{$item.callnumber|escape}</span>
       	{else}
-          <span class="visible-xs label-success">{'IN'|translate|escape}</span>
+          <span class="visible-xs label-success">{$item.callnumber|escape}</span>
         {/if}	
       {else}
-        <span class="visible-xs label-danger">{'OUT'|translate|escape}</span>
+        <span class="visible-xs label-danger">{$item.callnumber|escape}</span>
       {/if}
     </td>
     <td class="hidden-xs">
