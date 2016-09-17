@@ -43,12 +43,12 @@
       {* display a "label" for in/out status on xs screens instead of a full status column *}
       {if $item.availability}
         {if $item.recirculate_flag == 'N'}
-     	 		<span class="visible-xs label-warning">{$item.callnumber|escape}</span>
+     	 		<span class="visible-xs text-warning">{$item.callnumber|escape}</span>
       	{else}
-          <span class="visible-xs label-success">{$item.callnumber|escape}</span>
+          <span class="visible-xs text-success">{$item.callnumber|escape}</span>
         {/if}	
       {else}
-        <span class="visible-xs label-danger">{$item.callnumber|escape}</span>
+        <span class="visible-xs text-danger">{$item.callnumber|escape}</span>
       {/if}
     </td>
     <td class="hidden-xs">
