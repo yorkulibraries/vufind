@@ -20,9 +20,9 @@
   <caption class="sr-only">{translate text="Location and Availability"}</caption>
 <thead>
 <tr>
-  <th class="hidden-xs">{translate text='Location'}</th>
+  <th>{translate text='Location'}</th>
   <th>{translate text='Call Number'}</th>
-  <th>{translate text='Status'}</th>
+  <th class="hidden-xs">{translate text='Status'}</th>
   <th class="hidden-xs">{translate text='Holds'}</th>
   <th class="hidden-xs">{translate text='Material'}</th>
 </tr>
@@ -31,19 +31,27 @@
 {foreach from=$statusItems item=item name="itemLoop"}
   {if $item.current_location && $item.item_type}
   <tr class="more-less">
-    <td class="hidden-xs">
+    <td>
       <div class="btn-group">
         <a title="{translate text='Locate this item'}" class="btn btn-default btn-xs print-hidden" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}" role="button"><i class="yul-map-icon"></i></a>
       </div>
       {$item.current_location|replace:'- 204 Founders College':''|translate|escape}
     </td>
     <td>
-      <div class="btn-group">
-        <a title="{translate text='Locate this item'}" class="btn btn-default btn-xs visible-xs  print-hidden" href="{$path}/Record/{$item.id}/Location?location={$item.current_location|escape:'url'}&amp;location_code={$item.location_code|escape:'url'}&amp;callnumber={$item.callnumber|escape:'url'}" role="button"><i class="yul-map-icon"></i></a>
-      </div>
       {$item.callnumber|escape}
+      
+      {* display a "label" for in/out status on xs screens instead of a full status column *}
+      {if $item.availability}
+        {if $item.recirculate_flag == 'N'}
+     	 		<span class="visible-xs label-warning">{'IN'|translate|escape}</span>
+      	{else}
+          <span class="visible-xs label-success">{'IN'|translate|escape}</span>
+        {/if}	
+      {else}
+        <span class="visible-xs label-danger">{'OUT'|translate|escape}</span>
+      {/if}
     </td>
-    <td>
+    <td class="hidden-xs">
       {if $item.availability}
         {if $item.recirculate_flag == 'N'}
      	 		<span class="checkedout">{translate text='Non-circulating'|escape}</span>
