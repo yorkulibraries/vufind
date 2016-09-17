@@ -233,8 +233,10 @@ class UserAccount
         }
         
         $response = $req->sendRequest();
+        $statusCode = $req->getResponseCode();
+        $logger->log('Got HTTP status code: ' . $statusCode, PEAR_LOG_DEBUG);
 
-        if (!PEAR::isError($response)) {
+        if (!PEAR::isError($response) && $statusCode == 200) {
             $json = json_decode($req->getResponseBody());
             if ($json && is_object($json) && !empty($json->HTTP_PYORK_CYIN)) {
                 $logger->log('Yes, got CYIN from Passport York JSON: ' . $json->HTTP_PYORK_CYIN, PEAR_LOG_NOTICE);
