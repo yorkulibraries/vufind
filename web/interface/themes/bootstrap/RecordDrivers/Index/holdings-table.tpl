@@ -16,6 +16,8 @@
     {/if}
   {/foreach}
 {/if}
+
+<p class="visible-xs help-block">{'Call numbers in <span class="text-danger">red</span> are either checked out or not circulating. Call numbers in <span class="text-success">green</span> are available.'|translate}</p>
 <table class="table table-condensed holdings">
   <caption class="sr-only">{translate text="Location and Availability"}</caption>
 <thead>
