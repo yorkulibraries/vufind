@@ -51,6 +51,8 @@
   </div>
   {/if}
   
+  <p class="visible-xs help-block">{'Call numbers in <span class="text-danger">red</span> are either checked out or not circulating. Call numbers in <span class="text-success">green</span> are available.'|translate}</p>
+  
   {foreach from=$holdings item=statusItems key=library name="outerloop"}
   {if !empty($library) && !empty($statusItems)}
         {include file="RecordDrivers/Index/holdings-table.tpl"}
