@@ -51,7 +51,7 @@ class Related extends Record
         $interface->assign('similarItems', $this->similarItems());
         $interface->assign('browseShelf', $this->browseShelf());
         $interface->assign('tab', 'Related');
-        $interface->setPageTitle(translate('Related'));
+        $interface->setPageTitle('Related');
         $interface->assign('subTemplate', 'view-related.tpl');
         $interface->setTemplate('view.tpl');
 

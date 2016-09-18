@@ -61,7 +61,7 @@ class Carousel extends Action
         global $user;
         if (isset($_GET['preview'])) {
             $interface->assign('carouselCode', $this->getCarouselCode());
-            $interface->setPageTitle(translate('Carousel Preview'));
+            $interface->setPageTitle('Carousel Preview');
             $interface->setTemplate('carousel-preview.tpl');
             $interface->display('layout.tpl');
             exit;
