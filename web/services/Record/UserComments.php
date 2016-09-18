@@ -60,7 +60,7 @@ class UserComments extends Record
             $this->deleteComment($_REQUEST['delete'], $user);
         }
 
-        $interface->setPageTitle(translate('Comments'));
+        $interface->setPageTitle('Comments');
         
         if ($_REQUEST['add'] || $_REQUEST['submit']) {
             if (!$user) {
@@ -86,7 +86,7 @@ class UserComments extends Record
                $result = $this->saveComment($user);
             }
             $interface->assign('add', $_REQUEST['add']);
-            $interface->setPageTitle(translate('Add your comment'));
+            $interface->setPageTitle('Add your comment');
         }
 
         // Set Messages

@@ -199,7 +199,7 @@ class Delete extends MyResearch
             // Assign Item Info
             $interface->assign('listID', $listID);
             $interface->assign('errorMsg', $this->errorMsg);
-            $interface->setPageTitle(translate('Delete Favorites'));
+            $interface->setPageTitle('Delete Favorites');
             $interface->assign('subTemplate', 'delete.tpl');
             $interface->assign('deleteIDS', $ids);
             $interface->assign('deleteList', $this->_getDeleteList($ids));
