@@ -51,10 +51,7 @@ class Details extends Record
         global $interface;
 
         if (!$interface->is_cached($this->cacheId)) {
-            $interface->setPageTitle(
-                translate('Staff View') . ': ' .
-                $this->recordDriver->getBreadcrumb()
-            );
+            $interface->setPageTitle('Staff View');
 
             $interface->assign('staffDetails', $this->recordDriver->getStaffView());
             $interface->assign('subTemplate', 'view-details.tpl');

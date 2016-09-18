@@ -60,9 +60,7 @@ class Holdings extends Record
         $interface->assign(
             'allItemRecords', $this->catalog->getHolding($_REQUEST['id'], $patron)
         );
-        $interface->setPageTitle(
-            translate('Holdings') . ': ' . $this->recordDriver->getBreadcrumb()
-        );
+        $interface->setPageTitle('Holdings');
         $interface->assign(
             'holdingsMetadata', $this->recordDriver->getHoldings($patron)
         );

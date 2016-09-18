@@ -51,10 +51,7 @@ class TOC extends Record
         global $interface;
 
         if (!$interface->is_cached($this->cacheId)) {
-            $interface->setPageTitle(
-                translate('Table of Contents') . ': ' .
-                $this->recordDriver->getBreadcrumb()
-            );
+            $interface->setPageTitle('Table of Contents');
             $interface->assign('tocTemplate', $this->recordDriver->getTOC());
             $interface->assign('subTemplate', 'view-toc.tpl');
             $interface->setTemplate('view.tpl');

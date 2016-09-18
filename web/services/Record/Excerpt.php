@@ -52,9 +52,7 @@ class Excerpt extends Record
         global $configArray;
 
         if (!$interface->is_cached($this->cacheId)) {
-            $interface->setPageTitle(
-                translate('Excerpt') . ': ' . $this->recordDriver->getBreadcrumb()
-            );
+            $interface->setPageTitle('Excerpt');
             $excerpts = $this->recordDriver->getExcerpts();
             if (!empty($excerpts)) {
                 $interface->assign('excerpts', $excerpts);

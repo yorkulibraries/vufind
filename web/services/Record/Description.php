@@ -51,10 +51,7 @@ class Description extends Record
         global $interface;
         
         if (!$interface->is_cached($this->cacheId)) {
-            $interface->setPageTitle(
-                translate('Description') . ': ' .
-                $this->recordDriver->getBreadcrumb()
-            );
+            $interface->setPageTitle('Description');
             $interface->assign(
                 'extendedMetadata', $this->recordDriver->getExtendedMetadata()
             );
