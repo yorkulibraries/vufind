@@ -52,9 +52,7 @@ class Reviews extends Record
         global $configArray;
 
         if (!$interface->is_cached($this->cacheId)) {
-            $interface->setPageTitle(
-                translate('Reviews') . ': ' . $this->recordDriver->getBreadcrumb()
-            );
+            $interface->setPageTitle('Reviews');
             $reviews = $this->recordDriver->getReviews();
             if ($reviews) {
                 if (!PEAR::isError($reviews)) {

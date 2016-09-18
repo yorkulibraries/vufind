@@ -48,10 +48,7 @@ class Map extends Record
         global $interface;
         
         if (!$interface->is_cached($this->cacheId)) {
-            $interface->setPageTitle(
-                translate('Map View') . ': ' .
-                $this->recordDriver->getBreadcrumb()
-            );
+            $interface->setPageTitle('Map View');
             $interface->assign('subTemplate', $this->recordDriver->getMapView());
             $interface->setTemplate('view.tpl');
         }

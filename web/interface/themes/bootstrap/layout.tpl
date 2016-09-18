@@ -13,8 +13,10 @@
     {translate text='Library Catalogue'}
   {elseif $module=='Search' && $action=='Results'}
     {translate text='Catalogue Search Results'}
+  {elseif $breadcrumbText}
+    {$pageTitle|escape} : {$breadcrumbText|truncate:64:"..."|escape}
   {else}
-    {$pageTitle|truncate:64:"..."}
+    {$pageTitle|escape}
   {/if}
   | {translate text='York University Libraries'}
   </title>
