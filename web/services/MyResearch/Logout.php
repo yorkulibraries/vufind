@@ -61,6 +61,9 @@ class Logout extends Action
      */
     public static function performLogout($redirect=true)
     {
+        global $interface;
+        global $user;
+        
         if (!isset($_SESSION)) {
             session_start();
         }
@@ -73,6 +76,9 @@ class Logout extends Action
 
         session_destroy();
         
+        $user = null;
+        $interface->assign('user', null);
+        
         setcookie('pyauth', '' , time()-(3600 * 24 * 365), '/', '.yorku.ca', false);
         setcookie('pyauth', '' , time()-(3600 * 24 * 365), '/', '.yorku.ca', true);
         setcookie('mayaauth', '' , time()-(3600 * 24 * 365), '/', '.yorku.ca', false);
@@ -81,6 +87,7 @@ class Logout extends Action
         setcookie('ezproxy', '' , time()-(3600 * 24 * 365), '/', '.library.yorku.ca', true);
         setcookie('yulauth', '' , time()-(3600 * 24 * 365), '/', '.library.yorku.ca', false);
         setcookie('yulauth', '' , time()-(3600 * 24 * 365), '/', '.library.yorku.ca', true);
+        
         if ($redirect) {
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/');
             exit;
