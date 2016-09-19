@@ -43,5 +43,6 @@
 </div>
 {/if}
 
+<p class="login-question"><a href="http://www.library.yorku.ca/web/ask-services/borrow-renew-return/your-library-card/">{translate text='New user'}?</a></p>
 <p class="login-question"><a href="{$path}/Help/Home?topic=login">{translate text='Locked account'}?</a></p>
 <p class="login-question"><a href="{$path}/Help/Home?topic=login">{translate text='Forgot your password'}?</a></p>
