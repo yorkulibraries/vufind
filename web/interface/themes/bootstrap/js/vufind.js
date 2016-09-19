@@ -84,14 +84,14 @@ $(document).ready(function() {
 
 // handle logged out event
 $(document).on('loggedout.vufind', function(e, params) {
-    $('#myAccountPanel').html(params.loggedOutPanel);
+    $('#mainNav').replaceWith(params.nav);
     refreshRecordComments();
     $('.upload-cover-button').addClass('hidden');
 });
 
 // handle logged in event
 $(document).on('loggedin.vufind', function(e, params) {
-    $('#myAccountPanel').html(params.loggedInPanel);
+    $('#mainNav').replaceWith(params.nav);
     refreshRecordComments();
     if (params.canUploadCovers) {
         $('.upload-cover-button').removeClass('hidden');
@@ -371,11 +371,12 @@ function setupLinks() {
             query = $(location).attr('href').substring(index + 1);
         }
         query = query.replace(/&?mylang=[a-z]{2}/g, '');
+        query = query.replace(/&?_=[0-9]+/g, '');
         if (query.length > 0) {
             query += '&';
         }
         query += 'mylang=' + $(this).data('mylang');
-        window.location = base + '?' + query;
+        window.location = base + '?' + query + '&_=' + Math.round(new Date().getTime()/1000);
     });
     // subject links - when hover'ed, highlight the entire subject line
     $('.subject-line a').hover( 

@@ -238,7 +238,7 @@ class JSON extends Action
         $event->type = 'loggedin.vufind';
         $event->data = new stdClass();
         $event->data->canUploadCovers = $user->can_upload_covers;
-        $event->data->loggedInPanel = $interface->fetch('MyResearch/logged-in-panel.tpl');
+        $event->data->nav = $interface->fetch('nav.tpl');
         $event->data->message = translate('Welcome Back') . ', ' . trim(ucwords(strtolower(preg_replace('/\([a-z]+\.\)/i', '', $user->firstname)))) . '!';
         $result->events = array($event);
         return $this->output($result, JSON::STATUS_OK);
@@ -248,12 +248,13 @@ class JSON extends Action
     {
         require_once 'services/MyResearch/Logout.php';
         global $interface;
+        global $user;
         
         Logout::performLogout(false);
         $event = new stdClass();
         $event->type = 'loggedout.vufind';
         $event->data = new stdClass();
-        $event->data->loggedOutPanel = $interface->fetch('MyResearch/logged-out-panel.tpl');
+        $event->data->nav = $interface->fetch('nav.tpl');
         $event->data->message = translate('Logged out');
         $result = new stdClass();
         $result->events = array($event);

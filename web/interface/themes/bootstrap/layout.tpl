@@ -44,44 +44,8 @@
 </head>
 <body>
   <a class="sr-only" href="#content">{translate text='Skip to main content'}</a>
-  <nav class="navbar navbar-default yul-navbar" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
-          <span class="sr-only">{translate text='Navigation menu'}</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a title="{translate text='York University'}" href="http://www.yorku.ca/" class="navbar-brand"><img src="{$path}/interface/themes/bootstrap/images/yib11yorklogo.gif" alt="York University"/></a>
-        <a title="{translate text='Library Catalogue'}" href="{$path}/?mylang={$userLang|escape}" class="navbar-brand">{translate text='Library Catalogue'}</a>
-      </div>
-
-      <div class="collapse navbar-collapse">
-        <div id="myAccountPanel">
-          {if $user}
-            {include file="MyResearch/logged-in-panel.tpl"}
-          {else}
-            {include file="MyResearch/logged-out-panel.tpl"}
-          {/if}
-        </div>
-        <ul class="nav navbar-nav">
-          <li role="presentation">
-            <a role="menuitem" tabindex="-1" href="//www.library.yorku.ca/">{translate text='Libraries Home'}</a>
-          </li>
-          {if 'fr'==$userLang}
-            <li role="presentation">
-              <a role="menuitem" tabindex="-1" data-mylang="en" href="#">English</a>
-            </li>
-          {else}
-            <li role="presentation">
-              <a role="menuitem" tabindex="-1" data-mylang="fr" href="#">Français</a>
-            </li>
-          {/if}
-        </ul>
-      </div>
-    </div>
-  </nav>
+  
+  {include file="nav.tpl"}
   
   <div class="container">
     <!-- $module = {$module}  -->
