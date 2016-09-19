@@ -378,6 +378,13 @@ function setupLinks() {
         query += 'mylang=' + $(this).data('mylang');
         window.location = base + '?' + query + '&_=' + Math.round(new Date().getTime()/1000);
     });
+    // handle catalogue-home link
+    $('body').on('click', 'a.catalogue-home', function(e) {
+        e.preventDefault();
+       
+        var base = $(this).attr('href');
+        window.location = base + '?_=' + Math.round(new Date().getTime()/1000);
+    });
     // subject links - when hover'ed, highlight the entire subject line
     $('.subject-line a').hover( 
         function() {
