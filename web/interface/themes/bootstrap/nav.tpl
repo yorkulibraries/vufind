@@ -8,7 +8,7 @@
         <span class="icon-bar"></span>
       </button>
       <a title="{translate text='York University'}" href="http://www.yorku.ca/" class="navbar-brand"><img src="{$path}/interface/themes/bootstrap/images/yib11yorklogo.gif" alt="York University"/></a>
-      <a title="{translate text='Library Catalogue'}" href="{$path}/" class="navbar-brand" data-mylang="{$userLang}">{translate text='Library Catalogue'}</a>
+      <a title="{translate text='Library Catalogue'}" href="{$path}/" class="navbar-brand catalogue-home">{translate text='Library Catalogue'}</a>
     </div>
 
     <div class="collapse navbar-collapse">
