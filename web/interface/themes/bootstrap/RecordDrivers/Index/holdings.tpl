@@ -51,12 +51,14 @@
   </div>
   {/if}
   
-  <p class="visible-xs help-block bg-info status-color-help-block">{'Call numbers in <span class="text-danger">red</span> are either checked out or not circulating. Call numbers in <span class="text-success">green</span> are available.'|translate}</p>
-  
+  {assign var=shownHelpBlock value=0}  
   {foreach from=$holdings item=statusItems key=library name="outerloop"}
   {if !empty($library) && !empty($statusItems)}
-        {include file="RecordDrivers/Index/holdings-table.tpl"}
-        
-        <button data-toggle="more-less" class="btn btn-default btn-xs hidden" data-threshold="5" data-target=".panel-body" data-target-name="holdings"><span class="fa fa-plus"></span> <span class="more-less-label" data-alt="{translate text='Less'}">{translate text="More"}</span></button>
+    {if !$shownHelpBlock}
+      <p class="visible-xs help-block bg-info status-color-help-block">{'Call numbers in <span class="text-danger">red</span> are either checked out or not circulating. Call numbers in <span class="text-success">green</span> are available.'|translate}</p>
+      {assign var=shownHelpBlock value=1}
+    {/if}
+    {include file="RecordDrivers/Index/holdings-table.tpl"}  
+    <button data-toggle="more-less" class="btn btn-default btn-xs hidden" data-threshold="5" data-target=".panel-body" data-target-name="holdings"><span class="fa fa-plus"></span> <span class="more-less-label" data-alt="{translate text='Less'}">{translate text="More"}</span></button>
   {/if}
   {/foreach}
