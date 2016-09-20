@@ -5,6 +5,9 @@
   <script type="text/javascript">
     var _global_path = '{$path}';
     var _global_url = '{$url}';
+    {if $bookbagWarningMessage}
+      var _bookbagWarningMessage = '{$bookbagWarningMessage|translate}';
+    {/if}
   </script>
   <title>
   {if $error}

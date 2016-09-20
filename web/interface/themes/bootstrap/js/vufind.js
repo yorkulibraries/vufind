@@ -625,12 +625,22 @@ function setupBookBag() {
     });
     $('.mark-unmark-record').change(function() {
         if ($(this).is(':checked')) {
+            warnBookbagIsTemporary();
             addToBookBag($(this).val());
         } else {
             removeFromBookBag($(this).val());
         }
         updateBookBagButton(getBookBagContent());
     });
+}
+
+function warnBookbagIsTemporary() {
+    if (typeof _bookbagWarningMessage != 'undefined') {
+        if($.cookie('vufind_cart_warned_user') != 2) {
+            alert(_bookbagWarningMessage);
+        }
+        $.cookie('vufind_cart_warned_user', 1, { path: '/' });
+    }
 }
 
 function getBookBagContent() {

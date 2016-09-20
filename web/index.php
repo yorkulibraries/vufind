@@ -84,6 +84,7 @@ if (isset($configArray['MULER']['host'])) {
 // Assign cart contents to templates
 $cartModel = Cart_Model::getInstance();
 $interface->assign('cartContent', $cartModel->getItems());
+$interface->assign('bookbagWarningMessage', 'warning_marked_items_are_temporary');
 
 // Check system availability
 $mode = checkAvailabilityMode();
