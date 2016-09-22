@@ -1,7 +1,7 @@
 <form data-json="{$path}/AJAX/JSON?method=feedbackSubmit" role="form" method="post" action="{$path}/Feedback/Submit">
   <div class="form-group">
     <label for="feedbackEmail">{translate text='Your email address'}</label>
-    <input type="email" class="form-control" id="feedbackEmail" name="from"/>
+    <input type="email" class="form-control" id="feedbackEmail" name="from" {if $user && $user->email}value="{$user->email}"{/if}/>
   </div>
   <div class="form-group">
     <label for="feedbackLike">{translate text='What do you like'}?</label>
