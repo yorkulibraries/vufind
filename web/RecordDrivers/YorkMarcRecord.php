@@ -140,7 +140,13 @@ class YorkMarcRecord extends MarcRecord
         $interface->assign('yorkTitleInfo', $titleInfo);
         
         // assign publication info
-        $interface->assign('yorkPublicationInfo', $this->getFirstFieldValue('260'));
+        // display 264 if present, fallback to 260 if not
+        // per cataloguing committee request sept. 20, 2016
+        $pubinfo = $this->getFirstFieldValue('264');
+        if (!$pubinfo) {
+            $pubinfo = $this->getFirstFieldValue('260');
+        }
+        $interface->assign('yorkPublicationInfo', $pubinfo);
         
         // assign author info
         $authorInfo = trim($this->getFirstFieldValue('245', 'c'));
@@ -281,9 +287,10 @@ class YorkMarcRecord extends MarcRecord
         //April 2012, Includes RDA Fields
         $interface->assign('yorkCountryOfProducingEntity', $this->getFieldValues('257', 'a268'));
         $interface->assign('yorkProdPubDistManufactureCopyrightNotice', $this->getProdPubDistManufactureCopyrightNotices());
-        $interface->assign('yorkContentType', $this->getFieldValues('336', 'ab368'));
-        $interface->assign('yorkMediaType', $this->getFieldValues('337', 'ab368'));
-        $interface->assign('yorkCarrierType', $this->getFieldValues('338', 'ab368'));
+        // do NOT display 336,337,338 as per cataloguing commmittee request Sept. 20, 2016
+        //$interface->assign('yorkContentType', $this->getFieldValues('336', 'ab368'));
+        //$interface->assign('yorkMediaType', $this->getFieldValues('337', 'ab368'));
+        //$interface->assign('yorkCarrierType', $this->getFieldValues('338', 'ab368'));
         $interface->assign('yorkPhysicalMedium', $this->getFieldValues('340', 'abcdefhijkmno02368'));
         $interface->assign('yorkSoundCharacteristics', $this->getFieldValues('344', 'abcdefgh02368'));
         $interface->assign('yorkProjectionCharacteristicsOfMovingImage', $this->getFieldValues('345', 'ab02368'));
@@ -531,7 +538,7 @@ class YorkMarcRecord extends MarcRecord
         }
         $fields = $this->marcRecord->getFields('710');
         foreach ($fields as $field) {
-            $display = $this->getAllSubFields($field, 'abcd4');
+            $display = $this->getAllSubFields($field, 'abcde4');
             $search = $this->getAllSubFields($field, 'abcd');
             $values[$search] = $display;
         }
@@ -779,6 +786,18 @@ class YorkMarcRecord extends MarcRecord
 
             // If we got here, we found results -- let's loop through them.
             foreach ($results as $result) {
+                // skip 650/651 with subfield 2 == fast
+                // per cataloguing committee request sept. 20, 2016
+                if ($field == '650' || $field == '651') {
+                    $sf = $result->getSubfield('2');
+                    if ($sf) {
+                        $data = $sf->getData();
+                        if (stripos($data, 'fast') !== false) {
+                            continue;
+                        }
+                    }
+                }
+                
                 // Start an array for holding the chunks of the current heading:
                 $current = array();
 
