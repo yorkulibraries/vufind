@@ -66,7 +66,6 @@ CREATE TABLE IF NOT EXISTS `payment` (
   `message` varchar(100),
   PRIMARY KEY (`id`),
   UNIQUE KEY `tokenid_UNIQUE` (`tokenid`),
-  UNIQUE KEY `authcode_UNIQUE` (`authcode`),
   UNIQUE KEY `refnum_UNIQUE` (`refnum`),
   UNIQUE KEY `payment_hash_UNIQUE` (`payment_hash`)
 ) ENGINE=InnoDB;
