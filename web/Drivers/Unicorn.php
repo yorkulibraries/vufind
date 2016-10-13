@@ -569,13 +569,22 @@ class Unicorn implements DriverInterface
         foreach ($lines as $item) {
             list($catkey, $amount, $balance, $date_billed, $number_of_payments,
             $with_items, $reason, $date_charged, $duedate, $date_recalled, $library, $bill_key_1, $bill_key_2,
-            $user_key, $user_barcode, $item_barcode, $item_library)
+            $user_key, $user_barcode, $item_title, $item_barcode, $item_library)
                 = explode('|', $item);
                 
             // paranoia - make sure the barcode for the bill matches the patron barcode/cat_username
             if (empty($user_barcode) || $user_barcode != $patron['cat_username']) {
                 // this is a very bad condition and needs immediate attention
-                $logger->log("Unexpected bills/fines returned from ILS - Logged in user: $username, ILS result: $item", PEAR_LOG_EMERG);
+                $logger->log("bill's user barcode does not match logged in user - Logged in user: $username, ILS result: $item", PEAR_LOG_EMERG);
+                
+                // blow up before it gets worse
+                PEAR::RaiseError('Unexpected bills/fines returned from ILS');
+            }
+            
+            // paranoia - make sure bill_key_1 matches the patron user_key
+            if (empty($bill_key_1) || $bill_key_1 != $patron['user_key']) {
+                // this is a very bad condition and needs immediate attention
+                $logger->log("bill_key_1 does not match user_key - Logged in user: $username, ILS result: $item", PEAR_LOG_EMERG);
                 
                 // blow up before it gets worse
                 PEAR::RaiseError('Unexpected bills/fines returned from ILS');
@@ -622,10 +631,10 @@ class Unicorn implements DriverInterface
                 'item_library' => trim($item_library),
                 'user_barcode' => trim($user_barcode),
                 'user_key' => trim($user_key),
-                'bill_number' => trim($bill_key_2)
+                'bill_number' => trim($bill_key_2),
+                'item_title' => trim($item_title)
             );
         }
-
         return $items;
     }
 

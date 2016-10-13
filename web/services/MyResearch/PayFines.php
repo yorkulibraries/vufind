@@ -277,8 +277,12 @@ class PayFines extends MyResearch
         $count = count($selectedBills);
         $total = 0.00;
         for ($i = 0; $i < $count; $i++) {
-            $record = $this->db->getRecord($selectedBills[$i]['id']);
-            $selectedBills[$i]['title'] = $record ? $record['title'] : null;
+            if ($selectedBills[$i]['id'] != '0') {
+                $record = $this->db->getRecord($selectedBills[$i]['id']);
+                $selectedBills[$i]['title'] = $record ? $record['title'] : null;
+            } else {
+                $selectedBills[$i]['title'] = $selectedBills[$i]['item_title'];
+            }
             $total += $selectedBills[$i]['balance'];
         }
         

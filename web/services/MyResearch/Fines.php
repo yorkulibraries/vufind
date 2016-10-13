@@ -106,9 +106,12 @@ class Fines extends PayFines
                         $filtered[$group]['groupTotal'] += $items[$i]['balance'];
                         
                         // get the title from the solr index
-                        $record = $this->db->getRecord($filtered[$group]['items'][$j]['id']);
-                        $filtered[$group]['items'][$j]['title'] = $record ? $record['title'] : null;
-                        
+                        if ($filtered[$group]['items'][$j]['id'] != '0') {
+                            $record = $this->db->getRecord($filtered[$group]['items'][$j]['id']);
+                            $filtered[$group]['items'][$j]['title'] = $record ? $record['title'] : null;
+                        } else {
+                            $filtered[$group]['items'][$j]['title'] = $items[$i]['item_title'];
+                        }
                         $j++;
                     }
                 }
