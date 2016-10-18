@@ -725,6 +725,8 @@ log_level=info
 wsdl=https://xxx.uit.yorku.ca/ypbpaymentservice/?wsdl
 payment_url="https://xxx.uit.yorku.ca/ypbpaymentapp/Payment.aspx?tokenid="
 receipt_url="https://xxx.uit.yorku.ca/ypbpaymentapp/Receipt.aspx?tokenid="
+;maintenance_start="Tue 18 Oct 2016 11:25:00 EDT"
+;maintenance_end="Tue 18 Oct 2016 11:28:00 EDT"
 
 lang_en=enUS
 lang_fr=frCA

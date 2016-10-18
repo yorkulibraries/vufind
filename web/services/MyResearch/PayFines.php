@@ -79,6 +79,20 @@ class PayFines extends MyResearch
     {
         global $interface;
         global $configArray;
+        
+        // check for maintenance/outage
+        if (!empty($configArray['YorkPaymentBroker']['maintenance_start']) 
+        && !empty($configArray['YorkPaymentBroker']['maintenance_end'])) {
+            $start = strtotime($configArray['YorkPaymentBroker']['maintenance_start']);
+            $end = strtotime($configArray['YorkPaymentBroker']['maintenance_end']);
+            if ($start !== false && $end !== false && $start < $end) {
+                $now = time();
+                if ($now >= $start && $now <= $end) {
+                    $this->displayMaintenanceMessage($start, $end);
+                    exit;
+                }
+            }
+        }
 
         if (isset($_POST['pay']) && !empty($_POST['pay'])) {
             $this->doPayAction();
@@ -809,6 +823,19 @@ class PayFines extends MyResearch
     {
         global $configArray;
         return $configArray['YorkPaymentBroker']['payment_url'];
+    }
+    
+    
+    private function displayMaintenanceMessage($start, $end)
+    {
+        global $interface;
+        global $configArray;
+        
+        $interface->assign('maintenanceStart', $start);
+        $interface->assign('maintenanceEnd', $end);
+        $interface->setTemplate('pay-fines-maintenance.tpl');
+        $interface->setPageTitle('System Maintenance');
+        $interface->display('layout.tpl');
     }
 }
 
