@@ -68,7 +68,7 @@
 # JETTY_ARGS
 #   The default arguments to pass to jetty.
 #
-
+. /home/$USER/.bash_profile
 usage()
 {
     echo "Usage: $0 {start|stop|run|restart|check|supervise} [ CONFIGS ... ] "
@@ -466,8 +466,6 @@ case "$ACTION" in
         echo "$RUN_CMD"
         nohup sh -c "exec $RUN_CMD >>$JETTY_CONSOLE 2>&1" > /dev/null &
         echo $! > $JETTY_PID
-        sleep 10
-        curl -s -S http://localhost:$JETTY_PORT/solr/biblio/replication?command=disablepoll &>/dev/null
         echo "VuFind running pid="`cat $JETTY_PID`
         ;;
 
