@@ -69,7 +69,6 @@ CREATE TABLE IF NOT EXISTS `payment` (
   UNIQUE KEY `refnum_UNIQUE` (`refnum`),
   UNIQUE KEY `payment_hash_UNIQUE` (`payment_hash`)
 ) ENGINE=InnoDB;
-CREATE INDEX payment_token_id_index ON payment (`token_id`);
 
 CREATE TABLE IF NOT EXISTS `paid_bill` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
