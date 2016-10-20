@@ -26,7 +26,7 @@ mysql -u root -p${DB_ROOT_PASS} -e "grant all privileges on vufind.* to vufind@l
 mysql -u vufind -p12345 vufind < /usr/local/vufind/mysql.sql
 mysql -u vufind -p12345 vufind < /usr/local/vufind/york.sql
 
-[ -f /vagrant/web/conf/config.ini ] && sudo cp /vagrant/web/conf/config.ini /usr/local/vufind/web/conf/
+sudo cp /vagrant/web/conf/*.ini /usr/local/vufind/web/conf/
 
 sudo chown -R www-data:www-data /usr/local/vufind/web
 cat /usr/local/vufind/httpd-vufind.conf | sudo tee /etc/apache2/conf-available/vufind.conf 
@@ -36,11 +36,11 @@ cat <<EOF | sudo tee /etc/apache2/sites-enabled/000-default.conf
   ServerAdmin webmaster@localhost
   DocumentRoot /var/www/html
 
-  ErrorLog ${APACHE_LOG_DIR}/error.log
-  CustomLog ${APACHE_LOG_DIR}/access.log combined
+  ErrorLog \${APACHE_LOG_DIR}/error.log
+  CustomLog \${APACHE_LOG_DIR}/access.log combined
 
   Include conf-available/vufind.conf
-<VirtualHost *:80>
+</VirtualHost>
 EOF
 
 sudo a2enmod rewrite
