@@ -400,6 +400,7 @@ class YorkMarcRecord extends MarcRecord
                 'Inhaltsverzeichnis',
                 'Bibliographic record display'
         );
+        $restriction = $this->getFirstFieldValue('506', 'a');
         $urls = array();
         $mulerHost = $configArray['MULER']['host'];
         foreach ($this->fulltextURLFields as $field) {
@@ -412,6 +413,16 @@ class YorkMarcRecord extends MarcRecord
                 if ($mulerHost) {
                     $u = str_replace('www.library.yorku.ca', $mulerHost, $u);
                 }
+                
+                // if there is access restriction, then
+                // add ezproxy prefix if not present 
+                if ($restriction == 'Access restricted to York University faculty, staff and students.') {
+                    $ezproxyHost = $configArray['EZproxy']['host'];
+                    if (stripos($u, $ezproxyHost) === false) {
+                        $u = $ezproxyHost . '/login?url=' . $u;
+                    }
+                }
+                
                 $notes = trim($this->getAllSubFields($field, '3z'), ' :()[]"\'\.');
                 // if the notes contain "useless" information, we should remove it
                 foreach ($uselessNotes as $useless) {
