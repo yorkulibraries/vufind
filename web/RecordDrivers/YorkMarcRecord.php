@@ -239,6 +239,9 @@ class YorkMarcRecord extends MarcRecord
 
         // call parent to setup extended metadata template variables
         parent::getExtendedMetadata();
+        
+        // override extendedPhysical 
+        $interface->assign('extendedPhysical', $this->getFieldValues('300'));
 
         // override coreContributors and coreCorporateAuthor
         $interface->assign('coreMainAuthorFuller', $this->getFirstFieldValue('100', 'q'));
