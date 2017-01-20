@@ -538,6 +538,7 @@ function resolveMULERLinks($normalContainer) {
             var oldPrefix = 'http://www.library.yorku.ca/eresolver/?id=';
             var newPrefix = 'http://www.library.yorku.ca/e/resolver/id/';
             var href = $(this).attr('href');
+            href = href.replace('http://ezproxy.library.yorku.ca/login?url=', '');
             var prefix = href.substring(0, 42);
             if (prefix == oldPrefix || prefix == newPrefix) {
     	        uids.push(href.substring(42));
