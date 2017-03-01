@@ -1,12 +1,11 @@
-from_address=your@email.com
-max_requests_per_day=15
-default_recipient=your@email.com
+max_requests_per_day=25
 
 ; Item types allowed for In Process/On Order requests
 in_process_ityp[]=IN-PROCESS
 in_process_ityp[]=ON-ORDER
 
 ; Location codes allowed for Storage requests
+storage_locn[]=ASC-STOR
 storage_locn[]=CS-STOR
 storage_locn[]=HNES-STOR
 ;storage_locn[]=SC-OVERSZ
@@ -43,7 +42,7 @@ no_request_callnum[]=DVD
 ; Item types that can not be requested
 no_request_ityp[]=AUDIO-CASS
 no_request_ityp[]=AUDIO-CD
-no_request_ityp[]=AUDIO-LP
+;no_request_ityp[]=AUDIO-LP
 no_request_ityp[]=AUDIO-REEL
 no_request_ityp[]=BRONF-RESV
 no_request_ityp[]=CDROM-CLOS
@@ -187,30 +186,6 @@ Scott Reference=YORKHOLD
 Osgoode Hall Law School Library=YORKHOLD
 Bindery=YORKHOLD
  
-[ICB_Recipients]
-BRONFMAN=your@email.com
-FROST=your@email.com
-SCOTT=your@email.com
-LAW=your@email.com
-STEACIE=your@email.com
-SMIL=your@email.com
-
-[Hold_Recipients]
-YORK=your@email.com
-YORK-NELLIE=your@email.com
-YORK-LAW=your@email.com
-
-[InProcess_Recipients]
-YORK=your@email.com
-YORK-LAW=your@email.com
-
-[Storage_Recipients]
-YORK=your@email.com
-YORK-NELLIE=your@email.com
-YORK-LAW=your@email.com
-BRONFMAN=your@email.com
-SMIL=your@email.com
-
 [PickupLocations]
 BRONFMAN="Bronfman Circulation Desk"
 LAW="Osgoode Circulation Desk"
@@ -219,3 +194,37 @@ STEACIE="Steacie Circulation Desk"
 SMIL="SMIL Circulation Desk"
 FROST="Frost Circulation Desk (Glendon)"
 ERC="Education Resource Centre"
+
+;
+; email addresses
+;
+
+from_address=xxx@yorku.ca
+default_recipient=xxx@yorku.ca
+
+[ICB_Recipients]
+BRONFMAN=xxx@yorku.ca
+FROST=xxx@yorku.ca
+SCOTT=xxx@yorku.ca
+LAW=xxx@yorku.ca
+STEACIE=xxx@yorku.ca
+SMIL=xxx@yorku.ca
+
+[Hold_Recipients]
+YORK=xxx@yorku.ca
+YORK-NELLIE=xxx@yorku.ca
+YORK-LAW=xxx@osgoode.yorku.ca
+
+[InProcess_Recipients]
+YORK=xxx@yorku.ca
+YORK-LAW=xxx@yorku.ca
+
+[Storage_Recipients]
+YORK=xxx@yorku.ca
+YORK-NELLIE=xxx@yorku.ca
+YORK-LAW=xxx@osgoode.yorku.ca
+BRONFMAN=xxx@yorku.ca
+SMIL=xxx@yorku.ca
+
+
+

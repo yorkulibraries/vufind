@@ -2,10 +2,11 @@ host=ezproxy.host.name
 port=443
 use_ssl=true
 connect_password=baabaa
+
 allowed_profiles=ATKINSON,FACULTY,FACULTYX,GRADUATE,GRADUATEX,LAW,LAWFACULTY,LAWGRAD,LAWRESEARC,LIBRARYUSE,RESEARCH,STAFF,UNDERGRAD
 allowed_cat1=CONTIN-ED,EDUCATION,EXECLC,FOUNDATION,REMOTE,YUELI
-law_resources=/.*justis\.com.*/,/.*justcite.com.*/,/.*.bna.com.*/
-default_url=http://www.library.yorku.ca/
+law_resources=
+default_url=https://www.library.yorku.ca/find/MyResearch/EZProxy?confirmed
 
 [EBL]
 secret_key=baabaa

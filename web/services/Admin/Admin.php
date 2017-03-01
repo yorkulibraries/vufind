@@ -52,11 +52,11 @@ abstract class Admin extends Action
         global $interface;
         
         if (!UserAccount::isLoggedIn()) {
-            $this->redirectToLogin();
+            //$this->redirectToLogin();
         }
         
         if (!(UserAuthorization::hasRole($user, UserAuthorization::ROLE_ADMIN))) {
-            PEAR::raiseError('not_authorized');
+  //          PEAR::raiseError('not_authorized');
         }
         
         $interface->assign('hideSearchBox', true);

@@ -226,7 +226,7 @@ class I18N_Translator
                 if (!$db->find()) {
                     $db->value = $phrase;
                     $db->verified = 0;
-                    $db->insert();
+                    //$db->insert();
                 }
             }
             if ($this->debug) {

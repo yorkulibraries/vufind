@@ -29,6 +29,9 @@ web/conf/Unicorn.ini
 web/conf/grad-reading-room.ini
 web/conf/las-room.ini
 web/conf/taxfind.ini
+web/conf/ezproxy.ini
+web/conf/requests.ini
+web/conf/ebl.ini
 
 # Compiled source #
 ###################

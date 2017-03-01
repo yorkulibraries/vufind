@@ -444,8 +444,15 @@ function sendLocalFile($file) {
             }
             // does not look like an HTTP URL
             $logger->log($file . ' does not contain a URL, sending default image instead', PEAR_LOG_DEBUG);
-            sendDefaultImage();
-            return true;
+            //sendDefaultImage();
+            //return false;
+
+if (generateImage($_GET['id'], $_GET['size'])) {
+    exit();
+}
+dieWithDefaultImage();
+
+
         }
         // some kind of image file, send it off
         $logger->log($file . ' is ' . $info['mime'], PEAR_LOG_DEBUG);
