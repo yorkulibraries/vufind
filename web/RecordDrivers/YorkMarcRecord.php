@@ -500,6 +500,7 @@ class YorkMarcRecord extends MarcRecord
                     || stripos($s, 'description') !== false
                     || stripos($s, 'sample text') !== false
                     || stripos($s, 'View cover art') !== false
+                    || stripos($s, 'cover image') !== false
             ) {
                 $this->relatedURLFields[] = $field;
                 continue;
