@@ -708,7 +708,8 @@ class YorkMarcRecord extends MarcRecord
         foreach ($this->relatedURLFields as $field) {
             // check content of |3 |y and |z for presence of "View cover art", etc..
             $s = $this->getAllSubFields($field, '3yz');
-            if (stripos($s, 'View cover art') !== false) {
+            if (stripos($s, 'View cover art') !== false
+            || stripos($s, 'Medium cover image') !== false) {
                $subu = $field->getSubfield('u');
                if ($subu) {
                    $coverArtURL = $subu->getData();
