@@ -311,6 +311,8 @@ class UserAccount
                 if ($user->find(true)) {
                     $logger->log('Found a matching VuFind user. Logging in automatically. Referer: ' . $_SERVER['HTTP_REFERER'], PEAR_LOG_NOTICE);
                     self::updateSession($user);
+                    // track this session
+                    self::trackUserSession($user);
                     return $user;
                 }
                 $logger->log('No VuFind user record found for cat_username: ' . $patron['barcode'], PEAR_LOG_NOTICE);
