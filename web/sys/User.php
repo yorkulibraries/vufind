@@ -74,6 +74,58 @@ class UserAccount
     {
         $_SESSION['userinfo'] = serialize($user);
     }
+    
+    public static function trackUserSession($user)
+    {
+        global $logger;
+        
+        // add this session to the user's list of active sessions
+        $sid = session_id();
+        $sessions = self::getUserSessions($user);
+        $sessions[] = $sid;
+        self::setUserSessions($user, $sessions);
+        $logger->log('User ID: ' . $user->id . ' has the following sessions: ' . implode(' ', $sessions), PEAR_LOG_NOTICE);
+    }
+    
+    public static function getUserSessionsKey($user)
+    {
+        return 'vufind_user_sessions_' . $user->id;
+    }
+    
+    public static function getUserSessions($user)
+    {
+        global $logger, $memcache;
+        if ($memcache && $user && $user->id) {
+            $cacheKey = self::getUserSessionsKey($user);
+            $result = $memcache->get($cacheKey);
+            if ($result !== false) {
+                return $result;
+            }
+        }
+        return array();
+    }
+    
+    public static function setUserSessions($user, $sessions)
+    {
+        global $logger, $memcache;
+        if ($memcache && $user && $user->id) {
+            $cacheKey = self::getUserSessionsKey($user);
+            $memcache->set($cacheKey, $sessions, 0, 0);
+        }
+    }
+    
+    public static function destroyUserSessions($user)
+    {
+        global $logger;
+        $sessions = self::getUserSessions($user);
+        foreach ($sessions as $sid) {
+            session_id($sid);
+            session_start();
+            session_destroy();
+            $logger->log('destroyed session: ' . $sid, PEAR_LOG_NOTICE);
+        }
+        self::setUserSessions($user, array());
+    }
 
     /**
      * Try to log in the user using current query parameters; return User object
@@ -137,6 +189,9 @@ class UserAccount
                 $failedLogins->attempts = 0;
                 $failedLogins->update();
             }
+            
+            // track this session
+            self::trackUserSession($user);
         } else {
             // if this is a failed login attempt, then log it in the database.
             if ($user->getMessage() != 'authentication_error_technical') {

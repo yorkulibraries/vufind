@@ -76,6 +76,8 @@ class Logout extends Action
 
         session_destroy();
         
+        UserAccount::setUserSessions($user, array());
+        
         $user = null;
         $interface->assign('user', null);
         
