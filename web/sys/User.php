@@ -122,7 +122,7 @@ class UserAccount
             session_id($sid);
             session_start();
             session_destroy();
-            $logger->log('destroyed session: ' . $sid, PEAR_LOG_NOTICE);
+            $logger->log('User ID: ' . $user->id . ' destroyed session: ' . $sid, PEAR_LOG_NOTICE);
         }
         self::setUserSessions($user, array());
     }
