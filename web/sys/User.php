@@ -137,6 +137,7 @@ class UserAccount
     public static function login()
     {
         global $configArray;
+        global $logger;
 
         // before we do anything, check number of failed logins
         $username = str_replace(' ', '', $_POST['username']);
@@ -171,6 +172,10 @@ class UserAccount
                 $configArray['Authentication']['method']
             );
             $user = $authN->authenticate();
+            if ($user->banned) {
+                $logger->log('User ID: ' . $user->id . ' is banned.', PEAR_LOG_NOTICE);
+                $user = new PEAR_Error('authentication_error_invalid');
+            }
         } catch (Exception $e) {
             if ($configArray['System']['debug']) {
                 echo "Exception: " . $e->getMessage();

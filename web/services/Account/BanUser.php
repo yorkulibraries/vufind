@@ -17,7 +17,9 @@ class BanUser extends Action
         if (preg_match('/^[0-9]+$/', $barcode)) {            
             $user = new User();
             $user->cat_username = $barcode;
-            if ($user->find(true)) {                
+            if ($user->find(true)) {
+                $user->banned = 1;
+                $user->update();
                 UserAccount::destroyUserSessions($user);
             }
         }

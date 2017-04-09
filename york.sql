@@ -117,3 +117,4 @@ CREATE TABLE IF NOT EXISTS `role` (
   UNIQUE KEY `user_id_role_UNIQUE` (`user_id`, `role`)
 ) ENGINE=InnoDB;
 
+alter table user add banned smallint default 0;
