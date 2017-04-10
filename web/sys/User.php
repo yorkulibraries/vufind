@@ -173,7 +173,7 @@ class UserAccount
             );
             $user = $authN->authenticate();
             if ($user->banned) {
-                $logger->log('User ID: ' . $user->id . ' is banned.', PEAR_LOG_NOTICE);
+                $logger->log('User ID: ' . $user->cat_username . ' is banned.', PEAR_LOG_NOTICE);
                 $user = new PEAR_Error('authentication_error_invalid');
             }
         } catch (Exception $e) {
