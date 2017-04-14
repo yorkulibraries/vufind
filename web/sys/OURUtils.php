@@ -40,7 +40,8 @@ class OURUtils {
             $xml = $root[0];
             $rights = $xml->children();
         } catch (Exception $e) {
-            $logger->log('Can not parse usage rights XML: ' . $xmlstr, PEAR_LOG_ERR);
+            $logger->log('Can not parse usage rights XML', PEAR_LOG_ERR);
+            $logger->log($xmlstr, PEAR_LOG_DEBUG);
         }
         foreach ($rights as $right) {
             $right->addChild('status', $map[(string)$right->usage]);
