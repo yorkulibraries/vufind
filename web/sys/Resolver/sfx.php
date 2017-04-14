@@ -193,7 +193,8 @@ class Resolver_Sfx implements ResolverInterface
                 $right->addChild('status', $map[(string)$right->usage]);
             }
         } catch (Exception $e) {
-            $logger->log('Can not parse usage rights XML: ' . $xmlstr, PEAR_LOG_ERR);
+            $logger->log('Can not parse usage rights XML', PEAR_LOG_ERR);
+            $logger->log($xmlstr, PEAR_LOG_DEBUG);
         }
         return $rights;
     }
