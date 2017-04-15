@@ -685,13 +685,13 @@ class PayFines extends MyResearch
         $messageRegex = $configArray['YorkPaymentBroker']['message_regex_' . $interface->getLanguage()];
         
         // get the ypborderid from Payment page
-        $this->logger->log('Trying to get the ypborderid from YPB payment page');
-        $paymentURL = $configArray['YorkPaymentBroker']['payment_url'] . $tokenId;
-        $this->logger->log("Requesting YPB payment page at: $paymentURL");
-        $html = file_get_contents($paymentURL);
-        $this->logger->log($html, PEAR_LOG_DEBUG);
-        preg_match($ypbOrderIdRegex, $html, $ypbOrderIdMatches);
-        $ypborderid = $ypbOrderIdMatches[1];
+        //$this->logger->log('Trying to get the ypborderid from YPB payment page');
+        //$paymentURL = $configArray['YorkPaymentBroker']['payment_url'] . $tokenId;
+        //$this->logger->log("Requesting YPB payment page at: $paymentURL");
+        //$html = file_get_contents($paymentURL);
+        //$this->logger->log($html, PEAR_LOG_DEBUG);
+        //preg_match($ypbOrderIdRegex, $html, $ypbOrderIdMatches);
+        //$ypborderid = $ypbOrderIdMatches[1];
         
         // get the rest of the info from the receipt page
         $this->logger->log("Verifying token $tokenId with YPB receipt page.");
@@ -710,9 +710,11 @@ class PayFines extends MyResearch
             preg_match($refNumRegex, $html, $refNumMatches);
             preg_match($authCodeRegex, $html, $authCodeMatches);
             preg_match($amountRegex, $html, $amountMatches);
+            preg_match($ypbOrderIdRegex, $html, $ypbOrderIdMatches);
             $refnum = $refNumMatches[1];
             $authcode = $authCodeMatches[1];
             $amount = $amountMatches[1];
+            $ypborderid = $ypbOrderIdMatches[1];
             
             $result = array(
                 'refnum' => $refnum,
