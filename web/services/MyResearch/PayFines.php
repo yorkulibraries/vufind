@@ -454,7 +454,11 @@ class PayFines extends MyResearch
         if (isset($verified['message'])) {
             $payment->message = $verified['message'];
         }
-        $payment->update();
+        $rows = $payment->update();
+        
+        if ($rows === false) {
+            $this->logger->log('ERROR: unable to update payment record for token: ' . $payment->tokenid);
+        }
     }
     
     protected function abortPayment($payment, $paymentResult)
@@ -577,16 +581,24 @@ class PayFines extends MyResearch
     
     protected function updatePaymentStatus($payment, $status)
     {
+        $this->logger->log('About to update payment status for payment ID: ' . $payment->id . ' to: ' . $status);
+        
         $previousStatus = $payment->payment_status;
+        
+        $this->logger->log('Previous status is: ' . $previousStatus);
         
         // update payment status
         $payment->payment_status = $status;
         $payment->notified_user = 0;
-        $payment->update();
+        $rows = $payment->update();
+        if ($rows === false) {
+            $this->logger->log('ERROR: unable to update status for payment ID: ' . $payment->id);
+        }
         
         $this->logger->log('Payment ID: ' . $payment->id . ' status updated to: ' . $payment->payment_status);
         
         // update the status of the paid bill records for this payment
+        $this->logger->log('About to update paid bill records for payment ID: ' . $payment->id . ' to: ' . $payment->payment_status);
         $pb = $payment->getPaidBills();
         foreach ($pb as $b) {
             $b->payment_status = $payment->payment_status;
