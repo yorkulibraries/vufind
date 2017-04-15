@@ -83,6 +83,7 @@ class UserAccount
         $sid = session_id();
         $sessions = self::getUserSessions($user);
         $sessions[] = $sid;
+        $sessions = array_unique($sessions);
         self::setUserSessions($user, $sessions);
         $logger->log('User ID: ' . $user->id . ' has the following sessions: ' . implode(' ', $sessions), PEAR_LOG_NOTICE);
     }
