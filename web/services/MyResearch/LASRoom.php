@@ -5,8 +5,6 @@ require_once 'XLogin.php';
 class LASRoom extends XLogin
 {
     private $config;
-    private $allowedProfiles;
-    private $allowedCat5;
 
     public function __construct()
     {
@@ -14,10 +12,6 @@ class LASRoom extends XLogin
 
         // Load Configuration for this Module
         $this->config = parse_ini_file('conf/las-room.ini', true);
-
-        // process comma delimited array parameters
-        $this->allowedProfiles = explode(',', $this->config['allowed_profiles']);
-        $this->allowedCat5 = $this->config['allowed_cat5'];
     }
     
     public function launch()
@@ -39,13 +33,13 @@ class LASRoom extends XLogin
             return;
         }
 
-        // check profile and cat5
-        if (!in_array($patron['profile'], $this->allowedProfiles) 
-        && !in_array($patron['cat5'], $this->allowedCat5)) {
-                $interface->assign('message', 'access_not_allowed_not_eligible_profile');
-                $this->display();
-                return;
+        $papyrus_user = $this->get_papyrus_user($patron['alt_id']);
+        if(!$papyrus_user) {
+            $interface->assign('message', 'access_not_allowed_not_eligible_profile');
+            $this->display();
+            return;
         }
+        
         
         $catalog = ConnectionManager::connectToCatalog();
         if ($catalog && $catalog->status) {
@@ -68,5 +62,36 @@ class LASRoom extends XLogin
         $interface->setTemplate('las-room.tpl');
         $interface->display('layout.tpl');
     }
+    
+    private function get_papyrus_user($cyin) {
+        global $memcache;
+        global $configArray;
+        
+        $papyrus_user = null;
+        if (isset($this->config['papyrus_user_api_url']) && !empty($this->config['papyrus_user_api_url'])) {
+            if (strlen($cyin) == 9) {
+                $user_api_url = $this->config['papyrus_user_api_url'] . $cyin;
+                $cache_key = 'lasroom_' . md5($user_api_url);
+                if ($memcache) {
+                    $result = $memcache->get($cache_key);
+                    if ($result !== false) {
+                        return $result;
+                    }
+                }
+                $papyrus_user = @file_get_contents($user_api_url);
+                if ($papyrus_user && strlen($papyrus_user) == 9) {
+                    if ($memcache) {
+                        $memcache->set($cache_key, $papyrus_user, 0, $configArray['Caching']['myaccount_expiry']);
+                    }
+                    return $papyrus_user;
+                } else {
+                    // not a valid papyrus user object
+                    return null;
+                }
+            }
+        }
+        return $papyrus_user;
+    }
+    
 }
 ?>
