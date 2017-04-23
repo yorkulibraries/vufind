@@ -52,7 +52,7 @@
       
       <ul class="nav navbar-nav">
         <li role="presentation">
-          <a role="menuitem" tabindex="-1" href="//www.library.yorku.ca/">{translate text='Libraries Home'}</a>
+          <a role="menuitem" tabindex="-1" href="http://www.library.yorku.ca/">{translate text='Libraries Home'}</a>
         </li>
         {if 'fr'==$userLang}
           <li role="presentation">
