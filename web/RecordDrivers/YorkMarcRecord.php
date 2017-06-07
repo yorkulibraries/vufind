@@ -421,7 +421,7 @@ class YorkMarcRecord extends MarcRecord
                 // add ezproxy prefix if not present 
                 if ($restriction == 'Access restricted to York University faculty, staff and students.') {
                     $ezproxyHost = $configArray['EZproxy']['host'];
-                    if (stripos($u, $ezproxyHost) === false) {
+                    if (stripos($u, $ezproxyHost) === false && stripos($u, '//www.library.yorku.ca/e/resolver/id/') === false && stripos($u, '//www.library.yorku.ca/eresolver/?id=') === false) {
                         $u = $ezproxyHost . '/login?url=' . $u;
                     }
                 }
@@ -469,7 +469,7 @@ class YorkMarcRecord extends MarcRecord
             $subu = $field->getSubfield('u');
             if ($subu) {
                 $u = $subu->getData();
-                if (stripos($u, 'http://www.library.yorku.ca/images/erc/') !== false) {
+                if (stripos($u, '//www.library.yorku.ca/images/erc/') !== false) {
                     // ERC manipulative photo, take it an move on
                     $this->relatedURLFields[] = $field;
                     continue;

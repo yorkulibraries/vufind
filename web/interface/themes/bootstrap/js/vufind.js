@@ -535,13 +535,13 @@ function resolveMULERLinks($normalContainer) {
         var uids = [];
         $('a.online-access', $normalContainer).each(function() {
             var $this = $(this);
-            var oldPrefix = 'http://www.library.yorku.ca/eresolver/?id=';
-            var newPrefix = 'http://www.library.yorku.ca/e/resolver/id/';
+            var oldPrefix = 'https://www.library.yorku.ca/eresolver/?id=';
+            var newPrefix = 'https://www.library.yorku.ca/e/resolver/id/';
             var href = $(this).attr('href').replace(/^\s+|\s+$/g,'');
             href = href.replace('http://ezproxy.library.yorku.ca/login?url=', '').replace(/^\s+|\s+$/g,'');
-            var prefix = href.substring(0, 42);
+            var prefix = href.substring(0, 43);
             if (prefix == oldPrefix || prefix == newPrefix) {
-    	        uids.push(href.substring(42));
+    	        uids.push(href.substring(43));
     	        $this.parent('li').remove();
 	        } else {
 	            $this.removeClass('hidden');
