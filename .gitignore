@@ -29,6 +29,7 @@ web/conf/Unicorn.ini
 web/conf/grad-reading-room.ini
 web/conf/las-room.ini
 web/conf/taxfind.ini
+web/conf/preqin.ini
 web/conf/ezproxy.ini
 web/conf/requests.ini
 web/conf/ebl.ini
