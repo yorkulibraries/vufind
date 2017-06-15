@@ -1250,40 +1250,39 @@ class JSON extends Action
         $uids = isset($_GET['url_id']) ? $_GET['url_id'] : array();
         $uids = is_array($uids) ? $uids : array($uids);
         $links = array();
-        foreach ($uids as $urlId) {
-            $mulerAPI = $configArray['MULER']['api_url'] . '/url/' . $urlId;
+            $mulerAPI = $configArray['MULER']['api_url'] . '/urls/' . implode(':', $uids);
             $apiResponse = file_get_contents($mulerAPI);
             if ($apiResponse) {
-                $url = json_decode($apiResponse);
-                
-                $linkText = translate('Click to access this resource');
-                if ($url->publisher) {
-                    $linkText .= ' (' . $url->publisher . ')';
-                }
-                if ($url->provider) {
-                    $linkText .= ' (' . $url->provider . ')';
-                }
-                $href = $url->url;
-                if ($url->proxy) {
-                    $href = $configArray['EZproxy']['host'] . '/login?url=' . $url->url;
-                }
-                $link = array(
-                    'title' => $linkText,
-                    'href' => $href,
-                    'coverage' => $url->holdings,
-                    'notes' => $url->notes
-                );
-                if ($url->license_url) {
-                    $licenseName = OURUtils::getLicenseNameFromURL($url->license_url);
-                    if ($licenseName) {
-                        $rights = OURUtils::getUsageRights($licenseName);
-                        $link['usage_rights'] = $rights;
-                        $link['license_name'] = $licenseName;
+                $array = json_decode($apiResponse);
+                foreach ($array as $url) {
+                    $linkText = translate('Click to access this resource');
+                    if ($url->publisher) {
+                        $linkText .= ' (' . $url->publisher . ')';
                     }
+                    if ($url->provider) {
+                        $linkText .= ' (' . $url->provider . ')';
+                    }
+                    $href = $url->url;
+                    if ($url->proxy) {
+                        $href = $configArray['EZproxy']['host'] . '/login?url=' . $url->url;
+                    }
+                    $link = array(
+                        'title' => $linkText,
+                        'href' => $href,
+                        'coverage' => $url->holdings,
+                        'notes' => $url->notes
+                    );
+                    if ($url->license_url) {
+                        $licenseName = OURUtils::getLicenseNameFromURL($url->license_url);
+                        if ($licenseName) {
+                            $rights = OURUtils::getUsageRights($licenseName);
+                            $link['usage_rights'] = $rights;
+                            $link['license_name'] = $licenseName;
+                        }
+                    }
+                    $links[] = $link;
                 }
-                $links[] = $link;
             }
-        }
         
         $interface->assign('electronic', $links);
         $html = $interface->fetch('AJAX/resolverLinks.tpl');
