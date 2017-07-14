@@ -697,7 +697,7 @@ class PayFines extends MyResearch
         $this->logger->log("Verifying token $tokenId with YPB receipt page.");
         $this->logger->log("Requesting YPB receipt page at: $receiptURL");
         $html = file_get_contents($receiptURL);
-        $this->logger->log($html, PEAR_LOG_DEBUG);
+        $this->logger->log($html);
         preg_match($messageRegex, $html, $messageMatches);
         $message = $messageMatches[1];
         preg_match($statusRegex, $html, $statusMatches);
