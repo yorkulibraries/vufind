@@ -133,6 +133,14 @@ class Resolver_Sfx implements ResolverInterface
                 }
             }
             
+            // temporary workaround to replace http://gateway.proquest.com with https://gateway.proquest.com
+            $search = 'http://gateway.proquest.com';
+            if (stripos($record['href'], $search) !== false) {
+                $replace = 'https://gateway.proquest.com';
+                $record['href'] = str_replace($search, $replace, $record['href']);
+                $logger->log('Corrected Journal URL=' . $record['href'], PEAR_LOG_DEBUG);
+            }
+            
             // temporary workaround for https://github.com/yorkulibraries/vufind/issues/64
             $search = 'http://infotrac.galegroup.com/itweb/?db=';
             if (stripos($record['href'], $search) !== false) {
