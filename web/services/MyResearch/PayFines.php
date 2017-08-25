@@ -69,6 +69,34 @@ class PayFines extends MyResearch
         $interface->assign('showBillKey', $configArray['Fines']['show_bill_key']);
     }
     
+    public function isYPBAvailable() {
+        global $configArray;
+        
+        $available = isset($configArray['YorkPaymentBroker']['available']) ? $configArray['YorkPaymentBroker']['available'] : true;
+        
+        // not available means not available :)
+        if (!$available) {
+            $this->logger->log('YPB is NOT AVAILABLE', PEAR_LOG_INFO);
+            return false;
+        }
+        
+        // maybe in maintenance window
+        $maintenance_start = $configArray['YorkPaymentBroker']['maintenance_start'];
+        $maintenance_end = $configArray['YorkPaymentBroker']['maintenance_end'];
+        $start_time = strtotime($maintenance_start);
+        $end_time = strtotime($maintenance_end);
+        
+        if ($maintenance_start !== false && $maintenance_end !== false) {
+            $now = time();
+            if ($now >= $maintenance_start && $time <= $maintenance_end) {
+                $this->logger->log('YPB is in Maintenance Window', PEAR_LOG_INFO);
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
     /**
      * Process parameters and display the page.
      *
@@ -79,6 +107,13 @@ class PayFines extends MyResearch
     {
         global $interface;
         global $configArray;
+        
+        if ($this->catalog->isReadOnly() || !$this->isYPBAvailable()) {
+            $this->logger->log('Catalog in readonly mode OR payment broker is unavailable', PEAR_LOG_INFO);
+            $this->logger->log('Redirect to display fines.');
+            $this->displayItemsToPay();
+            exit;
+        }
 
         if (isset($_POST['pay']) && !empty($_POST['pay'])) {
             $this->doPayAction();

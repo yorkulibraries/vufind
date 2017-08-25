@@ -74,6 +74,11 @@ function sendPayBillsToSymphony($job)
     // Connect to ILS
     $catalog = ConnectionManager::connectToCatalog();
     
+    if ($catalog->isReadOnly()) {
+        $logger->log('CATALOG IN READ ONLY MODE - abort.', PEAR_LOG_INFO);
+        return;
+    }
+    
     // find the payment record
     $logger->log('Looking for payment ID: ' . $workload->paymentId . ' in VuFind DB');
     $payment = new Payment();

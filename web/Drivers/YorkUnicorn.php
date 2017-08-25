@@ -262,6 +262,36 @@ class YorkUnicorn extends Unicorn
                 'pin' => $pin
         );
     }
+    
+    public function isReadOnly() {
+        return isset($this->ilsConfigArray['Catalog']['readonly']) ? $this->ilsConfigArray['Catalog']['readonly'] : false;
+    }
+    
+    public function cancelHolds($cancelDetails) {
+        global $logger;
+        
+        if ($this->isReadOnly()) {
+            $logger->log('READ ONLY MODE - cancelHolds is a no-op method.', PEAR_LOG_INFO);
+            return array(
+              'success' => false,
+              'sysMessage' => "catalog_maintenance");
+        }
+        
+        return parent::cancelHolds($cancelDetails);
+    }
+    
+    public function renewMyItems($renewDetails) {
+        global $logger;
+        
+        if ($this->isReadOnly()) {
+            $logger->log('READ ONLY MODE - renewMyItems is a no-op method.', PEAR_LOG_INFO);
+            return array(
+              'success' => false,
+              'sysMessage' => "catalog_maintenance");
+        }
+        
+        return parent::renewMyItems($renewDetails);
+    }
 
     /**
      * Override to map pickup location to actual LIBR policy since most of our libraries
@@ -270,6 +300,15 @@ class YorkUnicorn extends Unicorn
      */
     public function placeHold($holdDetails)
     {
+        global $logger;
+        
+        if ($this->isReadOnly()) {
+            $logger->log('READ ONLY MODE - placeHold is a no-op method.', PEAR_LOG_INFO);
+            return array(
+              'success' => false,
+              'sysMessage' => "catalog_maintenance");
+        }
+        
         $pickup = $holdDetails['pickUpLocation'];
         switch ($pickup) {
             case 'LAW':
@@ -407,6 +446,13 @@ class YorkUnicorn extends Unicorn
     {
         global $configArray;
         global $logger;
+        
+        if ($this->isReadOnly()) {
+            $logger->log('READ ONLY MODE - payBills is a no-op method.', PEAR_LOG_INFO);
+            return array(
+              'success' => false,
+              'sysMessage' => "catalog_maintenance");
+        }
         
         // query sirsi
         $results = array();
