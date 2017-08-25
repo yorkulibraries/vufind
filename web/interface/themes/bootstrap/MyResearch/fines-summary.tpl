@@ -6,7 +6,9 @@
     {assign var=library value=$group|translate}
     <p>
       <span class="text-danger">{$message|replace:'###NUMBER###':$groupTotal|replace:'###LIBRARY###':$library}</span>
+      {if $isYBPAvailable}
       <a class="btn btn-success btn-sm" href="{$path}/MyResearch/PayFines?g={$group|escape}" role="button"><i class="fa fa-credit-card" aria-hidden="true"></i> {translate text='Pay Online'}</a>
+      {/if}
     </p>
   {/if}
 {/foreach}

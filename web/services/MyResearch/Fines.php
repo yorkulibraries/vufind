@@ -51,15 +51,20 @@ class Fines extends PayFines
     {
         global $interface;
         global $configArray;
-            
-        // verify initiated payments and set appropriate status eg: APPROVED or CANCELLED
-        $this->verifyInitiatedPayments();
         
-        // complete the approved payments
-        $this->completeApprovedPayments($this->getApprovedPayments());
+        $isYBPAvailable = $this->isYPBAvailable();
+        $interface->assign('isYBPAvailable', $isYBPAvailable);
         
-        // retry the partially completed payments
-        $this->retryPartiallyCompletedPayments($this->getPartiallyCompletedPayments());
+        if ($isYPBAvailable) {
+            // verify initiated payments and set appropriate status eg: APPROVED or CANCELLED
+            $this->verifyInitiatedPayments();
+        
+            // complete the approved payments
+            $this->completeApprovedPayments($this->getApprovedPayments());
+        
+            // retry the partially completed payments
+            $this->retryPartiallyCompletedPayments($this->getPartiallyCompletedPayments());
+        }
         
         $interface->assign('finesData', $this->getUnpaidBills());
         

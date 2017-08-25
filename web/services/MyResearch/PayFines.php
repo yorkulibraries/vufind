@@ -111,7 +111,7 @@ class PayFines extends MyResearch
         if ($this->catalog->isReadOnly() || !$this->isYPBAvailable()) {
             $this->logger->log('Catalog in readonly mode OR payment broker is unavailable', PEAR_LOG_INFO);
             $this->logger->log('Redirect to display fines.');
-            $this->displayItemsToPay();
+            $this->redirectToDisplayFines();
             exit;
         }
 
