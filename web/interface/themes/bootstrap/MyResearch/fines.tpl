@@ -1,5 +1,11 @@
 {if $user->cat_username}
   <h1>{translate text='Fines'}</h1>  
+
+  {if !$isYPBAvailable}
+  <div class="alert alert-warning" role="alert">
+    <p>{translate text="Online Payment is currently unavailable."}</p>
+  </div>
+  {/if}
   
   {if !empty($paymentNotifications)}
   {foreach from=$paymentNotifications item=p}
