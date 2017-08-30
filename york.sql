@@ -121,4 +121,4 @@ alter table user add banned smallint default 0;
 
 CREATE INDEX issns_source_index ON issns(source);
 CREATE INDEX resolver_ids_source_index ON resolver_ids(source);
-CREATE INDEX payment_token_id_index ON payment (`token_id`);
+CREATE INDEX payment_token_id_index ON payment (`tokenid`);

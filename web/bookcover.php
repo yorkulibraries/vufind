@@ -283,7 +283,7 @@ function generateImage($id, $size) {
 	    'titleFont'    => 'LiberationSans-Bold.ttf',
         'authorFont'   => 'LiberationSans-Bold.ttf'
     );
-	$generator = new Generator(null, $settings);
+	$generator = new Cover_Generator(null, $settings);
 	header('Content-type: image/png');
 	echo $generator->generate($title, $author);
 	return true;
