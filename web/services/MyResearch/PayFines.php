@@ -85,11 +85,10 @@ class PayFines extends MyResearch
         $maintenance_end = $configArray['YorkPaymentBroker']['maintenance_end'];
         $start_time = strtotime($maintenance_start);
         $end_time = strtotime($maintenance_end);
-        
-        if ($maintenance_start !== false && $maintenance_end !== false) {
+        if ($start_time !== false && $end_time !== false) {
             $now = time();
-            if ($now >= $maintenance_start && $time <= $maintenance_end) {
-                $this->logger->log('YPB is in Maintenance Window', PEAR_LOG_INFO);
+            if ($now >= $start_time && $now <= $end_time) {
+                $this->logger->log('YPB is in Maintenance Window: ' . 'now = ' . $now  . ', start_time = ' . $start_time . ', end_time = ' . $end_time, PEAR_LOG_INFO);
                 return false;
             }
         }

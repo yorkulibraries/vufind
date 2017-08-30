@@ -52,8 +52,8 @@ class Fines extends PayFines
         global $interface;
         global $configArray;
         
-        $isYBPAvailable = $this->isYPBAvailable();
-        $interface->assign('isYBPAvailable', $isYBPAvailable);
+        $isYPBAvailable = $this->isYPBAvailable();
+        $interface->assign('isYPBAvailable', $isYPBAvailable);
         
         if ($isYPBAvailable) {
             // verify initiated payments and set appropriate status eg: APPROVED or CANCELLED
