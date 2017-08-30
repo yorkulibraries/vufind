@@ -32,6 +32,6 @@ SMARTYFILE="Smarty-$SMARTYVER"
 if [ ! -d $SMARTYDIR ]
 then
     mkdir $SMARTYDIR
-    cp $SMARTYFILE/libs/* $SMARTYDIR
+    cp -rf $SMARTYFILE/libs/* $SMARTYDIR
 fi
 
