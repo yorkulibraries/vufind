@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `issns` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `issn_record_id_UNIQUE` (`number`, `record_id`)
 ) ENGINE=InnoDB;
-CREATE INDEX issns_source_index ON issns(source);
+
 
 CREATE TABLE IF NOT EXISTS `resolver_ids` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `resolver_ids` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `record_id_UNIQUE` (`number`, `record_id`)
 ) ENGINE=InnoDB;
-CREATE INDEX resolver_ids_source_index ON resolver_ids(source);
+
 
 CREATE TABLE IF NOT EXISTS `payment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -69,7 +69,6 @@ CREATE TABLE IF NOT EXISTS `payment` (
   UNIQUE KEY `refnum_UNIQUE` (`refnum`),
   UNIQUE KEY `payment_hash_UNIQUE` (`payment_hash`)
 ) ENGINE=InnoDB;
-CREATE INDEX payment_token_id_index ON payment (`token_id`);
 
 CREATE TABLE IF NOT EXISTS `paid_bill` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -118,3 +117,8 @@ CREATE TABLE IF NOT EXISTS `role` (
 ) ENGINE=InnoDB;
 
 alter table user add banned smallint default 0;
+
+
+CREATE INDEX issns_source_index ON issns(source);
+CREATE INDEX resolver_ids_source_index ON resolver_ids(source);
+CREATE INDEX payment_token_id_index ON payment (`token_id`);
