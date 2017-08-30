@@ -18,7 +18,7 @@ EOF
 sudo systemctl stop mysql
 sudo systemctl start mysql
 
-[ ! -d /usr/local/vufind ] && cd /usr/local/ && sudo git clone --depth 1 https://github.com/yorkulibraries/vufind.git --branch prod_vagrant
+[ ! -d /usr/local/vufind ] && ln -sf /vagrant /usr/local/vufind
 cd /usr/local/vufind && sudo ./install-libraries.sh && sudo ./mkdir.sh
 
 mysql -u root -p${DB_ROOT_PASS} -e 'create database if not exists vufind'
@@ -26,9 +26,6 @@ mysql -u root -p${DB_ROOT_PASS} -e "grant all privileges on vufind.* to vufind@l
 mysql -u vufind -p12345 vufind < /usr/local/vufind/mysql.sql
 mysql -u vufind -p12345 vufind < /usr/local/vufind/york.sql
 
-sudo cp /vagrant/web/conf/*.ini /usr/local/vufind/web/conf/
-
-sudo chown -R www-data:www-data /usr/local/vufind/web
 cat /usr/local/vufind/httpd-vufind.conf | sudo tee /etc/apache2/conf-available/vufind.conf 
 cat <<EOF | sudo tee /etc/apache2/sites-enabled/000-default.conf 
 <VirtualHost *:80>
@@ -42,6 +39,9 @@ cat <<EOF | sudo tee /etc/apache2/sites-enabled/000-default.conf
   Include conf-available/vufind.conf
 </VirtualHost>
 EOF
+
+# make apache run as ubuntu user
+sudo sed -i 's/www-data/ubuntu/g'  /etc/apache2/envvars
 
 sudo a2enmod rewrite
 sudo systemctl restart apache2
