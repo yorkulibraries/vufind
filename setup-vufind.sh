@@ -18,7 +18,7 @@ EOF
 sudo systemctl stop mysql
 sudo systemctl start mysql
 
-[ ! -d /usr/local/vufind ] && cd /usr/local/ && sudo git clone --depth 1 https://github.com/yorkulibraries/vufind.git
+[ ! -d /usr/local/vufind ] && cd /usr/local/ && sudo git clone --depth 1 https://github.com/yorkulibraries/vufind.git --branch prod_vagrant
 cd /usr/local/vufind && sudo ./install-libraries.sh && sudo ./mkdir.sh
 
 mysql -u root -p${DB_ROOT_PASS} -e 'create database if not exists vufind'
