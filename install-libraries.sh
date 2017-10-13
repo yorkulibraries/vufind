@@ -33,5 +33,7 @@ if [ ! -d $SMARTYDIR ]
 then
     mkdir $SMARTYDIR
     cp -rf $SMARTYFILE/libs/* $SMARTYDIR
+    sudo find $SMARTYDIR -type d -exec chmod a+rx {} \;
+    sudo find $SMARTYDIR -type f -exec chmod a+r {} \;
 fi
 
