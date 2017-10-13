@@ -11,8 +11,9 @@ sudo apt-get -y install git apache2 php5.6-cli php5.6-mysql php5.6-xml php5.6-xs
 memcached php-memcache php5.6-common php-pear php5.6-soap php5.6-mbstring php5.6-tidy php5.6-gd php5.6-imagick gearman libgearman-dev supervisor
 
 sudo pecl install gearman
-sudo echo extension=gearman.so > /etc/php/5.6/cli/conf.d/20-gearman.ini
-sudo echo extension=gearman.so > /etc/php/5.6/apache2/conf.d/20-gearman.ini
+sudo echo extension=gearman.so > /etc/php/5.6/mods-available/gearman.ini
+sudo ln -s /etc/php/5.6/mods-available/gearman.ini /etc/php/5.6/cli/conf.d/20-gearman.ini
+sudo ln -s /etc/php/5.6/mods-available/gearman.ini /etc/php/5.6/apache2/conf.d/20-gearman.ini
 
 cat << EOF | sudo tee /etc/mysql/conf.d/disable_strict_mode.cnf
 [mysqld]
