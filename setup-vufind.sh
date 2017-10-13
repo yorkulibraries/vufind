@@ -7,8 +7,12 @@ sudo apt-get -y install mysql-server mysql-client
 
 sudo add-apt-repository -y ppa:ondrej/php
 sudo apt-get update
-sudo apt-get -y install git apache2 php5.6-cli php5.6-mysql php5.6-xml php5.6-xsl php5.6-json php5.6-ldap libapache2-mod-php5.6 \
-memcached php-memcache php5.6-common php-pear php5.6-soap php5.6-mbstring php5.6-tidy php5.6-gd php5.6-imagick
+sudo apt-get -y install git apache2 php5.6-cli php5.6-mysql php5.6-xml php5.6-xsl php5.6-json php5.6-ldap libapache2-mod-php5.6 php5.6-dev \
+memcached php-memcache php5.6-common php-pear php5.6-soap php5.6-mbstring php5.6-tidy php5.6-gd php5.6-imagick gearman libgearman-dev supervisor
+
+sudo pecl install gearman
+sudo echo extension=gearman.so > /etc/php/5.6/cli/conf.d/20-gearman.ini
+sudo echo extension=gearman.so > /etc/php/5.6/apache2/conf.d/20-gearman.ini
 
 cat << EOF | sudo tee /etc/mysql/conf.d/disable_strict_mode.cnf
 [mysqld]
@@ -46,3 +50,8 @@ sudo sed -i 's/www-data/ubuntu/g'  /etc/apache2/envvars
 sudo a2enmod rewrite
 sudo systemctl restart apache2
 
+sudo cp /vagrant/vufind-gearman-worker.conf /etc/supervisor/conf.d/
+sudo systemctl enable gearman-job-server 
+sudo systemctl restart gearman-job-server 
+sudo systemctl enable supervisor
+sudo systemctl restart supervisor
