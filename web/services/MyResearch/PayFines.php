@@ -69,7 +69,7 @@ class PayFines extends MyResearch
         $interface->assign('showBillKey', $configArray['Fines']['show_bill_key']);
     }
     
-    public function isYPBAvailable() {
+    public static function isYPBAvailable() {
         global $configArray;
         
         $available = isset($configArray['YorkPaymentBroker']['available']) ? $configArray['YorkPaymentBroker']['available'] : true;

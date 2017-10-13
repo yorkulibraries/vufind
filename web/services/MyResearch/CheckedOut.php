@@ -27,7 +27,7 @@
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
 require_once 'services/MyResearch/MyResearch.php';
-
+require_once 'services/MyResearch/PayFines.php';
 /**
  * CheckedOut action for MyResearch module
  *
@@ -96,6 +96,8 @@ class CheckedOut extends MyResearch
             $result = $this->catalog->getMyFines($patron);
             if (!PEAR::isError($result)) {
                 $interface->assign('finesData', $result);
+                $isYPBAvailable = PayFines::isYPBAvailable();
+                $interface->assign('isYPBAvailable', $isYPBAvailable);
             }
         }
         

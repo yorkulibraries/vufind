@@ -52,7 +52,7 @@ class Fines extends PayFines
         global $interface;
         global $configArray;
         
-        $isYPBAvailable = $this->isYPBAvailable();
+        $isYPBAvailable = PayFines::isYPBAvailable();
         $interface->assign('isYPBAvailable', $isYPBAvailable);
         
         if ($isYPBAvailable) {
