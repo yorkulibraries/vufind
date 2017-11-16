@@ -1,5 +1,5 @@
 {if $user->cat_username}
-  <h1>{translate text='Holds'}</h1>
+  <h1>{translate text='Holds/Requests'}</h1>
   
   {if $holdResults.success}
       <div class="alert alert-success alert-dismissable">
@@ -51,11 +51,40 @@
         <input class="btn btn-default btn-sm cancel-hold-button" type="submit" name="cancelAll" value="{translate text='hold_cancel_all'}" />
       </div>
       {/if}
-    </form>
-    
-  {else}
-      {translate text='You do not have any holds or recalls placed'}.
+    </form>      
   {/if}
+  
+  {if is_array($unprocessedRequests) && !empty($unprocessedRequests)}
+  <p>{translate text='The following requests have been received.'}</p>
+  <table class="table table-striped table-condensed table-bordered">
+    <caption class="sr-only">{translate text='Your Requests'}</caption>
+    <thead>
+      <tr>
+        <th>{translate text="Request Date"}</th>
+        <th>{translate text="Type"}</th>
+        <th>{translate text="Call Number"}</th>
+        <th>{translate text="Pickup"}</th>
+        {* <th>{translate text="Expiry Date"}</th> *}
+      </tr>
+    </thead>
+    <tbody class="rowlink">
+    {foreach from=$unprocessedRequests item=request}
+      <tr>
+        <td>{$request->created}</a></td>
+        <td>{$request->request_type}</td>
+        <td><a class="rowlink"target="_blank" href="{$path}/Record/{$request->item_id}">{$request->item_callnum}</a></td>
+        <td>{$request->pickup_location}</td>
+        {* <td>{$request->expiry}</td> *}
+      </tr>
+    {/foreach}
+    </tbody>
+  </table>
+  {/if}
+  
+  {if empty($recordList) && empty($unprocessedRequests)}
+  <p>{translate text='You have no holds or requests.'}</p>
+  {/if}
+  
 {else}
   {include file="MyResearch/catalog-login.tpl"}
 {/if}

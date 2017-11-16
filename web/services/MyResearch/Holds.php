@@ -27,6 +27,8 @@
  * @link     http://vufind.org/wiki/building_a_module Wiki
  */
 require_once 'services/MyResearch/MyResearch.php';
+require_once 'services/MyResearch/lib/Requests.php';
+require_once 'sys/VuFindDate.php';
 
 /**
  * Holds action for MyResearch module
@@ -75,11 +77,13 @@ class Holds extends MyResearch
             }
 
             $result = $this->catalog->getMyHolds($patron);
+            $createdHolds = array();
             if (!PEAR::isError($result)) {
                 if (count($result)) {
                     $cancelable = 0;
                     $recordList = array();
                     foreach ($result as $row) {
+                        $createdHolds[] = $row['id'];
                         $record = $this->db->getRecord($row['id']);
                         $record['ils_details'] = $row;
                         $recordList[] = $record;
@@ -121,6 +125,17 @@ class Holds extends MyResearch
                 }
             } else {
                 PEAR::raiseError($result);
+            }
+            
+            $requests = $this->getMyRequests($patron, $createdHolds);
+            if (!PEAR::isError($requests)) {
+                if (count($requests)) {
+                    $interface->assign('unprocessedRequests', $requests);
+                } else {
+                    $interface->assign('unprocessedRequests', false);
+                }
+            } else {
+                PEAR::raiseError($requests);
             }
         }
 
@@ -204,6 +219,32 @@ class Holds extends MyResearch
         // Save all valid options in the session so user input can be validated later
         $_SESSION['cancelValidData'] = $session_details;
         return $holdList;
+    }
+    
+    private function getMyRequests($patron, $createdHolds)
+    {
+        $dateFormat = new VuFindDate();
+        $today = date('Y-m-d');
+        $requests = array();
+        $db = new Requests();
+        $db->user_barcode = $patron['barcode'];
+        $db->whereAdd("request_type != 'HOLD'");
+        $db->whereAdd("DATE(expiry) >= '$today'");
+        $db->orderBy('created');
+        $db->find();
+        while ($db->fetch()) {
+            if (!in_array($db->item_id, $createdHolds)) {
+                $request = clone($db);
+                $request->created = $dateFormat->convertToDisplayDate(
+                		'Y-m-d H:i:s', $request->created
+                );
+                $request->expiry = $dateFormat->convertToDisplayDate(
+                		'Y-m-d H:i:s', $request->expiry
+                );
+                $requests[] = $request;
+            }
+        }
+        return $requests;
     }
 }
 

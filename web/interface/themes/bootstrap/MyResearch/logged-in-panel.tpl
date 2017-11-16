@@ -10,7 +10,7 @@
         <a href="{$path}/MyResearch/CheckedOut">{translate text='Checkouts'}</a>
       </li>
       <li>
-        <a href="{$path}/MyResearch/Holds">{translate text='Holds'}</a>
+        <a href="{$path}/MyResearch/Holds">{translate text='Holds/Requests'}</a>
       </li>
       <li>
         <a href="{$path}/MyResearch/Fines">{translate text='Fines'}</a>
