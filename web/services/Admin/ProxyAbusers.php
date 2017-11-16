@@ -1,6 +1,6 @@
 <?php
 /**
- * List users who are locked out because of too many failed login attempts.
+ * List users who are BANNED for abusing proxy.
  *
  * PHP version 5
  *
