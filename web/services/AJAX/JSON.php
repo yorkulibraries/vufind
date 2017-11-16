@@ -1219,7 +1219,7 @@ class JSON extends Action
         $keys = array();
         $unique = array();
         foreach ($electronic as $link) {
-            $key = strtolower(trim(str_replace('http://ezproxy.library.yorku.ca/login?url=', '', $link['href'])) . trim($link['coverage']));
+            $key = strtolower($link['target_name'] . trim($link['coverage']));
             if (!in_array($key, $keys)) {
                 $keys[] = $key;
                 $unique[] = $link;
