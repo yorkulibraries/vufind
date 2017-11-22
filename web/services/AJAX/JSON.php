@@ -1291,6 +1291,141 @@ class JSON extends Action
         return $this->output($html, JSON::STATUS_OK);
     }
     
+    public function resolveLinks()
+    {
+        global $configArray;
+        global $interface;
+        
+        $uids = isset($_GET['muler_uids']) ? $_GET['muler_uids'] : array();
+        $uids = is_array($uids) ? $uids : array($uids);        
+        $issns = isset($_GET['issns']) ? $_GET['issns'] : array();
+        $issns = is_array($issns) ? $issns : array($issns);
+
+        $sfxLinks = $this->resolveOpenURLLinks($issns);
+        $mulerLinks = $this->resolveMULERLinks($issns, $uids);
+        
+        $hasSFXLinks = count($sfxLinks) > 0;
+        
+        // merge the links from MULER and SFX into one set
+        $links = $sfxLinks;
+        foreach ($mulerLinks as $l) {
+            if ($l['display_mode'] == 1) {
+                // display always
+                $links[] = $l;
+            } else {
+                // display only if there is no SFX links
+                if (!$hasSFXLinks) {
+                    $links[] = $l;
+                }
+            }
+        }
+        
+        $interface->assign('electronic', $links);
+        $html = $interface->fetch('AJAX/resolverLinks.tpl');
+        
+        $maxAge = isset($configArray['Caching']['ajax_openurl_expiry']) 
+            ? $configArray['Caching']['ajax_openurl_expiry'] : 0;
+            
+        return $this->output($html, JSON::STATUS_OK, $maxAge);
+    }
+    
+    private function resolveOpenURLLinks($issns)
+    {
+        global $configArray;
+        
+        require_once 'sys/Resolver/ResolverConnection.php';
+        
+        $resolverType = isset($configArray['OpenURL']['resolver'])
+            ? $configArray['OpenURL']['resolver'] : 'other';
+        $resolver = new ResolverConnection($resolverType);
+        
+        if (!$resolver->driverLoaded()) {
+            return array();
+        }
+        
+        $result = array();
+        foreach ($issns as $issn) {
+            $result = array_merge($result, $resolver->fetchLinks($this->makeOpenURL($issn)));
+        }
+
+        $electronic = array();
+        foreach ($result as $link) {
+            if (isset($link['service_type']) == 'getFullTxt') {            
+                $electronic[] = $link;
+            }
+        }
+        
+        // drop duplicated links
+        $keys = array();
+        $unique = array();
+        foreach ($electronic as $link) {
+            $key = strtolower($link['target_name'] . trim($link['coverage']));
+            if (!in_array($key, $keys)) {
+                $keys[] = $key;
+                $unique[] = $link;
+            }
+        }
+        
+        return $unique;
+    }
+    
+    private function resolveMULERLinks($issns, $uids)
+    {
+        global $configArray;
+        
+        require_once('sys/OURUtils.php');
+
+        $links = array();
+        $urlsByISSN = $this->fetchMULERLinks($configArray['MULER']['api_url'] . '/urls_by_issns/' . implode(':', $issns));
+        $urlsByID = $this->fetchMULERLinks($configArray['MULER']['api_url'] . '/urls/' . implode(':', $uids));
+        $urls = array_merge($urlsByISSN, $urlsByID);
+        $seen = array();
+        foreach ($urls as $url) {
+            if (in_array($url->url, $seen)) {
+                continue;
+            }
+            $seen[] = $url->url;
+            $linkText = translate('Click to access this resource');
+            if ($url->publisher) {
+                $linkText .= ' (' . $url->publisher . ')';
+            }
+            if ($url->provider) {
+                $linkText .= ' (' . $url->provider . ')';
+            }
+            $href = $url->url;
+            if ($url->proxy) {
+                $href = $configArray['EZproxy']['host'] . '/login?url=' . $url->url;
+            }
+            $link = array(
+                'title' => $linkText,
+                'href' => $href,
+                'coverage' => $url->holdings,
+                'notes' => $url->notes,
+                'display_mode' => $url->display_mode,
+            );
+            if ($url->license_url) {
+                $licenseName = OURUtils::getLicenseNameFromURL($url->license_url);
+                if ($licenseName) {
+                    $rights = OURUtils::getUsageRights($licenseName);
+                    $link['usage_rights'] = $rights;
+                    $link['license_name'] = $licenseName;
+                }
+            }
+            $links[] = $link;
+        }
+        return $links;
+    }
+    
+    private function fetchMULERLinks($mulerAPI) 
+    {        
+        if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
+            $mulerAPI .= '?t=' . time();
+        }
+        $apiResponse = file_get_contents($mulerAPI);
+        $result = json_decode($apiResponse);
+        return $result ? $result : array();
+    }
+    
     /**
      * Submit user feedback
      *
