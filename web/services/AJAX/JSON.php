@@ -1417,10 +1417,7 @@ class JSON extends Action
     }
     
     private function fetchMULERLinks($mulerAPI) 
-    {        
-        if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
-            $mulerAPI .= '?t=' . time();
-        }
+    {
         $apiResponse = file_get_contents($mulerAPI);
         $result = json_decode($apiResponse);
         return $result ? $result : array();
