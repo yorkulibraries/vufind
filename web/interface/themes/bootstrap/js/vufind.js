@@ -82,19 +82,6 @@ $(document).ready(function() {
     activateTableRowLinks();
 });
 
-$(document).ajaxComplete(function() {
-    $('.online-access-container').each(function() {
-        var empty = true;
-        var $onlineAccessContainer = $(this);
-        $onlineAccessContainer.find('a').each(function() {
-            empty = false;
-        });
-        if (empty) {
-            $onlineAccessContainer.addClass('hidden');
-        }
-    });
-});
-
 // handle logged out event
 $(document).on('loggedout.vufind', function(e, params) {
     $('#mainNav').replaceWith(params.nav);
@@ -599,6 +586,7 @@ function resolveLinks() {
 
 
 function resolveOnlineAccessLinks() {
+    console.log('online-access-container count = ' + $('.online-access-container').length);
     $('.online-access-container').each(function() {
         var $onlineAccessContainer = $(this);
         var $normalContainer = $onlineAccessContainer.find('.normal-links-container');
@@ -622,7 +610,7 @@ function resolveOnlineAccessLinks() {
     	            $(this).removeClass('hidden');
     	        }
         	});
-        	console.log(uids);
+        	console.log('MULER uids=' + uids);
     	}
     	
     	// if OpenURL links are present
@@ -630,7 +618,7 @@ function resolveOnlineAccessLinks() {
             $('.openurl', $openurlContainer).each(function() {
         	    issns.push($(this).data('issn'));
         	});
-        	console.log(issns);
+        	console.log('issns=' + issns);
     	}
     	
     	$.ajax({
@@ -640,9 +628,15 @@ function resolveOnlineAccessLinks() {
 	        data: {muler_uids: uids, issns: issns},
 	        success: function(response) {
 	            if (response.status == 'OK' && response.data.length > 0) {
-	                $openurlContainer.append(response.data);
-	                $openurlContainer.removeClass('hidden');
+                    if ($openurlContainer.length > 0) {
+                        $openurlContainer.append(response.data);
+                        $openurlContainer.removeClass('hidden');
+	                } else if ($normalContainer.length > 0) {
+                        $normalContainer.append(response.data);
+                        $normalContainer.removeClass('hidden');
+	                }
 	                $onlineAccessContainer.removeClass('hidden');
+	                activateMoreLessButtons($onlineAccessContainer);             
                 }
 	        }
 		});
