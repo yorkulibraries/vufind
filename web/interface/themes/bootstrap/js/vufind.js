@@ -52,7 +52,7 @@ $(document).ready(function() {
 	checkAvailability();
 	
 	// resolve full text links
-	resolveLinks();
+	resolveOnlineAccessLinks();
 	
 	// fetch google books info
 	fetchGoogleBooksInfo();
@@ -80,19 +80,6 @@ $(document).ready(function() {
     
     // activate table row links
     activateTableRowLinks();
-});
-
-$(document).ajaxComplete(function() {
-    $('.online-access-container').each(function() {
-        var empty = true;
-        var $onlineAccessContainer = $(this);
-        $onlineAccessContainer.find('a').each(function() {
-            empty = false;
-        });
-        if (empty) {
-            $onlineAccessContainer.addClass('hidden');
-        }
-    });
 });
 
 // handle logged out event
@@ -595,6 +582,65 @@ function resolveLinks() {
             activateMoreLessButtons($onlineAccessContainer);
         });
     });
+}
+
+
+function resolveOnlineAccessLinks() {
+    console.log('online-access-container count = ' + $('.online-access-container').length);
+    $('.online-access-container').each(function() {
+        var $onlineAccessContainer = $(this);
+        var $normalContainer = $onlineAccessContainer.find('.normal-links-container');
+        var $openurlContainer = $onlineAccessContainer.find('.openurl-container');
+    
+        var uids = [];
+        var issns = [];
+        
+        // if normal links are present
+        if ($normalContainer.length > 0) {
+            // find MULER links within the normal links, then save the IDs and remove them
+            $('a.online-access', $normalContainer).each(function() {            
+                var href = $(this).attr('href');
+                var regex = /resolver\/[\?]?id[=\/]([0-9]+)/g;
+                var match = regex.exec(href);
+            
+                if (match && match.length > 1) {
+        	        uids.push(match[1]);
+        	        $(this).parent('li').remove();
+    	        } else {
+    	            $(this).removeClass('hidden');
+    	        }
+        	});
+        	console.log('MULER uids=' + uids);
+    	}
+    	
+    	// if OpenURL links are present
+    	if ($openurlContainer.length > 0) {
+            $('.openurl', $openurlContainer).each(function() {
+        	    issns.push($(this).data('issn'));
+        	});
+        	console.log('issns=' + issns);
+    	}
+    	
+    	$.ajax({
+    	    cache: true,
+	        dataType: 'json',
+	        url: _global_path + '/AJAX/JSON?method=resolveLinks',
+	        data: {muler_uids: uids, issns: issns},
+	        success: function(response) {
+	            if (response.status == 'OK' && response.data.length > 0) {
+                    if ($openurlContainer.length > 0) {
+                        $openurlContainer.append(response.data);
+                        $openurlContainer.removeClass('hidden');
+	                } else if ($normalContainer.length > 0) {
+                        $normalContainer.append(response.data);
+                        $normalContainer.removeClass('hidden');
+	                }
+	                $onlineAccessContainer.removeClass('hidden');
+	                activateMoreLessButtons($onlineAccessContainer);             
+                }
+	        }
+		});
+	});
 }
 
 function fetchGoogleBooksInfo() {
