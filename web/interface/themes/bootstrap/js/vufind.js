@@ -52,7 +52,7 @@ $(document).ready(function() {
 	checkAvailability();
 	
 	// resolve full text links
-	resolveOnlineAccessLinks();
+	resolveLinks();
 	
 	// fetch google books info
 	fetchGoogleBooksInfo();
@@ -80,6 +80,19 @@ $(document).ready(function() {
     
     // activate table row links
     activateTableRowLinks();
+});
+
+$(document).ajaxComplete(function() {
+    $('.online-access-container').each(function() {
+        var empty = true;
+        var $onlineAccessContainer = $(this);
+        $onlineAccessContainer.find('a').each(function() {
+            empty = false;
+        });
+        if (empty) {
+            $onlineAccessContainer.addClass('hidden');
+        }
+    });
 });
 
 // handle logged out event
