@@ -71,12 +71,13 @@ class PayFines extends MyResearch
     
     public static function isYPBAvailable() {
         global $configArray;
+        global $logger;
         
         $available = isset($configArray['YorkPaymentBroker']['available']) ? $configArray['YorkPaymentBroker']['available'] : true;
         
         // not available means not available :)
         if (!$available) {
-            $this->logger->log('YPB is NOT AVAILABLE', PEAR_LOG_INFO);
+            $logger->log('YPB is NOT AVAILABLE', PEAR_LOG_INFO);
             return false;
         }
         
@@ -88,7 +89,7 @@ class PayFines extends MyResearch
         if ($start_time !== false && $end_time !== false) {
             $now = time();
             if ($now >= $start_time && $now <= $end_time) {
-                $this->logger->log('YPB is in Maintenance Window: ' . 'now = ' . $now  . ', start_time = ' . $start_time . ', end_time = ' . $end_time, PEAR_LOG_INFO);
+                $logger->log('YPB is in Maintenance Window: ' . 'now = ' . $now  . ', start_time = ' . $start_time . ', end_time = ' . $end_time, PEAR_LOG_INFO);
                 return false;
             }
         }
