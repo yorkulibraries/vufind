@@ -330,7 +330,7 @@ function fetchFromTMDB($id, $size) {
         
             $directors = $record['video_director_str_mv'];
         
-            return processMovieMatches($title, $movies, $directors, $movieRepo, $config, $id)
+            return processMovieMatches($title, $movies, $directors, $movieRepo, $config, $id);
         } catch (Exception $e) {
             return false;
         }
