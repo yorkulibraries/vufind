@@ -112,7 +112,8 @@ class Carousel extends Action
                 }
             }
             $interface->assign('id', $_GET['id']);
-            $interface->assign('autoplay', $_GET['autoplay']);
+            $autoplay = isset($_GET['autoplay']) ? $_GET['autoplay'] : 'true';
+            $interface->assign('autoplay', $autoplay);
             $interface->assign('carouselItems', $carouselItems);
             $carousel = $interface->fetch('Widget/carousel.tpl');
             $interface->assign('carousel', $interface->fetch('Widget/carousel.tpl'));
