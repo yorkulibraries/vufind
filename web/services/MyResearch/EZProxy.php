@@ -93,7 +93,7 @@ class EZProxy extends XLogin
         
         // if user pressed "I agree" button, then make the ezproxy connection
         // otherwise, display the terms of use
-        if (isset($_POST['agree'])) {
+        if (isset($_POST['agree']) || isset($_POST['hiddenAgree'])) {
             $this->connect($patron);
         } else {
             $this->display();
