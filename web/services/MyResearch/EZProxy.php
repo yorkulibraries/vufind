@@ -93,7 +93,7 @@ class EZProxy extends XLogin
         
         // if user pressed "I agree" button, then make the ezproxy connection
         // otherwise, display the terms of use
-        if (isset($_POST['agree']) || isset($_POST['hiddenAgree'])) {
+        if (isset($_POST['agree']) || isset($_POST['hiddenAgree']) || $_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->connect($patron);
         } else {
             $this->display();
@@ -138,6 +138,7 @@ class EZProxy extends XLogin
             . '/login?user=' . $patron['barcode']
             . '&pass=' . $this->config['connect_password']
             . '&qurl=' . urlencode($url);
+        $logger->log("connectURL: $connectURL", PEAR_LOG_NOTICE);
 
         // attempt to connect to ezproxy server
         $request = new HTTP_Request($connectURL);
@@ -145,11 +146,18 @@ class EZProxy extends XLogin
         if (PEAR::isError($response)) {
             $interface->assign('message', 'error_connecting_to_ezproxy');
             $this->display();
+            $logger->log($response, PEAR_LOG_ERR);
             return;
         }
 
-        // check the response headers from ezproxy for sanity
+
         $ezproxyHeaders = array_change_key_case($request->getResponseHeader(), CASE_LOWER);
+
+        foreach ($ezproxyHeaders as $key => $value) {
+            $logger->log("$key: $value", PEAR_LOG_NOTICE);
+        }
+
+        // check the response headers from ezproxy for sanity
         if (!isset($ezproxyHeaders['location'])) {
             $interface->assign('message', 'error_connecting_to_ezproxy');
             $this->display();
@@ -158,6 +166,9 @@ class EZProxy extends XLogin
 
         // pass the headers back to the client
         foreach ($ezproxyHeaders as $key => $value) {
+if ($key == 'location' && strpos($value, 'https://login.ezproxy') != -1) {
+    $value = str_replace('https://', 'http://', $value); 
+}
             header("$key: $value");
         }
         
