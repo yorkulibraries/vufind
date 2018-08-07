@@ -52,7 +52,7 @@ $(document).ready(function() {
 	checkAvailability();
 	
 	// resolve full text links
-	resolveLinks();
+	resolveOnlineAccessLinks();
 	
 	// fetch google books info
 	fetchGoogleBooksInfo();
@@ -607,6 +607,7 @@ function resolveOnlineAccessLinks() {
     
         var uids = [];
         var issns = [];
+        var other_urls = [];
         
         // if normal links are present
         if ($normalContainer.length > 0) {
@@ -620,10 +621,14 @@ function resolveOnlineAccessLinks() {
         	        uids.push(match[1]);
         	        $(this).parent('li').remove();
     	        } else {
-    	            $(this).removeClass('hidden');
+    	            // save some query string length by removing the ezproxy prefix
+    	            var u = href.replace('http://ezproxy.library.yorku.ca/login?url=', '');
+                    u = u.replace('https://ezproxy.library.yorku.ca/login?url=', '');
+    	            other_urls.push(u);
     	        }
         	});
         	console.log('MULER uids=' + uids);
+        	console.log('other_urls=' + other_urls);
     	}
     	
     	// if OpenURL links are present
@@ -638,15 +643,30 @@ function resolveOnlineAccessLinks() {
     	    cache: true,
 	        dataType: 'json',
 	        url: _global_path + '/AJAX/JSON?method=resolveLinks',
-	        data: {muler_uids: uids, issns: issns},
+	        data: {muler_uids: uids, issns: issns, other_urls: other_urls},
 	        success: function(response) {
-	            if (response.status == 'OK' && response.data.length > 0) {
+	            if (response.status == 'OK') {
                     if ($openurlContainer.length > 0) {
-                        $openurlContainer.append(response.data);
+                        $openurlContainer.append(response.data.html);
                         $openurlContainer.removeClass('hidden');
 	                } else if ($normalContainer.length > 0) {
-                        $normalContainer.append(response.data);
+                        $normalContainer.append(response.data.html);
                         $normalContainer.removeClass('hidden');
+	                }
+	                // activate embedded links if the server sent them back 
+	                if (response.data.other_links_to_activate.length > 0) {
+	                    var l = response.data.other_links_to_activate;
+	                    for (var i = 0; i < l.length; i++) {
+	                        console.log(l[i]);
+	                        $('a.online-access', $normalContainer).each(function() {            
+                                var href = $(this).attr('href');
+                                if (href == l[i]) {
+                                    console.log("ACTIVATE " + href);
+                                    $(this).removeClass('hidden');
+                                    $normalContainer.removeClass('hidden');
+                                }
+                        	});
+	                    }
 	                }
 	                $onlineAccessContainer.removeClass('hidden');
 	                activateMoreLessButtons($onlineAccessContainer);             

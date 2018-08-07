@@ -1300,6 +1300,8 @@ class JSON extends Action
         $uids = is_array($uids) ? $uids : array($uids);        
         $issns = isset($_GET['issns']) ? $_GET['issns'] : array();
         $issns = is_array($issns) ? $issns : array($issns);
+        $otherURLs = isset($_GET['other_urls']) ? $_GET['other_urls'] : array();
+        $otherURLs = is_array($otherURLs) ? $otherURLs : array($otherURLs);
 
         $sfxLinks = $this->resolveOpenURLLinks($issns);
         $mulerLinks = $this->resolveMULERLinks($issns, $uids);
@@ -1320,14 +1322,53 @@ class JSON extends Action
             }
         }
         
+        // Deal with embedded links in the 856u
+        // check the other URLs sent as part of the request
+        // if an equivalent URL is NOT present in $links 
+        // then we send back the response to activate (make it visible)
+        $otherLinksToActivate = array();
+        foreach ($otherURLs as $u) {
+            if (!$this->findLink($links, $u)) {
+                $otherLinksToActivate[] = $u;
+            }
+        }
+        $otherLinksToActivate = array_unique($otherLinksToActivate);
         $interface->assign('electronic', $links);
         $html = $interface->fetch('AJAX/resolverLinks.tpl');
         
         $maxAge = isset($configArray['Caching']['ajax_openurl_expiry']) 
             ? $configArray['Caching']['ajax_openurl_expiry'] : 0;
-            
-        return $this->output($html, JSON::STATUS_OK, $maxAge);
+        
+        $output = array(
+            'html' => $html,
+            'other_links_to_activate' => $otherLinksToActivate
+        ); 
+        return $this->output($output, JSON::STATUS_OK, $maxAge);
     }
+    
+    private function normalizeURL($u) {
+        // remove the ezproxy.library... prefix
+        // evil, I know :)
+        $u = str_replace('http://ezproxy.library.yorku.ca/login?url=', '', $u);
+        $u = str_replace('https://ezproxy.library.yorku.ca/login?url=', '', $u);
+        $u = str_replace('https://', '', $u);
+        $u = str_replace('http://', '', $u);
+        // catch cases where target url is "encoded"
+        $u = str_replace('%2F', '/', $u);
+        return $u;
+    }
+    
+    private function findLink($links, $link) {
+        $needle = $this->normalizeURL($link);
+        foreach ($links as $l) {
+            $haystack = $this->normalizeURL($l['href']);
+            if (stristr($haystack, $needle) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
     private function resolveOpenURLLinks($issns)
     {
