@@ -660,7 +660,7 @@ function resolveOnlineAccessLinks() {
 	                        console.log(l[i]);
 	                        $('a.online-access', $normalContainer).each(function() {            
                                 var href = $(this).attr('href');
-                                if (href == l[i]) {
+                                if (href.endsWith(l[i])) {
                                     console.log("ACTIVATE " + href);
                                     $(this).removeClass('hidden');
                                     $normalContainer.removeClass('hidden');
