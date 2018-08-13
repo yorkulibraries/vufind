@@ -59,7 +59,7 @@
         <input type="hidden" name="" value=""/>
         <label class="sr-only" for="search_toronto">{translate text='Search Terms'}</label>
         <div class="input-group">
-          <input type="text" name="Ntt" id="search_toronto" value="{$lookfor}" class="form-control"/>
+          <input type="text" name="Ntt" id="search_toronto" value="{$lookfor|escape}" class="form-control"/>
           <div class="input-group-btn">
             <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Search'}"><span class="fa fa-search"></span></button>
           </div>
@@ -76,7 +76,7 @@
       <form target="_blank" role="form" method="get" action="http://catalogue.library.ryerson.ca/search~S0/X">
         <label class="sr-only" for="search_ryerson">{translate text='Search Terms'}</label>
         <div class="input-group">
-          <input type="text" name="SEARCH" id="search_ryerson" value="{$lookfor}" class="form-control"/>
+          <input type="text" name="SEARCH" id="search_ryerson" value="{$lookfor|escape}" class="form-control"/>
           <div class="input-group-btn">
             <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Search'}"><span class="fa fa-search"></span></button>
           </div>
@@ -93,7 +93,7 @@
       <form target="_blank" role="form" method="get" action="//www.worldcat.org/search">
         <label class="sr-only" for="search_worldcat">{translate text='Search Terms'}</label>
         <div class="input-group">
-          <input type="text" name="q" id="search_worldcat" value="{$lookfor}" class="form-control"/>
+          <input type="text" name="q" id="search_worldcat" value="{$lookfor|escape}" class="form-control"/>
           <div class="input-group-btn">
             <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Search'}"><span class="fa fa-search"></span></button>
           </div>
@@ -112,7 +112,7 @@
       <form target="_blank" role="form" method="get" action="//scholar.google.ca/scholar">
         <label class="sr-only" for="google_scholar">{translate text='Search Terms'}</label>
         <div class="input-group">
-          <input type="text" name="q" id="google_scholar" value="{$lookfor}" class="form-control"/>
+          <input type="text" name="q" id="google_scholar" value="{$lookfor|escape}" class="form-control"/>
           <div class="input-group-btn">
             <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Search'}"><span class="fa fa-search"></span></button>
           </div>
@@ -128,7 +128,7 @@
       <form target="_blank" role="form" method="get" action="//books.google.ca/books">
         <label class="sr-only" for="google_books">{translate text='Search Terms'}</label>
         <div class="input-group">
-          <input type="text" name="q" id="google_books" value="{$lookfor}" class="form-control"/>
+          <input type="text" name="q" id="google_books" value="{$lookfor|escape}" class="form-control"/>
           <div class="input-group-btn">
             <button type="submit" class="btn btn-default" tabindex="-1" title="{translate text='Search'}"><span class="fa fa-search"></span></button>
           </div>
