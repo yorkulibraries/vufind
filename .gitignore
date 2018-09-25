@@ -33,6 +33,7 @@ web/conf/preqin.ini
 web/conf/ezproxy.ini
 web/conf/requests.ini
 web/conf/ebl.ini
+web/conf/canadianlegislativepulse.ini
 
 # Compiled source #
 ###################
