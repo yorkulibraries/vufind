@@ -1,0 +1,28 @@
+{
+    "version":              "1.4",
+    "isDebug":              false,
+
+    "thumbnail1TmplSrc":    "htfrags/thumb1.html",
+    "thumbnail2TmplSrc":    "htfrags/thumb2.html",
+    "bookItemTmplSrc":      "htfrags/bookItem.html",
+    "postTmplSrc":          "htfrags/post.html",
+    "runsLogSrc":           "logs/runs.log",
+    "errorLogSrc":          "logs/error.log",
+    "yorklibCacheSrc":      "caches/yorklib-{$id}.cache",
+    "googleBooksCacheSrc":  "caches/googleBooks-{$id}.cache",
+
+    "catalogURI":           "http://vufindwebserver/find/Record/{$id}",
+    "yorklibBiblioUri": [   "http://solrserver/biblio/select/?",
+                            "q=first_indexed:[{$startDate}+TO+{$endDate}]&",
+                            "fq=location_str_mv:%22Peter+F.+Bronfman+Business+Library%22&",
+                            "fq=format:Book&",
+                            "sort=callnumber_sort_str+asc&start={$start}&rows={$rows}&wt={$format}"],
+    "googleBooksAPIUri": [  "https://www.googleapis.com/books/v1/volumes?",
+                            "q={$format}:{$serial}&key={$apiKey}"],
+
+    "clientURI":            "http://wordpressserver:port/path/to/xmlrpc.php",
+    "wpUser":               "wordpressuser",
+    "wpPasswd":             "password for xmlrpc",
+    "googleBooksAPIKey":    "XXXXXX",
+    "postCategory":         "Books &amp; More"
+}
